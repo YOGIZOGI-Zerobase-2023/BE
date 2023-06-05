@@ -1,4 +1,32 @@
-//package com.zerobase.yogizogi.config;
+package com.zerobase.yogizogi.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+            .authorizeRequests()
+            .antMatchers("/console/**").permitAll() // H2 콘솔 접근 허용
+            .antMatchers("/").permitAll() // 루트 경로 접근 허용
+            .anyRequest().authenticated() // 나머지 요청은 인증 필요
+            .and()
+            .formLogin()
+            .permitAll()
+            .and()
+            .csrf()
+            .disable();
+        // H2 콘솔 관련 설정 추가
+        httpSecurity.headers().frameOptions().disable();
+    }
+}
+
 //
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.context.annotation.Bean;

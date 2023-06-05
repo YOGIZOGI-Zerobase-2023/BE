@@ -1,6 +1,8 @@
 package com.zerobase.yogizogi.user.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.user.common.UserRole;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Builder
@@ -25,8 +28,9 @@ public class AppUser extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean sns;
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
     @Column(unique = true)
     private String nickName;
@@ -34,7 +38,9 @@ public class AppUser extends BaseEntity {
     @Column(unique = true)
     @Pattern(regexp = "^(01[016-9])-(\\d{3,4})-(\\d{4})$", message = "휴대폰 번호 형식이 유효하지 않습니다.")
     private String phoneNumber;
-    private String userType;
+    @ColumnDefault("'USER'")
+    private UserRole userRole;
+    private LocalDateTime updateDate;
     private boolean active;
     public void setPassword(String password, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
