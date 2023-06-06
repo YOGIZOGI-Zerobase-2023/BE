@@ -10,7 +10,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 public class Aes256Utils {
     public static String alg = "AES/CBC/PKCS5Padding";
     private static final String KEY = "KEYISYOGIZOGI";
-    private static final String IV = KEY.substring(0,16);
+    private static final String IV = KEY.substring(0,13);
     public static String encrypt(String text){
         try{
             Cipher cipher = Cipher.getInstance(alg);
