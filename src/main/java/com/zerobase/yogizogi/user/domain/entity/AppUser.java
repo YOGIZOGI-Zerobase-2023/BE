@@ -42,6 +42,8 @@ public class AppUser extends BaseEntity {
     @Column(nullable = false)
     private UserRole userRole;
     private boolean active;
+    private String emailAuthKey;
+}
 //    public void setPassword(String password, PasswordEncoder passwordEncoder) {
 //        this.password = passwordEncoder.encode(password);
 //    }
@@ -49,4 +51,3 @@ public class AppUser extends BaseEntity {
 //    public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
 //        return passwordEncoder.matches(password, this.password);
 //    }
-}
