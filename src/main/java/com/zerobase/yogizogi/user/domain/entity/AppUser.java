@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.user.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.user.common.UserRole;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,8 +42,12 @@ public class AppUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;
+
     private boolean active;
+
     private String emailAuthKey;
+
+    private LocalDateTime emailAuthDateTime;
 }
 //    public void setPassword(String password, PasswordEncoder passwordEncoder) {
 //        this.password = passwordEncoder.encode(password);
