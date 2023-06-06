@@ -35,7 +35,9 @@ public class AppUser extends BaseEntity {
     private String password;
     @Column(unique = true)
     private String nickName;
+
     private String bookName;
+
     @Column(unique = true)
     @Pattern(regexp = "^(01[016-9])-(\\d{3,4})-(\\d{4})$", message = "휴대폰 번호 형식이 유효하지 않습니다.")
     private String phoneNumber;
