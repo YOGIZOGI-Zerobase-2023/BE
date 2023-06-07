@@ -1,5 +1,7 @@
 package com.zerobase.yogizogi.user.token;
 
+import com.zerobase.yogizogi.global.exception.CustomException;
+import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.util.Aes256Utils;
@@ -8,7 +10,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
-import java.util.Objects;
 
 public class JwtAuthenticationProvider {
 
@@ -47,8 +48,19 @@ public class JwtAuthenticationProvider {
             .setSigningKey(secretKey)
             .parseClaimsJws(token)
             .getBody();
+
+        String id = claims.getId();
+        if (id == null) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+
+        String decryptedId = Aes256Utils.decrypt(id);
+        if (decryptedId == null) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+
         return new UserDto(
-            Long.valueOf(Objects.requireNonNull(Aes256Utils.decrypt(claims.getId()))),
+            Long.valueOf(decryptedId),
             Aes256Utils.decrypt(claims.getSubject())
         );
     }

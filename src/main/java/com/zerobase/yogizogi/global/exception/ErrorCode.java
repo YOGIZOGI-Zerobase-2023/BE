@@ -20,7 +20,18 @@ public enum ErrorCode {
     //로그인 관련
     NOT_MATCH_ID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
+    //로그인(토큰) 관련
+    DO_NOT_ALLOW_TOKEN(HttpStatus.BAD_REQUEST, "사용이 허용되지 않는 토큰입니다. 적절한 토큰을 발급 받아 사용해 주세요."),
+
+    //예약 관련
+    NOT_FOUND_BOOK(HttpStatus.BAD_REQUEST, "존재하지 않는 예약이므로 취소할 수 없습니다."),
+    NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 이 예약을 삭제할 수 없습니다."),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "적절하지 않은 토큰입니다."),
+
+
     endSample(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다.");
+
+
     private final HttpStatus httpStatus;
     private final String detail;
 }

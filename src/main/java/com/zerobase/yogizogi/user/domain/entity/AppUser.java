@@ -28,9 +28,9 @@ public class AppUser extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean sns;
     @Column(nullable = false, unique = true)
     private String email;
+    private boolean sns;
     @Column(nullable = false)
     private String password;
     @Column(unique = true)
