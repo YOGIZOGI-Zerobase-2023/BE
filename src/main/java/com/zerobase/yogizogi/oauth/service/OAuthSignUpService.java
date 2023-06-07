@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthSignUpService {
     private final UserRepository userRepository;
-    private BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder;
     public void signUpOAuth(AppUser user){
-        if(userRepository.findById(user.getId()).isPresent()){
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new CustomException(ErrorCode.ALREADY_REGISTER_USER);
         }
         String rawPassword = user.getPassword();
