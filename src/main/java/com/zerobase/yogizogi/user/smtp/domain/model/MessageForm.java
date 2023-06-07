@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.user.smtp.domain.Dto;
+package com.zerobase.yogizogi.user.smtp.domain.model;
 
 import lombok.Builder;
 import lombok.Data;

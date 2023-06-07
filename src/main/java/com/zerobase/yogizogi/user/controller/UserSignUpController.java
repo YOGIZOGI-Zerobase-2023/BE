@@ -1,11 +1,9 @@
 package com.zerobase.yogizogi.user.controller;
 
 import com.zerobase.yogizogi.user.common.UserRole;
-import com.zerobase.yogizogi.user.dto.UserSignUpForm;
+import com.zerobase.yogizogi.user.domain.model.UserSignUpForm;
 import com.zerobase.yogizogi.user.service.UserSignUpService;
-import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,7 @@
 package com.zerobase.yogizogi.user.controller;
 
 import com.zerobase.yogizogi.user.common.UserRole;
-import com.zerobase.yogizogi.user.dto.LogInForm;
+import com.zerobase.yogizogi.user.domain.model.LogInForm;
 import com.zerobase.yogizogi.user.service.UserLogInService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

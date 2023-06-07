@@ -2,8 +2,8 @@ package com.zerobase.yogizogi.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zerobase.yogizogi.oauth.domain.dto.KakaoProfile;
-import com.zerobase.yogizogi.oauth.domain.dto.OAuthToken;
+import com.zerobase.yogizogi.oauth.domain.model.KakaoProfile;
+import com.zerobase.yogizogi.oauth.domain.model.OAuthToken;
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.repository.UserRepository;

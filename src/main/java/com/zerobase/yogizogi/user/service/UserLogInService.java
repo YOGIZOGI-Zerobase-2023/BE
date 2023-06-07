@@ -4,13 +4,10 @@ import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import com.zerobase.yogizogi.user.dto.LogInForm;
-import com.zerobase.yogizogi.user.dto.UserDto;
+import com.zerobase.yogizogi.user.domain.model.LogInForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

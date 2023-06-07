@@ -1,6 +1,6 @@
 package com.zerobase.yogizogi.user.smtp.service;
 
-import com.zerobase.yogizogi.user.smtp.domain.Dto.MessageForm;
+import com.zerobase.yogizogi.user.smtp.domain.model.MessageForm;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

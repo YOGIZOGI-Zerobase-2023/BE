@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.oauth.domain.dto;
+package com.zerobase.yogizogi.oauth.domain.model;
 
 import lombok.Getter;
 
