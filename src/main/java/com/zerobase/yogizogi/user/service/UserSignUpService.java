@@ -2,17 +2,17 @@ package com.zerobase.yogizogi.user.service;
 
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.smtp.domain.Dto.MessageForm;
-import com.zerobase.yogizogi.user.smtp.service.EmailService;
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.HostSignUpForm;
 import com.zerobase.yogizogi.user.dto.UserSignUpForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
+import com.zerobase.yogizogi.user.smtp.domain.Dto.MessageForm;
+import com.zerobase.yogizogi.user.smtp.service.EmailService;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -21,20 +21,20 @@ public class UserSignUpService {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
-    
-    private final BCryptPasswordEncoder encoder;
+
+    private final PasswordEncoder encoder;
 
     public String signUp(UserSignUpForm userSignUpForm, UserRole userRole) {
         // userSignUpForm, PhoneNumber 양식 맞는지, 겹치는지 확인(All)
         // nickName 겹치는지 확인(USER_Only)
 
         //이미 회원가입 한 경우.
-        if(userRepository.findByEmail(userSignUpForm.getEmail()).isPresent()){
+        if (userRepository.findByEmail(userSignUpForm.getEmail()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_EMAIL);
         }
         //전화번호가 이미 등록 되었는지
-        if(userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()) != null &&
-            userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber())){
+        if (userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()) != null &&
+            userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber())) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_PHONE_NUMBER);
         }
         //비밀번호 encoding
@@ -43,13 +43,13 @@ public class UserSignUpService {
         userSignUpForm.setPassword(encodePassword);
 
         //전화번호 양식이 정상적인지
-        if (!userSignUpForm.getPhoneNumber().matches("^(01[016-9])-(\\d{3,4})-(\\d{4})$")){
+        if (!userSignUpForm.getPhoneNumber().matches("^(01[016-9])-(\\d{3,4})-(\\d{4})$")) {
             throw new CustomException(ErrorCode.NOT_VALID_PHONE_NUMBER_FORMAT);
         }
         if (userRole.equals(UserRole.USER)) {
-         //닉네임이 이미 등록되어 있는 것은 아닌지
-            if(userRepository.findByNickName(userSignUpForm.getNickName()) != null &&
-                userRepository.findByNickName(userSignUpForm.getNickName())){
+            //닉네임이 이미 등록되어 있는 것은 아닌지
+            if (userRepository.findByNickName(userSignUpForm.getNickName()) != null &&
+                userRepository.findByNickName(userSignUpForm.getNickName())) {
                 throw new CustomException(ErrorCode.ALREADY_REGISTER_NICK_NAME);
             }
             userSave(userSignUpForm);
@@ -66,8 +66,9 @@ public class UserSignUpService {
     public String emailAuth(String uuid) {
         AppUser user = userRepository.findByEmailAuthKey(uuid)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_AUTH_KEY));
-            user.setActive(true); user.setEmailAuthDateTime(LocalDateTime.now());
-            userRepository.save(user);
+        user.setActive(true);
+        user.setEmailAuthDateTime(LocalDateTime.now());
+        userRepository.save(user);
 
         return "users/active";
     }

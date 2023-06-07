@@ -15,8 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity  // 해당 애노테이션을 붙인 필터(현재 클래스)를 스프링 필터체인에 등록.
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // 커스텀한 OAuth2UserService DI.
-    //private final CustomOAuth2UserService customOAuth2UserService;
+
 
     // 비밀번호 암호화 저장.
     @Bean

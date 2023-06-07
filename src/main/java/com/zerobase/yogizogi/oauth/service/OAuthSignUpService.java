@@ -2,11 +2,9 @@ package com.zerobase.yogizogi.oauth.service;
 
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import com.zerobase.yogizogi.user.dto.LogInForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
-import com.zerobase.yogizogi.user.service.UserLogInService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,18 +12,14 @@ import org.springframework.stereotype.Service;
 public class OAuthSignUpService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
-    private final UserLogInService userLogInService;
+    private final PasswordEncoder encoder;
+    private final OAuthLoginService oAuthLoginService;
+    public String signUpOAuth(AppUser user) {
 
-    public void signUpOAuth(AppUser user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            LogInForm logInForm = LogInForm.builder().email(user.getEmail())
-                .password(user.getPassword()).build();
-            userLogInService.login(logInForm, UserRole.USER);
-        }
         String rawPassword = user.getPassword();
         String enCodePassword = encoder.encode(rawPassword);
         user.setPassword(enCodePassword);
         userRepository.save(user);
+        return oAuthLoginService.oAuthLogin(user);
     }
 }

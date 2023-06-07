@@ -6,6 +6,7 @@ import com.zerobase.yogizogi.oauth.domain.dto.KakaoProfile;
 import com.zerobase.yogizogi.oauth.domain.dto.OAuthToken;
 import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
+import com.zerobase.yogizogi.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,12 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 @Slf4j
 public class OauthService {
+
     private final OAuthSignUpService oAuthSignUpService;
-    public String OAuthCallBack(String code){
+    private final OAuthLoginService oAuthLoginService;
+    private final UserRepository userRepository;
+
+    public String oAuthCallBack(String code) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type",
@@ -71,10 +76,10 @@ public class OauthService {
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(
             httpHeaders);
 
-        //Http 요청-Post 방식 - 그리고 response 변수의 응답 받음
+        //Http 요청-GET으로 토큰이 발급된다!
         ResponseEntity<String> response = restTemplate.exchange(
             "https://kapi.kakao.com/v2/user/me",
-            HttpMethod.POST,
+            HttpMethod.GET,
             kakaoUserInfoRequest,
             String.class
         );
@@ -89,17 +94,17 @@ public class OauthService {
         }
         System.out.println("카카오 아이디(번호) : " + kakaoProfile.getId());
         System.out.println("카카오 이메일 : " + kakaoProfile.getKakao_account().getEmail());
-
+        String mailId = kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId();
         //중복 방지를 위해
-        System.out.println("카카오 가입한 유저 로그인 아이디 : " + kakaoProfile.getKakao_account().getEmail()
-            + "_" + kakaoProfile.getId());
+        System.out.println("카카오 가입한 유저 로그인 아이디 : " + mailId);
 
-        String randomPassword = UUID.randomUUID().toString();
-
-        oAuthSignUpService.signUpOAuth(AppUser.builder().sns(true)
-            .email(kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId())
-            .password(randomPassword).active(true).userRole(UserRole.USER)
-            .emailAuthDateTime(LocalDateTime.now()).build());
-        return response.getBody();
+        if (userRepository.findByEmail(mailId).isPresent()) {
+            return oAuthLoginService.oAuthLogin(userRepository.findByEmail(mailId).get());
+        } else {
+            String randomPassword = UUID.randomUUID().toString();
+            return oAuthSignUpService.signUpOAuth(AppUser.builder().sns(true)
+                .email(mailId).password(randomPassword).active(true).userRole(UserRole.USER)
+                .emailAuthDateTime(LocalDateTime.now()).build());
+        }
     }
 }
