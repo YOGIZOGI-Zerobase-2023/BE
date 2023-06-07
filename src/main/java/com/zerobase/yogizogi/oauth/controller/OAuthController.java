@@ -18,6 +18,5 @@ public class OAuthController {
     @GetMapping("/oauth")
     public @ResponseBody String OAuthCallback(String code) {
         return oauthService.OAuthCallBack(code);
-
     }
 }
