@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,8 @@ public class Book extends BaseEntity {
     private Long id;
     @ManyToOne
     private AppUser user;
-
+    @OneToOne
+    private Review review;
 //    @ManyToOne
 //    private Rooom room;
 
@@ -37,6 +39,8 @@ public class Book extends BaseEntity {
     private LocalDateTime endDate;
     private int people;
     private int payAmount;
+    private boolean reviewRegistered;
 
-    //private boolean accept;
+    //private boolean accept; 락을 걸고 예약을 홀드하는 기능 스케쥴러 활용 동시 예약을 막을 수 있는 기능
+    //예약을 확정한다는 내용을 줄려면 결제에 관련된 내용이 있고 해당 결제가 완료되어야 해당 형태의 기능이 작성 가능.
 }

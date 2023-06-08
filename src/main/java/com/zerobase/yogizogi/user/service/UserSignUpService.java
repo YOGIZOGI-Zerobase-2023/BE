@@ -32,6 +32,8 @@ public class UserSignUpService {
         if (userRepository.findByEmail(userSignUpForm.getEmail()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_EMAIL);
         }
+        //(230608)이메일 형식은 프론트에서 email로 값을 주면 이외의 가입이 불가능하므로 예외처리를 따로 두지 않음.
+
         //전화번호가 이미 등록 되었는지
         if (userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()) != null &&
             userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber())) {

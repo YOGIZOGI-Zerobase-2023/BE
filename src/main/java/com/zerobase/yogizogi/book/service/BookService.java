@@ -5,6 +5,7 @@ import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
+import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
@@ -26,17 +27,22 @@ public class BookService {
         if(!provider.validateToken(token)){
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
-        AppUser user = userRepository.findById(bookForm.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
+        UserDto userDto = provider.getUserDto(token);
+        AppUser user = userRepository.findById(userDto.getId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        //USER 만 예약이 가능하게 방어.
+        if(user.getUserRole()== UserRole.HOST){
+            throw new CustomException(ErrorCode.HOST_NOT_ALLOW_BOOK);
+        }
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-        //날짜 포맷 프론트와 함께 양식을 맞춰서 만들 것**;
 
         bookRepository.save(Book.builder().user(user)
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
             .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
-            .build());
+            .reviewRegistered(false).build());
 
         return "book/success";
     }

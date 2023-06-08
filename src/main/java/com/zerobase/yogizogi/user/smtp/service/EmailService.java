@@ -1,5 +1,7 @@
 package com.zerobase.yogizogi.user.smtp.service;
 
+import com.zerobase.yogizogi.global.exception.CustomException;
+import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.smtp.domain.model.MessageForm;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -27,9 +29,9 @@ public class EmailService {
             mimeMessageHelper.setText(messageForm.getMessage(), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
             log.info("Success!!");
-        } catch (MessagingException e) {
+        } catch (CustomException | MessagingException e) {
             log.info("fail!!");
-            throw new RuntimeException(e);
+            throw new CustomException(ErrorCode.NOT_VALID_EMAIL);
         }
     }
 }
