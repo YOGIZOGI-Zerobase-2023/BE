@@ -1,15 +1,13 @@
 package com.zerobase.yogizogi.book.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
-import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,9 +32,9 @@ public class Book extends BaseEntity {
 //    private Rooom room;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
     private int people;
     private int payAmount;
     private boolean reviewRegistered;

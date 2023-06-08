@@ -56,7 +56,6 @@ public class ReviewService {
         reviewRepository.save(Review.builder()
             .user(user)
             .rate(reviewForm.getRate())
-            .book(book)
             .contents(reviewForm.getContents()).build());
         return "/success";
     }

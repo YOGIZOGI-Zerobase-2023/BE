@@ -3,7 +3,9 @@ package com.zerobase.yogizogi.review.domain.entity;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +28,7 @@ public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Book book;
 
     @ManyToOne

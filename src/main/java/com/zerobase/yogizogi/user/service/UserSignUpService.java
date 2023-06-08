@@ -35,8 +35,7 @@ public class UserSignUpService {
         //(230608)이메일 형식은 프론트에서 email로 값을 주면 이외의 가입이 불가능하므로 예외처리를 따로 두지 않음.
 
         //전화번호가 이미 등록 되었는지
-        if (userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()) != null &&
-            userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber())) {
+        if (userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_PHONE_NUMBER);
         }
         //비밀번호 encoding
@@ -50,8 +49,7 @@ public class UserSignUpService {
         }
         if (userRole.equals(UserRole.USER)) {
             //닉네임이 이미 등록되어 있는 것은 아닌지
-            if (userRepository.findByNickName(userSignUpForm.getNickName()) != null &&
-                userRepository.findByNickName(userSignUpForm.getNickName())) {
+            if (userRepository.findByNickName(userSignUpForm.getNickName()).isPresent()) {
                 throw new CustomException(ErrorCode.ALREADY_REGISTER_NICK_NAME);
             }
             userSave(userSignUpForm);

@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<AppUser,Long> {
     Optional<AppUser> findByEmailAuthKey(String emailAuythKey);
     Optional<AppUser> findByEmail(String email);
 
-    Boolean findByPhoneNumber(String phoneNumber);
+    Optional<AppUser> findByPhoneNumber(String phoneNumber);
 
-    Boolean findByNickName(String nickName);
+    Optional<AppUser> findByNickName(String nickName);
 }
