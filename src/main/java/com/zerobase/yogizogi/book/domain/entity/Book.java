@@ -1,6 +1,7 @@
 package com.zerobase.yogizogi.book.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -28,8 +29,7 @@ public class Book extends BaseEntity {
     private Long id;
     @ManyToOne
     private AppUser user;
-    @OneToOne
-    private Review review;
+
 //    @ManyToOne
 //    private Rooom room;
 

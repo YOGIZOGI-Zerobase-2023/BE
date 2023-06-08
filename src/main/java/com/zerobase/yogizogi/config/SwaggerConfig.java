@@ -25,7 +25,7 @@ public class SwaggerConfig {
   private ApiInfo apiInfo() {
     return new ApiInfoBuilder()
         .title("요기조기")
-        .description("숙박 예매 서비스")
+        .description("숙박 예약 서비스")
         .version("2.0")
         .build();
   }

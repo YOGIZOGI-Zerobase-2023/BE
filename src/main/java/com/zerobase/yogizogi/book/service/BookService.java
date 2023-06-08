@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.book.service;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
+import com.zerobase.yogizogi.book.dto.BookDto;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
@@ -10,8 +11,13 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +38,9 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
+        //TO DO예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
+
+
         //USER 만 예약이 가능하게 방어.
         if(user.getUserRole()== UserRole.HOST){
             throw new CustomException(ErrorCode.HOST_NOT_ALLOW_BOOK);
@@ -44,7 +53,7 @@ public class BookService {
             .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build());
 
-        return "book/success";
+        return "/success";
     }
 
     public String deleteBook(String token, Long bookId) {
@@ -67,4 +76,10 @@ public class BookService {
         return "delete/success";
     }
 
+    public Page<BookDto> myBookList(String token, Pageable pageable) {
+        //특정 유저의 페이지여야 유의미*
+        Page<BookDto> page = new PageImpl<>();
+
+        return ;
+    }
 }

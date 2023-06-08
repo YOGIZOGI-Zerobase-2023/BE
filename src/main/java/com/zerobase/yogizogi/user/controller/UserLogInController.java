@@ -19,9 +19,8 @@ public class UserLogInController {
     private final UserLogInService userLogInService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LogInForm logInForm,
-        @RequestParam UserRole userRole) {
-        return ResponseEntity.ok(userLogInService.login(logInForm, userRole));
+    public ResponseEntity<?> login(@RequestBody LogInForm logInForm) {
+        return ResponseEntity.ok(userLogInService.login(logInForm));
     }
 
 }

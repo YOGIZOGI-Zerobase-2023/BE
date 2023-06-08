@@ -13,10 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookForm {
-
-    private Long userId;
-
-//    private Long roomId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private int people;

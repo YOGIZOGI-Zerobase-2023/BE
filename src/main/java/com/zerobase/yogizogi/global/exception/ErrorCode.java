@@ -27,10 +27,15 @@ public enum ErrorCode {
     //예약 관련
     NOT_FOUND_BOOK(HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다."),
     HOST_NOT_ALLOW_BOOK(HttpStatus.BAD_REQUEST, "호스트는 예약을 할 수 없습니다."),
+
+    //공통
     NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 이 예약을 삭제할 수 없습니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "적절하지 않은 토큰입니다."),
 
-
+    //리뷰 관련
+    NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "존재하지 않는 리뷰입니다."),
+    NOT_CORRECT_RANGE(HttpStatus.BAD_REQUEST, "평점은 0~10의 정수만 입력이 가능합니다."),
+    AlREADY_REGISTER_REVIEW(HttpStatus.BAD_REQUEST, "이미 리뷰를 작성하셨습니다."),
     endSample(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다.");
 
 

@@ -19,7 +19,7 @@ public class UserLogInService {
     private final JwtAuthenticationProvider provider;
     private final PasswordEncoder passwordEncoder;
 
-    public String login(LogInForm logInForm, UserRole userRole) {
+    public String login(LogInForm logInForm) {
 
         //존재하지 않는 유저
         AppUser user = userRepository.findByEmail(logInForm.getEmail())
@@ -32,7 +32,7 @@ public class UserLogInService {
         if (!user.isActive()) {
             throw new CustomException(ErrorCode.NOT_ACTIVE_USER);
         }
-        return provider.createToken(user.getEmail(), user.getId(), userRole);
+        return provider.createToken(user.getEmail(), user.getId(), user.getUserRole());
     }
 
     private boolean validateLogIn(String rawPassword, AppUser user) {
