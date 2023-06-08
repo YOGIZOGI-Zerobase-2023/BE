@@ -30,7 +30,7 @@ public class BookService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-        //시간은 프론트와 함께 양식을 맞춰서 만들 것**;
+        //날짜 포맷 프론트와 함께 양식을 맞춰서 만들 것**;
 
         bookRepository.save(Book.builder().user(user)
             .startDate(bookForm.getStartDate())

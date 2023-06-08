@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserSignUpController {
 
-        private final UserSignUpService userSignUpService;
+   private final UserSignUpService userSignUpService;
 
-        @PostMapping("/signup")
-        public ResponseEntity<?> signUp(@RequestBody UserSignUpForm userSignUpForm, @RequestParam UserRole userRole) {
-            return ResponseEntity.ok(userSignUpService.signUp(userSignUpForm,userRole));
-        }
-        @GetMapping("/email-auth")
-        public ResponseEntity<?> emailAuth(HttpServletRequest request){
-                return ResponseEntity.ok(userSignUpService.emailAuth(request.getParameter("id")));
-        }
+   @PostMapping("/signup")
+   public ResponseEntity<?> signUp(@RequestBody UserSignUpForm userSignUpForm, @RequestParam UserRole userRole) {
+       return ResponseEntity.ok(userSignUpService.signUp(userSignUpForm,userRole));
+   }
+   @GetMapping("/email-auth")
+   public ResponseEntity<?> emailAuth(HttpServletRequest request){
+       return ResponseEntity.ok(userSignUpService.emailAuth(request.getParameter("id")));
+   }
 }
