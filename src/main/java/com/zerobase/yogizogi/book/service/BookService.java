@@ -47,7 +47,7 @@ public class BookService {
         }
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
 
-        Book book = Book.builder().user(user)
+        Book book = Book.builder().userId(user.getId())
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
             .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
@@ -80,7 +80,7 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
-        if (!Objects.equals(book.getUser().getId(), user.getId())) {
+        if (!Objects.equals(book.getUserId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
         }
 
@@ -97,22 +97,6 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        // 현재 유저의 모든 Book 가져오기
-        List<Book> allBooks = user.getBooks();
-
-        // 페이지를 적용하기 위해 Stream 변환
-        Stream<Book> bookStream = allBooks.stream();
-
-        // 요청된 페이지에 따라서 스트림을 슬라이스하고 페이지 생성
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), allBooks.size());
-
-        List<Book> pagedBooks = bookStream
-            .skip(start)
-            .limit(pageable.getPageSize())
-            .collect(Collectors.toList());
-
-        // Page 객체를 생성하고 반환
-        return  new PageImpl<>(pagedBooks, pageable, allBooks.size());
+        return  bookRepository.findAllByUserId(user.getId(), pageable);
     }
 }

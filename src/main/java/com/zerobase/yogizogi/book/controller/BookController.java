@@ -25,7 +25,7 @@ public class BookController {
 
     @GetMapping()
     public ResponseEntity<?> myBook(@RequestHeader(name = TOKEN) String token,
-        @PageableDefault(page = 0, size = 2, sort = "id", direction = Sort.Direction.DESC)
+       @PageableDefault(page = 0, size = 2,sort = "id", direction = Sort.Direction.DESC)
         Pageable pageable){
         return ResponseEntity.ok(bookService.myBookList(token, pageable));
     }
