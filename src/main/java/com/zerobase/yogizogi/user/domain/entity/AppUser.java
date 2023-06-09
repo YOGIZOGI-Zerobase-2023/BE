@@ -61,8 +61,8 @@ public class AppUser extends BaseEntity {
     //외래키
     @OneToMany
     private List<Book> books;
-    //@OneToMany
-    //private List<Accommodation> accommodations;
+    @OneToMany
+    private List<Accommodation> accommodations;
     //@OneToMany
     //private List<ChattingRoom> chattingRooms;
     //@OneToMany
