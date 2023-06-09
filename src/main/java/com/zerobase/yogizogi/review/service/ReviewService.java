@@ -27,7 +27,7 @@ public class ReviewService {
     private final BookRepository bookRepository;
     public Page<Review> reviewList(Long accommodationId, Pageable pageable) {
 
-        if(reviewRepository.findByAccommodationId(accommodationId).isEmpty()) {
+        if(reviewRepository.findFirstByAccommodationId(accommodationId).isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION);
         }
         return  reviewRepository.findAllByAccommodationId(accommodationId, pageable);

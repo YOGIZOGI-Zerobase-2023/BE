@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByAccommodationId(Long AccommodationId, Pageable pageable);
 
-    Optional<List<Review>> findByAccommodationId(Long accommodationId);
+    Optional<Review> findFirstByAccommodationId(Long AccomodationId);
 
 }

@@ -26,7 +26,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping()
-    public ResponseEntity<?> reviewsList(@RequestParam(name = "id") Long accommodationId,
+    public ResponseEntity<?> reviewsList(@RequestParam(name = "id", defaultValue = "1") Long accommodationId,
         @PageableDefault(page = 0, size = 2,sort = "id", direction = Sort.Direction.DESC)
         Pageable pageable){
        return ResponseEntity.ok(reviewService.reviewList(accommodationId,pageable));
