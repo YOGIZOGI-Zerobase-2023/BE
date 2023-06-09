@@ -14,8 +14,8 @@ import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,10 +25,12 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    public Page<ReviewDto> reviewList(String token) {
-        Page<ReviewDto> reviewsList = (Page<ReviewDto>) new Pageable();
-        //
-        return reviewsList;
+    public Page<Review> reviewList(Long accommodationId, Pageable pageable) {
+
+        if(reviewRepository.findByAccommodationId(accommodationId).isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION);
+        }
+        return  reviewRepository.findAllByAccommodationId(accommodationId, pageable);
     }
 
     public String makeReview(String token,ReviewForm reviewForm) {
@@ -53,8 +55,8 @@ public class ReviewService {
 
         bookRepository.save(book);
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-        reviewRepository.save(Review.builder()
-            .user(user)
+        reviewRepository.save(Review.builder().userId(user.getId())
+            .accommodationId(book.getAccommodationId())
             .rate(reviewForm.getRate())
             .contents(reviewForm.getContents()).build());
         return "/success";
@@ -71,7 +73,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (!Objects.equals(review.getUser().getId(), user.getId())) {
+        if (!Objects.equals(review.getUserId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
         }
 

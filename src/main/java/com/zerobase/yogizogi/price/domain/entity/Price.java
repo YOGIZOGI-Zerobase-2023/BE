@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.room.domain.entity;
+package com.zerobase.yogizogi.price.domain.entity;
 
 import java.time.LocalDate;
 import javax.persistence.Entity;

@@ -29,6 +29,20 @@ public class BookService {
     private final UserRepository userRepository;
     //private final RoomRepository roomRepository;
 
+    //User의 BookList를 가지고 옵니다.
+    public Page<Book> myBookList(String token, Pageable pageable) {
+        if (!provider.validateToken(token)) {
+            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
+        }
+
+        UserDto userDto = provider.getUserDto(token);
+        AppUser user = userRepository.findById(userDto.getId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        return  bookRepository.findAllByUserId(user.getId(), pageable);
+    }
+
+    //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
     //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
     public String makeBook(String token, BookForm bookForm) {
         if (!provider.validateToken(token)) {
@@ -43,28 +57,18 @@ public class BookService {
 
         //USER 만 예약이 가능하게 방어.
         if (user.getUserRole() == UserRole.HOST) {
-            throw new CustomException(ErrorCode.HOST_NOT_ALLOW_BOOK);
+            throw new CustomException(ErrorCode.HOST_NOT_ALLOW_ACCESS);
         }
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-
-        Book book = Book.builder().userId(user.getId())
+        //현재 하드 코딩으로 1만 넣은 상황으로 진행
+        //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
+        Book book = Book.builder().userId(user.getId()).accommodationId(1L)
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
             .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
 
         bookRepository.save(book);
-
-        /**
-         //book 값 명시적 저장 :)<-불필요 할 수도 있어서 우선 주석 처리
-         List<Book> userBookList = user.getBooks();
-         if (userBookList == null) {
-         userBookList = new ArrayList<>();
-         }
-         userBookList.add(book);
-         user.setBooks(userBookList);
-         userRepository.save(user);
-         */
         return "/success";
     }
 
@@ -88,15 +92,5 @@ public class BookService {
         return "delete/success";
     }
 
-    public Page<Book> myBookList(String token, Pageable pageable) {
-        if (!provider.validateToken(token)) {
-            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
-        }
 
-        UserDto userDto = provider.getUserDto(token);
-        AppUser user = userRepository.findById(userDto.getId())
-            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-        return  bookRepository.findAllByUserId(user.getId(), pageable);
-    }
 }

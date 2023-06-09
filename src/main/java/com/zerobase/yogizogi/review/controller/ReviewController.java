@@ -3,6 +3,9 @@ package com.zerobase.yogizogi.review.controller;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
 import com.zerobase.yogizogi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +25,14 @@ public class ReviewController {
     private final String TOKEN = "X-AUTH-TOKEN";
     private final ReviewService reviewService;
 
-    @GetMapping("")
-    public ResponseEntity<?> reviewsList(@RequestHeader(name = TOKEN) String token,
-       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum){
-       return ResponseEntity.ok(reviewService.reviewList(token));
+    @GetMapping()
+    public ResponseEntity<?> reviewsList(@RequestParam(name = "id") Long accommodationId,
+        @PageableDefault(page = 0, size = 2,sort = "id", direction = Sort.Direction.DESC)
+        Pageable pageable){
+       return ResponseEntity.ok(reviewService.reviewList(accommodationId,pageable));
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<?> makeReview(@RequestHeader(name = TOKEN) String token,
         @RequestBody ReviewForm reviewForm) {
         return ResponseEntity.ok(reviewService.makeReview(token,reviewForm));
@@ -40,11 +43,4 @@ public class ReviewController {
         @PathVariable(name = "reviewId") Long reviewId) {
         return ResponseEntity.ok().body(reviewService.deleteReview(token, reviewId));
     }
-// reference
-//    public CommonResult<CommonPage<SmsFlashPromotion>> getItem(@RequestParam(value = "keyword", required = false) String keyword,
-//        @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-//        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-//        List<SmsFlashPromotion> flashPromotionList = flashPromotionService.list(keyword, pageSize, pageNum);
-//        return CommonResult.success(CommonPage.restPage(flashPromotionList));
-//    }
 }
