@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 class BookTest {
     @Test
     @DisplayName("예약 엔터티의 모든 값이 제대로 생성되는지 테스트")
+
     void createBook(){
         //given
         Book book = Book.builder().bookName("홍길동").reviewRegistered(false).userId(3L).roomId(2L)

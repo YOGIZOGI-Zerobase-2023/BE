@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 class BookFormTest {
     @Test
     @DisplayName("예약 포맷 제작 테스트 코드")
+
     void makeBookForm(){
         //given
         BookForm bookForm = BookForm.builder().bookName("홍길동").startDate(LocalDate.now())
