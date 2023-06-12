@@ -20,8 +20,8 @@ public class UserSignUpController {
    private final UserSignUpService userSignUpService;
 
    @PostMapping("/signup")
-   public ResponseEntity<?> signUp(@RequestBody UserSignUpForm userSignUpForm, @RequestParam UserRole userRole) {
-       return ResponseEntity.ok(userSignUpService.signUp(userSignUpForm,userRole));
+   public ResponseEntity<?> signUp(@RequestBody UserSignUpForm userSignUpForm) {
+       return ResponseEntity.ok(userSignUpService.signUp(userSignUpForm));
    }
    @GetMapping("/email-auth")
    public ResponseEntity<?> emailAuth(HttpServletRequest request){
