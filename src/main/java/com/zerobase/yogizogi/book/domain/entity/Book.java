@@ -32,6 +32,7 @@ public class Book extends BaseEntity {
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+    private String bookName;
     private int people;
     private int payAmount;
     private boolean reviewRegistered;

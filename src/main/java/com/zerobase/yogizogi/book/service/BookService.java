@@ -65,7 +65,9 @@ public class BookService {
         Book book = Book.builder().userId(user.getId()).accommodationId(1L)
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
-            .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
+            .people(bookForm.getPeople())
+            .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
+            .payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
 
         bookRepository.save(book);
