@@ -1,11 +1,9 @@
 package com.zerobase.yogizogi.book.repository;
 
 
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat; //<- 이걸 써야, containsExactlyInAnyOrder 사용 가능
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +14,13 @@ import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 class BookRepositoryTest {
+
     @Autowired
     BookRepository bookRepository;
+
     @Test
     @DisplayName("bookRepository 테스트")
-
-    void createBook(){
+    void createBook() {
         //given
         Book book = Book.builder().bookName("홍길동").payAmount(1000).build();
         //when
@@ -29,9 +28,9 @@ class BookRepositoryTest {
         //then
         assertThat(result.getPayAmount()).isEqualTo(book.getPayAmount());
     }
+
     @Test
     @DisplayName("findAllByUserId 테스트")
-
     void findAllByUserId() {
         //given
         Long userId = 1L;
