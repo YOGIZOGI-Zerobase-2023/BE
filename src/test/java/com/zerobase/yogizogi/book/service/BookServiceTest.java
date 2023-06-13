@@ -2,8 +2,10 @@ package com.zerobase.yogizogi.book.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
@@ -13,21 +15,14 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 
 public class BookServiceTest {
 
@@ -46,40 +41,40 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("사용자의 책 목록 조회 테스트")
+    @DisplayName("사용자의 예약 페이지 조회 테스트")
     public void testMyBookList() {
-        //given
-        String token = "testToken";
-        Long userId = 1L;
-        Pageable pageable = PageRequest.of(0, 3, Sort.by(Direction.DESC, "id"));
-
-        // Create mock reservations
-        Book book1 = Mockito.mock(Book.class);
-        Book book2 = Mockito.mock(Book.class);
-        Book book3 = Mockito.mock(Book.class);
-
-        // Create a list of mock reservations
-        List<Book> mockBooks = new ArrayList<>();
-        mockBooks.add(book1);
-        mockBooks.add(book2);
-        mockBooks.add(book3);
-
-        Page<Book> expectedBooks = new PageImpl<>(mockBooks);
+        // given
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        String token = "valid_token";
 
         when(provider.validateToken(token)).thenReturn(true);
-        when(provider.getUserDto(token)).thenReturn(new UserDto(userId, "test@test.com"));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new AppUser()));
-        when(bookRepository.findAllByUserId(userId, pageable)).thenReturn(expectedBooks);
+        when(provider.getUserDto(token)).thenReturn(userDto);
 
-        //when
-        Page<Book> actualBooks = bookService.myBookList(token, pageable);
+        AppUser user = new AppUser();
+        user.setId(1L);
+        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        //then
-        assertEquals(expectedBooks, actualBooks);
+        Pageable pageable = mock(Pageable.class);
+        Page<Book> expectedPage = mock(Page.class);//<-이 부분이 주요*
+        when(bookRepository.findAllByUserId(user.getId(), pageable)).thenReturn(expectedPage);
+
+        // when
+        Page<Book> result = bookService.myBookList(token, pageable);
+
+        // then
+        verify(provider).validateToken(token);
+        verify(provider).getUserDto(token);
+        verify(userRepository).findById(userDto.getId());
+        verify(bookRepository).findAllByUserId(user.getId(), pageable);
+        verifyNoMoreInteractions(provider, userRepository, bookRepository);
+
+        assertEquals(expectedPage, result);
     }
 
+
     @Test
-    @DisplayName("책 예약 생성 테스트")
+    @DisplayName("예약 생성 테스트")
     public void testMakeBook() {
         //given
         String token = "testToken";
@@ -98,7 +93,7 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("책 예약 삭제 테스트")
+    @DisplayName("예약 삭제 테스트")
     public void testDeleteBook() {
         //given
         String token = "testToken";
