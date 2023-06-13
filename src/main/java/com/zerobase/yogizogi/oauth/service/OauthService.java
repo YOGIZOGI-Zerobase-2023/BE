@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.yogizogi.oauth.domain.model.KakaoProfile;
 import com.zerobase.yogizogi.oauth.domain.model.OAuthToken;
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -103,7 +102,7 @@ public class OauthService {
         } else {
             String randomPassword = UUID.randomUUID().toString();
             return oAuthSignUpService.signUpOAuth(AppUser.builder().sns(true)
-                .email(mailId).password(randomPassword).active(true).userRole(UserRole.USER)
+                .email(mailId).password(randomPassword).active(true)
                 .emailAuthDateTime(LocalDateTime.now()).build());
         }
     }
