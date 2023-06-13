@@ -1,6 +1,5 @@
 package com.zerobase.yogizogi.user.controller;
 
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.model.UserSignUpForm;
 import com.zerobase.yogizogi.user.service.UserSignUpService;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")

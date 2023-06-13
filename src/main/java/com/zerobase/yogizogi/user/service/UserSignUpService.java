@@ -2,9 +2,7 @@ package com.zerobase.yogizogi.user.service;
 
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import com.zerobase.yogizogi.user.domain.model.HostSignUpForm;
 import com.zerobase.yogizogi.user.domain.model.UserSignUpForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.smtp.domain.model.MessageForm;
@@ -47,18 +45,12 @@ public class UserSignUpService {
         if (!userSignUpForm.getPhoneNumber().matches("^(01[016-9])-(\\d{3,4})-(\\d{4})$")) {
             throw new CustomException(ErrorCode.NOT_VALID_PHONE_NUMBER_FORMAT);
         }
-        if (userSignUpForm.getUserRole().equals(UserRole.USER)) {
             //닉네임이 이미 등록되어 있는 것은 아닌지
             if (userRepository.findByNickName(userSignUpForm.getNickName()).isPresent()) {
                 throw new CustomException(ErrorCode.ALREADY_REGISTER_NICK_NAME);
             }
             userSave(userSignUpForm);
-        } else {
-            HostSignUpForm hostSignUpForm = HostSignUpForm.builder().userRole(UserRole.HOST)
-                .email(userSignUpForm.getEmail()).password(userSignUpForm.getPassword())
-                .phoneNumber(userSignUpForm.getPhoneNumber()).build();
-            hostSave(hostSignUpForm);
-        }
+
         return "/signup/success";
     }
 
@@ -77,18 +69,12 @@ public class UserSignUpService {
         String uuid = UUID.randomUUID().toString();
         userRepository.save(AppUser.builder().sns(false).email(userSignUpForm.getEmail())
             .nickName(userSignUpForm.getNickName()).bookName(userSignUpForm.getBookName())
-            .password(userSignUpForm.getPassword()).userRole(userSignUpForm.getUserRole())
-            .phoneNumber(userSignUpForm.getPhoneNumber()).emailAuthKey(uuid).active(false).build());
+            .password(userSignUpForm.getPassword())
+            .phoneNumber(userSignUpForm.getPhoneNumber())
+            .emailAuthKey(uuid).active(false).build());
         mailSend(uuid, userSignUpForm.getEmail());
     }
 
-    private void hostSave(HostSignUpForm hostSignUpForm) {
-        String uuid = UUID.randomUUID().toString();
-        userRepository.save(AppUser.builder().sns(false).email(hostSignUpForm.getEmail())
-            .password(hostSignUpForm.getPassword()).userRole(hostSignUpForm.getUserRole())
-            .phoneNumber(hostSignUpForm.getPhoneNumber()).emailAuthKey(uuid).active(false).build());
-        mailSend(uuid, hostSignUpForm.getEmail());
-    }
 
     private void mailSend(String uuid, String to) {
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")

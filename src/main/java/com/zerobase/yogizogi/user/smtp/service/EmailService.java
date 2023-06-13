@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender javaMailSender;
 
-    public void mailSend(Long userId){
-
-    }
-    public void sendMail(MessageForm messageForm) {
+    public void sendMail(MessageForm messageForm) {//email이 가지 않았을 때의 오류 메시지 필요.
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");

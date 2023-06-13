@@ -3,11 +3,8 @@ package com.zerobase.yogizogi.accommodation.service;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.model.AccommodationForm;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
-import com.zerobase.yogizogi.book.domain.entity.Book;
-import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
@@ -31,11 +28,7 @@ public class AccommodationService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         //TO DO Form 구체화**
-
-        //HOST 만 등록 가능.
-        if (user.getUserRole() == UserRole.USER) {
-            throw new CustomException(ErrorCode.USER_NOT_ALLOW_ACCESS);
-        }
+        //불필요할 수 있음 추후 리팩토링 과제
 
         Accommodation accommodation = Accommodation.builder().name(form.getName()).build();
         accommodationRepository.save(accommodation);

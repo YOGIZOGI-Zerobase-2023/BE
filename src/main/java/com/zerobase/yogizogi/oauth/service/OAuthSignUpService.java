@@ -1,6 +1,5 @@
 package com.zerobase.yogizogi.oauth.service;
 
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -5,18 +5,13 @@ import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -55,10 +50,6 @@ public class BookService {
 
         //TO DO예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
 
-        //USER 만 예약이 가능하게 방어.
-        if (user.getUserRole() == UserRole.HOST) {
-            throw new CustomException(ErrorCode.HOST_NOT_ALLOW_ACCESS);
-        }
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         //현재 하드 코딩으로 1만 넣은 상황으로 진행
         //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
