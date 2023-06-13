@@ -2,7 +2,6 @@ package com.zerobase.yogizogi.user.service;
 
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.common.UserRole;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.domain.model.LogInForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
@@ -32,7 +31,7 @@ public class UserLogInService {
         if (!user.isActive()) {
             throw new CustomException(ErrorCode.NOT_ACTIVE_USER);
         }
-        return provider.createToken(user.getEmail(), user.getId(), user.getUserRole());
+        return provider.createToken(user.getEmail(), user.getId());
     }
 
     private boolean validateLogIn(String rawPassword, AppUser user) {
