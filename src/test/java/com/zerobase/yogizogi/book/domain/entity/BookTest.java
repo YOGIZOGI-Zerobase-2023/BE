@@ -19,7 +19,7 @@ class BookTest {
         //when
         // then
         assertEquals("홍길동", book.getBookName());
-        assertEquals(false, book.isReviewRegistered());//intellij가 바꾸려고 함...
+        assertFalse(book.isReviewRegistered());
         assertEquals(3L, book.getUserId());
         assertEquals(2L, book.getRoomId());
         assertEquals(LocalDate.now(),book.getStartDate());
