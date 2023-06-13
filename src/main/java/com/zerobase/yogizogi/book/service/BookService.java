@@ -10,13 +10,9 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +35,7 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        return  bookRepository.findAllByUserId(user.getId(), pageable);
+        return bookRepository.findAllByUserId(user.getId(), pageable);
     }
 
     //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
@@ -93,6 +89,4 @@ public class BookService {
         bookRepository.delete(book);
         return "delete/success";
     }
-
-
 }
