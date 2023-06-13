@@ -19,12 +19,11 @@ class BookFormTest {
 
         //when
         //then
-        assertAll("예약 form 검증",
-            () -> assertEquals("홍길동",bookForm.getBookName()),
-            () -> assertEquals(LocalDate.now(),bookForm.getStartDate()),
-            () -> assertEquals(LocalDate.now().plusDays(1),bookForm.getEndDate()),
-            () -> assertEquals(4,bookForm.getPeople()),
-            () -> assertEquals(10000, bookForm.getPayAmount())
-            );
+        assertEquals("홍길동",bookForm.getBookName());
+        assertEquals(LocalDate.now(),bookForm.getStartDate());
+        assertEquals(LocalDate.now().plusDays(1),bookForm.getEndDate());
+        assertEquals(4,bookForm.getPeople());
+        assertEquals(10000, bookForm.getPayAmount());
+
     }
 }
