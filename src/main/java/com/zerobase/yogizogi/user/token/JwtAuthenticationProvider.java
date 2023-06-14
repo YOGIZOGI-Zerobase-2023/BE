@@ -27,7 +27,20 @@ public class JwtAuthenticationProvider {
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
+    //현재시간으로 인증 만료시간을 바꿈
+    public String expirationToken(String jwtToken) {
+        Jws<Claims> claimsJws = Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(jwtToken);
 
+        Claims claims = claimsJws.getBody();
+        claims.setExpiration(new Date());
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+    }
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
