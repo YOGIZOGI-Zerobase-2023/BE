@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.oauth.domain.model.KakaoProfile;
 import com.zerobase.yogizogi.oauth.domain.model.OAuthToken;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
@@ -28,7 +29,7 @@ public class OauthService {
     private final OAuthLoginService oAuthLoginService;
     private final UserRepository userRepository;
 
-    public String oAuthCallBack(String code) {
+    public ApiResponse<?> oAuthCallBack(String code) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type",
@@ -52,7 +53,7 @@ public class OauthService {
             String.class
         );
         ObjectMapper objectMapper = new ObjectMapper();
-        OAuthToken oAuthToken = null;
+        OAuthToken oAuthToken;
         try {
             oAuthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
         } catch (JsonProcessingException e) {
@@ -64,7 +65,7 @@ public class OauthService {
 
     }
 
-    private String kakaoProfileCheck(OAuthToken oAuthToken) {
+    private ApiResponse<?> kakaoProfileCheck(OAuthToken oAuthToken) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + oAuthToken.getAccess_token());
@@ -85,7 +86,7 @@ public class OauthService {
         System.out.println(response.getBody());
 
         ObjectMapper objectMapper = new ObjectMapper();
-        KakaoProfile kakaoProfile = null;
+        KakaoProfile kakaoProfile;
         try {
             kakaoProfile = objectMapper.readValue(response.getBody(), KakaoProfile.class);
         } catch (JsonProcessingException e) {

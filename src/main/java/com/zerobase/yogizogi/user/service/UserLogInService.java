@@ -27,15 +27,16 @@ public class UserLogInService {
 
         //존재하지 않는 유저
         AppUser user = userRepository.findByEmail(logInForm.getEmail())
-            .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_USER));
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
         //비번이 일치하지 않는 경우
-        if(!validateLogIn(logInForm.getPassword(), user)){
+        if (!validateLogIn(logInForm.getPassword(), user)) {
             throw new CustomException(ErrorCode.NOT_MATCH_ID_PASSWORD);
         }
         if (!user.isActive()) {
             throw new CustomException(ErrorCode.NOT_ACTIVE_USER);
         }
+
         Map<String, Object> data = new TreeMap<>();
         data.put("X-AUTH-TOKEN", provider.createToken(user.getEmail(), user.getId()));
         data.put("email", user.getEmail());
