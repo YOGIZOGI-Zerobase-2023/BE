@@ -1,12 +1,13 @@
 package com.zerobase.yogizogi.global.exception;
 
+import com.zerobase.yogizogi.global.Code;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements Code {
     //USER관련
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다."),
     ALREADY_REGISTER_EMAIL(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
@@ -45,6 +46,6 @@ public enum ErrorCode {
 
 
 
-    private final HttpStatus httpStatus;
-    private final String detail;
+    private final HttpStatus status;
+    private final String msg;
 }
