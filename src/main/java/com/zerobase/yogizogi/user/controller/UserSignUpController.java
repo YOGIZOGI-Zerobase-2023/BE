@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserSignUpController {
 
    private final UserSignUpService userSignUpService;
 
-   @PostMapping("/signup")
+   @PostMapping("/sign-up")
    public ResponseEntity<?> signUp(@RequestBody UserSignUpForm userSignUpForm) {
        return ResponseEntity.ok(userSignUpService.signUp(userSignUpForm));
    }
-   @GetMapping("/email-auth")
+   @GetMapping("/email-verify")
    public ResponseEntity<?> emailAuth(HttpServletRequest request){
-       return ResponseEntity.ok(userSignUpService.emailAuth(request.getParameter("id")));
+       return ResponseEntity.ok(userSignUpService.emailVerify(request.getParameter("id")));
    }
 }
