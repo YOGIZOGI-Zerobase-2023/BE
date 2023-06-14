@@ -18,4 +18,5 @@ public class BookForm {
     private LocalDate endDate;
     private int people;
     private int payAmount;
+    private String bookName;
 }

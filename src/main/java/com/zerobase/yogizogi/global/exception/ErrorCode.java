@@ -9,10 +9,9 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     //USER관련
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다."),
-    ALREADY_REGISTER_USER(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
     ALREADY_REGISTER_EMAIL(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
     ALREADY_REGISTER_NICK_NAME(HttpStatus.BAD_REQUEST, "이미 등록된 닉네임입니다."),
-    ALREADY_REGISTER_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
+    ALREADY_REGISTER_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 번호입니다."),
     NOT_VALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "유효한 전화번호 형식이 아닙니다. 01x-0000-0000으로 작성해 주세요."),
     NOT_ACTIVE_USER(HttpStatus.BAD_REQUEST, "아직 계정 활성화가 되지 않은 유저입니다. 인증을 완료해 주십시오."),
     NOT_FOUND_AUTH_KEY(HttpStatus.BAD_REQUEST, "존재하지 않는 인증 코드입니다."),
@@ -29,7 +28,7 @@ public enum ErrorCode {
 
 
     //공통
-    NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 이 예약을 삭제할 수 없습니다."),
+    NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 삭제할 권한이 없습니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "적절하지 않은 토큰입니다."),
 
     //리뷰 관련

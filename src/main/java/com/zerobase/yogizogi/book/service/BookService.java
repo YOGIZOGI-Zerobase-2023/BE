@@ -34,7 +34,7 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        return  bookRepository.findAllByUserId(user.getId(), pageable);
+        return bookRepository.findAllByUserId(user.getId(), pageable);
     }
 
     //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
@@ -56,7 +56,9 @@ public class BookService {
         Book book = Book.builder().userId(user.getId()).accommodationId(1L)
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
-            .people(bookForm.getPeople()).payAmount(bookForm.getPayAmount())
+            .people(bookForm.getPeople())
+            .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
+            .payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
 
         bookRepository.save(book);
@@ -82,6 +84,4 @@ public class BookService {
         bookRepository.delete(book);
         return "delete/success";
     }
-
-
 }
