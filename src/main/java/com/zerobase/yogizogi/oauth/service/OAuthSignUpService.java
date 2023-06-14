@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.oauth.service;
 
+import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class OAuthSignUpService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final OAuthLoginService oAuthLoginService;
-    public String signUpOAuth(AppUser user) {
+    public ApiResponse<?> signUpOAuth(AppUser user) {
 
         String rawPassword = user.getPassword();
         String enCodePassword = encoder.encode(rawPassword);
