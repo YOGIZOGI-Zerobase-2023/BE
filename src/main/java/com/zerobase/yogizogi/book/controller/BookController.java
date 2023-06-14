@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +27,8 @@ public class BookController {
     @GetMapping()
     public ResponseEntity<?> myBook(@RequestHeader(name = TOKEN) String token,
         @RequestParam(name = "page", defaultValue = "0") int page,
-        @RequestParam(name = "size", defaultValue = "2") int size,
-        @RequestParam(name = "sort", defaultValue = "id") String sort){
+        @RequestParam(name = "size", defaultValue = "2") int size,// 예외 처리가 추가로 필요할 것으로 보임. id만 들어가면 에러.
+        @RequestParam(name = "sort", defaultValue = "id,desc") String sort){
         String[] sortProperties = sort.split(",");
         Sort.Direction direction = sortProperties[1].equalsIgnoreCase("desc")
             ? Sort.Direction.DESC : Sort.Direction.ASC;
