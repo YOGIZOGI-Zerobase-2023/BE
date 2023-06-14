@@ -8,8 +8,8 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.domain.model.LogInForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +36,7 @@ public class UserLogInService {
         if (!user.isActive()) {
             throw new CustomException(ErrorCode.NOT_ACTIVE_USER);
         }
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new TreeMap<>();
         data.put("X-AUTH-TOKEN", provider.createToken(user.getEmail(), user.getId()));
         data.put("email", user.getEmail());
         data.put("nickname", user.getNickName());
