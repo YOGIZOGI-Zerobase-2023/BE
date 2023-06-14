@@ -68,14 +68,22 @@ public class UserSignUpService {
     }
 
 
-    public String emailAuth(String uuid) {
+    public ApiResponse<?> emailVerify(String uuid) {
         AppUser user = userRepository.findByEmailAuthKey(uuid)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_AUTH_KEY));
         user.setActive(true);
         user.setEmailAuthDateTime(LocalDateTime.now());
         userRepository.save(user);
+        //TODO_이메일 발송 실패에 관한 로직 처리가 되어 있지 않습니다.
+        Map<String, String> message = new HashMap<>();
+        message.put("msg", "인증 메일 발송에 성공했습니다.");
 
-        return "users/active";
+        return new ApiResponse<>(
+            ResponseCode.RESPONSE_SUCCESS.getCode(),
+            HttpStatus.OK,
+            "SUCCESS",
+            message
+        );
     }
 
     private void userSave(UserSignUpForm userSignUpForm) {
