@@ -22,7 +22,9 @@ public class UserLogOutService {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
         String token = all.substring(7);//토큰 가져오기.
-        provider.expirationToken(token);
+        if(!provider.validateToken(token)){
+            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
+        }
 
         return new ApiResponse<>(
             ResponseCode.RESPONSE_SUCCESS.getCode(),
@@ -31,6 +33,5 @@ public class UserLogOutService {
             null
         );
     }
-
 }
 
