@@ -3,6 +3,7 @@ package com.zerobase.yogizogi.review.controller;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
 import com.zerobase.yogizogi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,8 +28,13 @@ public class ReviewController {
 
     @GetMapping()
     public ResponseEntity<?> reviewsList(@RequestParam(name = "id", defaultValue = "1") Long accommodationId,
-        @PageableDefault(page = 0, size = 2,sort = "id", direction = Sort.Direction.DESC)
-        Pageable pageable){
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "2") int size,// 예외 처리가 추가로 필요할 것으로 보임. id만 들어가면 에러.
+        @RequestParam(name = "sort", defaultValue = "id,desc") String sort){
+        String[] sortProperties = sort.split(",");
+        Sort.Direction direction = sortProperties[1].equalsIgnoreCase("desc")
+            ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortProperties[0]));
        return ResponseEntity.ok(reviewService.reviewList(accommodationId,pageable));
     }
 

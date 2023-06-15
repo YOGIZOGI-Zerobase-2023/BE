@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/books")
+@RequestMapping("/api/accommodation")
 public class BookController {
     private final String TOKEN ="X-AUTH-TOKEN";
     private final BookService bookService;
@@ -36,7 +36,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.myBookList(token, pageable));
     }
 
-    @PostMapping()
+    @PostMapping("/{accommodationId}/book")//TODO
     public ResponseEntity<?> makeBook(@RequestHeader(name=TOKEN) String token,
         @RequestBody BookForm bookForm){
         return ResponseEntity.ok(bookService.makeBook(token, bookForm));
