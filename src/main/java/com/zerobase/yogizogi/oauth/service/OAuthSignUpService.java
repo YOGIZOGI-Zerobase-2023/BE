@@ -15,7 +15,6 @@ public class OAuthSignUpService {
     private final PasswordEncoder encoder;
     private final OAuthLoginService oAuthLoginService;
     public ApiResponse<?> signUpOAuth(AppUser user) {
-
         String rawPassword = user.getPassword();
         String enCodePassword = encoder.encode(rawPassword);
         user.setPassword(enCodePassword);
