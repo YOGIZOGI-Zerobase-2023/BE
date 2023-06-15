@@ -4,20 +4,28 @@ import lombok.Getter;
 
 @Getter
 public class KakaoProfile {
-    public Long id;
-    public String connected_at;
-    public KakaoAccount kakao_account;
+    private Long id;
+    private String connected_at;
+
+    private Properties properties;
+    private KakaoAccount kakao_account;
     @Getter
-    public class KakaoAccount {
 
-            public Boolean has_email;
-            public Boolean email_needs_agreement;
-            public Boolean is_email_valid;
-            public Boolean is_email_verified;
-
-            public String email;
-            public Boolean has_age_range;
-            public Boolean age_range_needs_agreement;
-            public String age_range;
+    public static class KakaoAccount {
+        private Boolean has_email;
+        private Boolean email_needs_agreement;
+        private Boolean is_email_valid;
+        private Boolean is_email_verified;
+        private String email;
+        private boolean profile_nickname_needs_agreement;
+        private Profile profile;
+        }
+        @Getter
+        public static class Properties{
+            private String nickname;
+        }
+        @Getter
+        public static class Profile{
+            private String nickname;
         }
 }

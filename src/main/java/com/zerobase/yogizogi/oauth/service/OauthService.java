@@ -37,7 +37,7 @@ public class OauthService {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "32665db00eb9aef9b6b5246fc2a2e8b4");
-        params.add("redirect_uri", "http://localhost:8080/oauth");
+        params.add("redirect_uri", "http://localhost:8080/user/kakao-login");
         params.add("code", code);
         params.add("client_secret", "lj9RNptXDMYRrIOU9Bp6jpz45iCq3tXb");
 
@@ -97,13 +97,14 @@ public class OauthService {
         String mailId = kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId();
         //중복 방지를 위해
         System.out.println("카카오 가입한 유저 로그인 아이디 : " + mailId);
+        String nickName = kakaoProfile.getKakao_account().getProfile().getNickname() + "#" + kakaoProfile.getId();
 
         if (userRepository.findByEmail(mailId).isPresent()) {
             return oAuthLoginService.oAuthLogin(userRepository.findByEmail(mailId).get());
         } else {
             String randomPassword = UUID.randomUUID().toString();
             return oAuthSignUpService.signUpOAuth(AppUser.builder().sns(true)
-                .email(mailId).password(randomPassword).active(true)
+                .email(mailId).nickName(nickName).password(randomPassword).active(true)
                 .emailAuthDateTime(LocalDateTime.now()).build());
         }
     }
