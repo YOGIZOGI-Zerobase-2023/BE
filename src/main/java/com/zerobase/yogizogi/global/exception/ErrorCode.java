@@ -20,7 +20,7 @@ public enum ErrorCode implements Code {
 
     //로그인 관련
     NOT_MATCH_ID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
-
+    
     //로그인(토큰) 관련
     DO_NOT_ALLOW_TOKEN(HttpStatus.BAD_REQUEST, "사용이 허용되지 않는 토큰입니다. 적절한 토큰을 발급 받아 사용해 주세요."),
     ALREADY_EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "이미 만료된 토큰입니다."),

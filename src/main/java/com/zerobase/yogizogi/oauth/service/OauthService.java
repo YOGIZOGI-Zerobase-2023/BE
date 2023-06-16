@@ -79,7 +79,7 @@ public class OauthService {
         //Http 요청-GET으로 토큰이 발급된다!
         ResponseEntity<String> response = restTemplate.exchange(
             "https://kapi.kakao.com/v2/user/me",
-            HttpMethod.GET,
+            HttpMethod.POST,
             kakaoUserInfoRequest,
             String.class
         );
