@@ -36,7 +36,7 @@ jobs:
         
     # mysql setting    
     - name: Set up MySQL
-      uses: samin/mysql-action@v3
+      uses: samin/mysql-action@v1
       with:
         character set server: 'utf8'
 
