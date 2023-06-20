@@ -4,7 +4,6 @@ package com.zerobase.yogizogi.oauth.controller;
 import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.oauth.service.OauthService;
 import java.io.IOException;
-import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +26,13 @@ public class OAuthController {
     public void oAuthCallback(String code, HttpServletResponse response) throws IOException {
         ApiResponse<?> apiResponse = oauthService.oAuthCallBack(code);
         if (apiResponse.getCode().equals("RESPONSE_SUCCESS")) {
-            Map<String, Object> data = (Map<String, Object>) apiResponse.getData();
-            if (data.containsKey("X-AUTH-TOKEN")) {
-                String token = (String) data.get("X-Auth-key");
-                String redirectUrl = FRONTEND_URL + "/?token=" + token;
+            String token = apiResponse.getData().toString();
+            if (!token.isEmpty()) {
+                System.out.println("X-AUTH-TOKEN: " + token);
+                String redirectUrl = FRONTEND_URL + "?token=" + token;
                 response.sendRedirect(redirectUrl);
             }
         } else {
-            // Handle error case
-            // For example, return an error response or redirect to an error page
             response.sendRedirect(FRONTEND_URL + "/error");
         }
     }
