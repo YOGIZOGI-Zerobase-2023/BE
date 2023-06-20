@@ -17,7 +17,7 @@ public class OAuthLoginService {
     public ApiResponse<?> oAuthLogin(AppUser user) {
 
 
-        String token = provider.createToken(user.getEmail(), user.getId());
+        String token = provider.createToken(user.getEmail(), user.getId(),user.getNickName());
 
         return new ApiResponse<>(
             ResponseCode.RESPONSE_SUCCESS.getCode(),
