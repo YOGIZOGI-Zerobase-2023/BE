@@ -15,17 +15,18 @@ import org.springframework.http.ResponseEntity;
 @AllArgsConstructor
 @Getter
 public class ApiResponse<T> {
+
     private String code;
     private HttpStatus status;
     private String msg;
     private T data;
 
 
-    public ApiResponse(Code code,T data){
-        this.code=code.getCode();
-        this.status=code.getStatus();
-        this.msg=code.getMsg();
-        this.data=data;
+    public ApiResponse(Code code, T data) {
+        this.code = code.getCode();
+        this.status = code.getStatus();
+        this.msg = code.getMsg();
+        this.data = data;
     }
 
     public static <T> ApiResponseBuilder<T> builder() {
@@ -54,8 +55,10 @@ public class ApiResponse<T> {
         public ApiResponse<T> build() {
             return new ApiResponse<T>(code, data);
         }
-        public ResponseEntity<?> toEntity(){
-            return ResponseEntity.status(this.code.getStatus()).body(new ApiResponse<T>(code,data));
+
+        public ResponseEntity<?> toEntity() {
+            return ResponseEntity.status(this.code.getStatus())
+                .body(new ApiResponse<T>(code, data));
         }
 
         public String toString() {
