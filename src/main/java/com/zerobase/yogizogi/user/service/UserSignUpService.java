@@ -75,7 +75,7 @@ public class UserSignUpService {
         mailSend(uuid, userSignUpForm.getEmail());
     }
 
-
+        //localhost //3.37.116.66
     private void mailSend(String uuid, String to) {
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")
             .message(
