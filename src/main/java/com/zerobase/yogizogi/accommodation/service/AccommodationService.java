@@ -1,7 +1,10 @@
 package com.zerobase.yogizogi.accommodation.service;
 
+import static com.zerobase.yogizogi.global.exception.ErrorCode.NOT_FOUND_ACCOMMODATION;
+
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.model.AccommodationForm;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
@@ -9,6 +12,7 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ public class AccommodationService {
     private final JwtAuthenticationProvider provider;
     private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
+
     public String makeAccommodation(String token, AccommodationForm form) {
         if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
@@ -33,5 +38,24 @@ public class AccommodationService {
         Accommodation accommodation = Accommodation.builder().name(form.getName()).build();
         accommodationRepository.save(accommodation);
         return "/success";
+    }
+
+    // TEST
+    // 숙소 조회
+    public AccommodationDto getAccommodation(Long id) {
+        Accommodation accommodation = accommodationRepository.findById(id)
+            .orElseThrow(() -> new CustomException(NOT_FOUND_ACCOMMODATION));
+
+        // TO-DO
+        // price 결측치에 대한 처리 필요
+        AccommodationDto accommodationDto = AccommodationDto.builder()
+            .name(accommodation.getName())
+            .address(accommodation.getAddress())
+            .score(accommodation.getScore())
+            .picUrl(accommodation.getPicUrl())
+            .price(accommodation.getRooms().get(0).getPrices().get(0).getPrice())
+            .build();
+
+        return accommodationDto;
     }
 }
