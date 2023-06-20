@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "appUser")
 public class AppUser extends BaseEntity {
 
     @Id
@@ -50,10 +52,12 @@ public class AppUser extends BaseEntity {
     private LocalDateTime emailAuthDateTime;
 
     //외래키
-    @OneToMany
+    @OneToMany(mappedBy = "appUser")
     private List<Book> books;
-    @OneToMany
-    private List<Accommodation> accommodations;
+
+    // 숙소 등록자가 숙소를 가져서 관계설정?
+//    @OneToMany
+//    private List<Accommodation> accommodations;
     //@OneToMany
     //private List<ChattingRoom> chattingRooms;
     //@OneToMany
