@@ -15,10 +15,11 @@ public class JwtAuthenticationProvider {
     private final String secretKey = "secretKey";
     private final long tokenValidTime = 1000L * 60 * 60 * 24; //인증 만료 하루
 
-    public String createToken(String email, Long id) {
+    public String createToken(String email, Long id,String nickName) {
         Claims claims = Jwts.claims()
-            .setSubject(Aes256Utils.encrypt(email))
-            .setId(Aes256Utils.encrypt(id.toString()));
+            .setSubject(email).setIssuer(nickName)
+            .setId(id.toString());
+
         Date now = new Date();
         return Jwts.builder()
             .setClaims(claims)
@@ -27,20 +28,7 @@ public class JwtAuthenticationProvider {
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
-    //현재시간으로 인증 만료시간을 바꿈
-    public String expirationToken(String jwtToken) {
-        Jws<Claims> claimsJws = Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(jwtToken);
 
-        Claims claims = claimsJws.getBody();
-        claims.setExpiration(new Date());
-
-        return Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
-    }
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
