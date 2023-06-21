@@ -13,13 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AccommodationDto {
 
-  private Long id;
-  private String name;
-  private int category;
-  private Double score;
-  private String picUrl;
-  private String address;
-  private Double lat;
-  private Double lon;
-  private Integer price;
+    private Long id;
+    private String name;
+    private int category;
+    private Double score;
+    private String picUrl;
+    private String address;
+    private Double lat;
+    private Double lon;
+    private Integer price;
 }

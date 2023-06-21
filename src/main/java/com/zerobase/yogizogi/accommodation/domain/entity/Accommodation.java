@@ -25,37 +25,37 @@ import lombok.Setter;
 @Table(name = "accommodation")
 public class Accommodation extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "accommodationId")
-  private Long id;
-  @Column(name = "category")
-  private int category;
-  @Column(name = "name")
-  private String name;
-  @Column(name = "score")
-  private double score;
-  @Column(name = "region")
-  private String region;
-  @Column(name = "ano")
-  private int ano;
-  @Column(name = "lat")
-  private double lat;
-  @Column(name = "lng")
-  private double lng;
-  @Column(name = "picUrl")
-  private String picUrl;
-  @Column(name = "address")
-  private String address;
-  @OneToMany(mappedBy = "accommodation")
-  @Column(name = "picUrls")
-  private List<Picture> picUrls;
-  @Column(name = "detail")
-  private String detail;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "accommodationId")
+    private Long id;
+    @Column(name = "category")
+    private int category;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "score")
+    private double score;
+    @Column(name = "region")
+    private String region;
+    @Column(name = "ano")
+    private int ano;
+    @Column(name = "lat")
+    private double lat;
+    @Column(name = "lng")
+    private double lng;
+    @Column(name = "picUrl")
+    private String picUrl;
+    @Column(name = "address")
+    private String address;
+    @OneToMany(mappedBy = "accommodation")
+    @Column(name = "picUrls")
+    private List<Picture> picUrls;
+    @Column(name = "detail")
+    private String detail;
 
-  // 숙소 등록자?
+    // 숙소 등록자?
 //  @ManyToOne
 //  private AppUser user;
-  @OneToMany(mappedBy = "accommodation")
-  private List<Room> rooms;
+    @OneToMany(mappedBy = "accommodation")
+    private List<Room> rooms;
 }

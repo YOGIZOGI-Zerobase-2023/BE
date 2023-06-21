@@ -1,7 +1,7 @@
 package com.zerobase.yogizogi.book.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
-import com.zerobase.yogizogi.price.domain.entity.Price;
+import com.zerobase.yogizogi.accommodation.domain.entity.Price;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import java.time.LocalDate;
 import java.util.List;

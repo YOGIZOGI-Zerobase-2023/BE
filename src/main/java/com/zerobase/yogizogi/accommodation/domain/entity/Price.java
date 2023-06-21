@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.price.domain.entity;
+package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.room.domain.entity.Room;
@@ -26,21 +26,21 @@ import lombok.Setter;
 @Table(name = "price")
 public class Price {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "priceId")
-  private Long id;
-  @Column(name = "price")
-  private Integer price;
-  @Column(name = "date")
-  private LocalDate date;
-  @Column(name = "roomCnt")
-  private int roomCnt;
-  @ManyToOne
-  @JoinColumn(name = "roomId")
-  private Room room;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "priceId")
+    private Long id;
+    @Column(name = "price")
+    private Integer price;
+    @Column(name = "date")
+    private LocalDate date;
+    @Column(name = "roomCnt")
+    private int roomCnt;
+    @ManyToOne
+    @JoinColumn(name = "roomId")
+    private Room room;
 
-  @ManyToOne
-  @JoinColumn(name = "bookId")
-  private Book book;
+    @ManyToOne
+    @JoinColumn(name = "bookId")
+    private Book book;
 }

@@ -1,10 +1,8 @@
 package com.zerobase.yogizogi.room.domain.entity;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
-import com.zerobase.yogizogi.price.domain.entity.Price;
-import com.zerobase.yogizogi.user.domain.entity.AppUser;
+import com.zerobase.yogizogi.accommodation.domain.entity.Price;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;

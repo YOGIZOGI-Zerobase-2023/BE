@@ -18,13 +18,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Picture {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "pictureId")
-  private Long id;
-  @Column(name = "url")
-  private String url;
-  @ManyToOne
-  @JoinColumn(name = "accommodationId")
-  private Accommodation accommodation;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pictureId")
+    private Long id;
+    @Column(name = "url")
+    private String url;
+    @ManyToOne
+    @JoinColumn(name = "accommodationId")
+    private Accommodation accommodation;
 }
