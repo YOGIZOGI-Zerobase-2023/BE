@@ -1,7 +1,5 @@
 package com.zerobase.yogizogi.accommodation.service;
 
-import static com.zerobase.yogizogi.global.exception.ErrorCode.NOT_FOUND_ACCOMMODATION;
-
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.model.AccommodationForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
@@ -12,7 +10,6 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,18 +41,20 @@ public class AccommodationService {
     // 숙소 조회
     public AccommodationDto getAccommodation(Long id) {
         Accommodation accommodation = accommodationRepository.findById(id)
-            .orElseThrow(() -> new CustomException(NOT_FOUND_ACCOMMODATION));
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
         // TO-DO
         // price 결측치에 대한 처리 필요
-        AccommodationDto accommodationDto = AccommodationDto.builder()
+        return AccommodationDto.builder()
+            .id(accommodation.getId())
             .name(accommodation.getName())
+            .category(accommodation.getCategory())
             .address(accommodation.getAddress())
             .score(accommodation.getScore())
             .picUrl(accommodation.getPicUrl())
+            .lon(accommodation.getLng())
+            .lat(accommodation.getLat())
             .price(accommodation.getRooms().get(0).getPrices().get(0).getPrice())
             .build();
-
-        return accommodationDto;
     }
 }
