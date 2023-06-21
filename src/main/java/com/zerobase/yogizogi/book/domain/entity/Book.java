@@ -50,7 +50,7 @@ public class Book extends BaseEntity {
     @JoinColumn(name = "roomId")
     private Room room;
     @ManyToOne
-    @JoinColumn(name = "appUserId")
+    @JoinColumn(name = "appUserId") //이름 바뀌면 테이블도 바뀜 체크
     private AppUser user;
 
     //private boolean accept; 락을 걸고 예약을 홀드하는 기능 스케쥴러 활용 동시 예약을 막을 수 있는 기능
