@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-//    Page<Book> findAllByUserId(Long userId, Pageable pageable);
+    Page<Book> findAllByUserId(Long userId, Pageable pageable);
 }

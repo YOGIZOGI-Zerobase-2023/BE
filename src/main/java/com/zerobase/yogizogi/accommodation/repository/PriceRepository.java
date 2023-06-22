@@ -1,7 +1,7 @@
 package com.zerobase.yogizogi.accommodation.repository;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Price;
-import com.zerobase.yogizogi.room.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

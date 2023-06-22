@@ -7,7 +7,7 @@ import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.room.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;

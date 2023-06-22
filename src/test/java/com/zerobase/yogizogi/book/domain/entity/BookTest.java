@@ -3,7 +3,7 @@ package com.zerobase.yogizogi.book.domain.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.zerobase.yogizogi.room.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
