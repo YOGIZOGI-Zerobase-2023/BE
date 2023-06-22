@@ -1,8 +1,6 @@
-package com.zerobase.yogizogi.room.domain.entity;
+package com.zerobase.yogizogi.accommodation.domain.entity;
 
-import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
-import com.zerobase.yogizogi.accommodation.domain.entity.Price;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "room")
 public class Room extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "roomId")
@@ -46,9 +45,8 @@ public class Room extends BaseEntity {
     @JoinColumn(name = "accommodationId")
     private Accommodation accommodation;
 
-// user 정보를 저장할 것인가? book과 연결
-//    @ManyToOne
-//    private AppUser user;
+    @OneToMany(mappedBy = "room")
+    private List<RoomPicture> pictures;
 
     @OneToMany(mappedBy = "room")
     private List<Price> prices;
