@@ -58,19 +58,19 @@ public class BookService {
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         //현재 하드 코딩으로 1만 넣은 상황으로 진행
         //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
-        int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getStartDate(),bookForm.getEndDate());
+        int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),bookForm.getCheckOutDate());
         int payAmount = 0;
         Room room = roomRepository.findById(bookForm.getRoomId())
             .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
         for(int i = 0; i < betweenDay; i++){
             Integer priceCandidate = priceRepository.findAllByRoomAndDate(room,
-                bookForm.getStartDate().plusDays(i)).getPrice();
+                bookForm.getCheckInDate().plusDays(i)).getPrice();
             if(priceCandidate!=null) payAmount += priceCandidate;
         }
         Book book = Book.builder().user(user)
-            .startDate(bookForm.getStartDate())
-            .endDate(bookForm.getEndDate())
+            .startDate(bookForm.getCheckInDate())
+            .endDate(bookForm.getCheckOutDate())
             .people(bookForm.getPeople())
             .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
             .payAmount(payAmount)
