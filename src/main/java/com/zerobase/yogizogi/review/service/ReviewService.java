@@ -56,8 +56,8 @@ public class ReviewService {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
-        Review review = reviewRepository.save(Review.builder().userId(user.getId())
-            .accommodationId(book.getRoom().getAccommodation().getId())
+        Review review = reviewRepository.save(Review.builder().user(user)
+            .accommodation(book.getRoom().getAccommodation())
             .rate(reviewForm.getRate())
             .contents(reviewForm.getContents()).build());
 
@@ -84,7 +84,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (!Objects.equals(review.getUserId(), user.getId())) {
+        if (!Objects.equals(review.getUser().getId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
         }
 

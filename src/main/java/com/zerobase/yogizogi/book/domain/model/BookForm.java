@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookForm {
+    private Long accommodationId;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private Integer people;

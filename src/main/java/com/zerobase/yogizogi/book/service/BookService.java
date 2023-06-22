@@ -1,6 +1,8 @@
 package com.zerobase.yogizogi.book.service;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
 import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
 import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
@@ -30,9 +32,10 @@ public class BookService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final PriceRepository priceRepository;
+    private final AccommodationRepository accommodationRepository;
 
     //User의 BookList를 가지고 옵니다.
-    public List<BookResultDto> myBookList(String token) {
+    public List<BookResultDto> myBookList(Long userId, String token) {
         if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -40,6 +43,11 @@ public class BookService {
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        if (!Objects.equals(user.getId(), userId)) {
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+        }
+
         List<Book> books = bookRepository.findAllByUser(user);
         return books.stream()
             .map(book -> BookResultDto.builder()
@@ -65,7 +73,9 @@ public class BookService {
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
+        Accommodation accommodation = accommodationRepository.findById(
+                bookForm.getAccommodationId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
         //Done예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행**
 
@@ -86,6 +96,8 @@ public class BookService {
             .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
             .sum();
         Book book = Book.builder().user(user)
+            .accommodation(accommodation)
+            .room(room)
             .checkInDate(bookForm.getCheckInDate())
             .checkOutDate(bookForm.getCheckOutDate())
             .people(bookForm.getPeople())
@@ -99,7 +111,7 @@ public class BookService {
             .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
                 bookForm.getCheckInDate().plusDays(i)))
             .forEach(price -> {
-                if(price.getRoomCnt()==0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
+                if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
                     deleteBook(token, book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
                     throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
                 }

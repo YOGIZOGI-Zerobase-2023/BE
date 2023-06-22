@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,7 +32,7 @@ public class Accommodation extends BaseEntity {
     @Column(name = "accommodationId")
     private Long id;
     @Column(name = "category")
-    private int category;
+    private Integer category;
     @Column(name = "name")
     private String name;
     @Column(name = "score") //공유 필요
@@ -39,25 +40,25 @@ public class Accommodation extends BaseEntity {
     @Column(name = "region")
     private String region;
     @Column(name = "ano")
-    private int ano;
+    private Integer ano;
     @Column(name = "lat")
-    private double lat;
+    private Double lat;
     @Column(name = "lng")
-    private double lng;
+    private Double lng;
     @Column(name = "picUrl")
     private String picUrl;
     @Column(name = "address")
     private String address;
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     @Column(name = "picUrls")
     private List<Picture> picUrls;
     @Column(name = "detail")
     private String detail;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
     //score값 변경(Double로 객체로 null 허용)
