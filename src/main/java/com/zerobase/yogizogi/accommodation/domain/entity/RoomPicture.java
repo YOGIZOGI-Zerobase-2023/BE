@@ -21,7 +21,7 @@ public class RoomPicture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pictureId")//roomPicture 가?
+    @Column(name = "pictureId")//roomPicture 가? 확인 필요
     private Long id;
     @Column(name = "url")
     private String url;

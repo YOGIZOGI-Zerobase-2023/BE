@@ -8,6 +8,7 @@ import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
+import com.zerobase.yogizogi.review.dto.ReviewDto;
 import com.zerobase.yogizogi.review.repository.ReviewRepository;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
