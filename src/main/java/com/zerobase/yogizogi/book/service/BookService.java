@@ -14,9 +14,9 @@ import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,17 +40,19 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
         List<Book> books = bookRepository.findAllByUser(user);
-        List<BookResultDto> list = new ArrayList<>();
-        for (Book book : books) {
-            BookResultDto dto = BookResultDto.builder().bookName(book.getBookName())
-                .price(book.getPayAmount()).id(book.getId()).userId(book.getUser().getId())
-                .checkInDate(book.getCheckOutDate()).checkOutDate(book.getCheckOutDate())
+        return books.stream()
+            .map(book -> BookResultDto.builder()
+                .bookName(book.getBookName())
+                .price(book.getPayAmount())
+                .id(book.getId())
+                .userId(book.getUser().getId())
+                .checkInDate(book.getCheckOutDate())
+                .checkOutDate(book.getCheckOutDate())
                 .score(book.getAccommodation().getScore())
                 .picUrl(book.getAccommodation().getPicUrl())
-                .reviewRegistered(book.getReviewRegistered()).build();
-            list.add(dto);
-        }
-        return list;
+                .reviewRegistered(book.getReviewRegistered())
+                .build())
+            .collect(Collectors.toList());
     }
 
     //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
@@ -66,7 +68,8 @@ public class BookService {
 
         //TO DO예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
 
-        //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
+        //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행**
+        // 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         //현재 하드 코딩으로 1만 넣은 상황으로 진행
         //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
         int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),
