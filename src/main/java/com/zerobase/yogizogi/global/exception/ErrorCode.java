@@ -39,7 +39,8 @@ public enum ErrorCode {
     //숙소 관련
     USER_NOT_ALLOW_ACCESS(HttpStatus.BAD_REQUEST, "유저는 방 등록을 할 수 없습니다."),
     NOT_FOUND_ACCOMMODATION(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
-
+    //숙소- 방 관련
+    NOT_FOUND_ROOM(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
     endSample(HttpStatus.BAD_REQUEST, "마무리 샘플입니다.");
 
 

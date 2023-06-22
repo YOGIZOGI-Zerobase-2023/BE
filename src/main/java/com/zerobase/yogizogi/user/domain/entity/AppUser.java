@@ -1,6 +1,5 @@
 package com.zerobase.yogizogi.user.domain.entity;
 
-import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import java.time.LocalDateTime;
@@ -52,7 +51,7 @@ public class AppUser extends BaseEntity {
     private LocalDateTime emailAuthDateTime;
 
     //외래키
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "user")//mappedBy는 자체 속성 변수명으로 해야함
     private List<Book> books;
 
     // 숙소 등록자가 숙소를 가져서 관계설정?

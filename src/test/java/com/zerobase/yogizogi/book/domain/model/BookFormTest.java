@@ -15,12 +15,11 @@ class BookFormTest {
         BookForm bookForm = BookForm.builder().bookName("홍길동").startDate(LocalDate.now())
             .endDate(LocalDate.now().plusDays(1))
             .people(4)
-            .payAmount(10000).build();
+            .build();
         //when /then
         assertEquals("홍길동", bookForm.getBookName());
         assertEquals(LocalDate.now(), bookForm.getStartDate());
         assertEquals(LocalDate.now().plusDays(1), bookForm.getEndDate());
         assertEquals(4, bookForm.getPeople());
-        assertEquals(10000, bookForm.getPayAmount());
     }
 }

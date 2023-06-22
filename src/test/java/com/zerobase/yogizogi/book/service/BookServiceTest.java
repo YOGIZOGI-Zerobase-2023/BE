@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
+import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.repository.BookRepository;
@@ -32,12 +34,16 @@ public class BookServiceTest {
     private BookRepository bookRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoomRepository roomRepository;
+    @Mock
+    private PriceRepository priceRepository;
     private BookService bookService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        bookService = new BookService(provider, bookRepository, userRepository);
+        bookService = new BookService(provider, bookRepository, userRepository,roomRepository,priceRepository);
     }
 
     @Test
@@ -84,7 +90,7 @@ public class BookServiceTest {
         when(provider.getUserDto(token)).thenReturn(new UserDto(userId, "test@test.com"));
         when(userRepository.findById(userId)).thenReturn(Optional.of(new AppUser()));
 
-        //when
+        //when //null발생 에러 가능성
         String result = bookService.makeBook(token, bookForm);
 
         //then
@@ -104,7 +110,7 @@ public class BookServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(new AppUser()));
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(new Book()));
 
-        //when
+        //when //null발생 에러 가능성
         String result = bookService.deleteBook(token, bookId);
 
         //then
