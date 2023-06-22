@@ -6,7 +6,6 @@ import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
-import com.zerobase.yogizogi.review.dto.ReviewDto;
 import com.zerobase.yogizogi.review.repository.ReviewRepository;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
@@ -56,7 +55,7 @@ public class ReviewService {
         bookRepository.save(book);
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         reviewRepository.save(Review.builder().userId(user.getId())
-            .accommodationId(book.getAccommodationId())
+            .accommodationId(book.getRoom().getAccommodation().getId())
             .rate(reviewForm.getRate())
             .contents(reviewForm.getContents()).build());
         return "/success";

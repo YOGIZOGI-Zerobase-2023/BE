@@ -1,14 +1,18 @@
 package com.zerobase.yogizogi.book.service;
 
+import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
+import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
+import com.zerobase.yogizogi.room.domain.entity.Room;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +26,8 @@ public class BookService {
     private final JwtAuthenticationProvider provider;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    //private final RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
+    private final PriceRepository priceRepository;
 
     //User의 BookList를 가지고 옵니다.
     public Page<Book> myBookList(String token, Pageable pageable) {
@@ -53,12 +58,22 @@ public class BookService {
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         //현재 하드 코딩으로 1만 넣은 상황으로 진행
         //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
-        Book book = Book.builder().userId(user.getId()).accommodationId(1L)
+        int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getStartDate(),bookForm.getEndDate());
+        int payAmount = 0;
+        Room room = roomRepository.findById(bookForm.getRoomId())
+            .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ROOM));
+
+        for(int i = 0; i < betweenDay; i++){
+            Integer priceCandidate = priceRepository.findAllByRoomAndDate(room,
+                bookForm.getStartDate().plusDays(i)).getPrice();
+            if(priceCandidate!=null) payAmount += priceCandidate;
+        }
+        Book book = Book.builder().user(user)
             .startDate(bookForm.getStartDate())
             .endDate(bookForm.getEndDate())
             .people(bookForm.getPeople())
             .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
-            .payAmount(bookForm.getPayAmount())
+            .payAmount(payAmount)
             .reviewRegistered(false).build();
 
         bookRepository.save(book);
@@ -77,7 +92,7 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
-        if (!Objects.equals(book.getUserId(), user.getId())) {
+        if (!Objects.equals(book.getUser().getId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
         }
 
