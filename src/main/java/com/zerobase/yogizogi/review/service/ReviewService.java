@@ -1,5 +1,7 @@
 package com.zerobase.yogizogi.review.service;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
     private final JwtAuthenticationProvider provider;
     private final ReviewRepository reviewRepository;
+    private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     public Page<Review> reviewList(Long accommodationId, Pageable pageable) {
@@ -32,7 +35,7 @@ public class ReviewService {
         return  reviewRepository.findAllByAccommodationId(accommodationId, pageable);
     }
 
-    public String makeReview(String token,ReviewForm reviewForm) {
+    public String makeReview(Long accommodationId, String token,ReviewForm reviewForm) {
         if(!provider.validateToken(token)){
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -40,24 +43,33 @@ public class ReviewService {
         if(reviewForm.getRate() < 0 || reviewForm.getRate() > 10){
             throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
         }
+
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
         Book book = bookRepository.findById(reviewForm.getBookId())
             .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
-        if(book.isReviewRegistered()){
+        if(book.getReviewRegistered()){
             throw new CustomException(ErrorCode.AlREADY_REGISTER_REVIEW);
         }
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+            .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
-        book.setReviewRegistered(true);
-
-        bookRepository.save(book);
-        //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-        reviewRepository.save(Review.builder().userId(user.getId())
+        Review review = reviewRepository.save(Review.builder().userId(user.getId())
             .accommodationId(book.getRoom().getAccommodation().getId())
             .rate(reviewForm.getRate())
             .contents(reviewForm.getContents()).build());
+
+        // 숙소 평점 업데이트
+        accommodation.getReviews().add(review);
+        accommodation.updateScore(accommodation.getScore());
+        accommodationRepository.save(accommodation);
+
+        // review 했다고 업데이트
+        book.setReviewRegistered(true);
+        bookRepository.save(book);
+
         return "/success";
     }
 

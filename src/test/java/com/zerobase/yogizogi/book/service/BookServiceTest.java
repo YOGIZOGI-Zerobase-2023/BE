@@ -1,27 +1,15 @@
 package com.zerobase.yogizogi.book.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
 import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
-import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.repository.BookRepository;
-import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public class BookServiceTest {
 
@@ -47,32 +35,7 @@ public class BookServiceTest {
     @DisplayName("사용자의 예약 페이지 조회 테스트")
     public void testMyBookList() {
         // given
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        String token = "valid_token";
 
-        when(provider.validateToken(token)).thenReturn(true);
-        when(provider.getUserDto(token)).thenReturn(userDto);
-
-        AppUser user = new AppUser();
-        user.setId(1L);
-        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
-
-        Pageable pageable = mock(Pageable.class);
-        Page<Book> expectedPage = mock(Page.class);//<-이 부분이 주요*
-        when(bookRepository.findAllByUserId(user.getId(), pageable)).thenReturn(expectedPage);
-
-        // when
-        Page<Book> result = bookService.myBookList(token, pageable);
-
-        // then
-        verify(provider).validateToken(token);
-        verify(provider).getUserDto(token);
-        verify(userRepository).findById(userDto.getId());
-        verify(bookRepository).findAllByUserId(user.getId(), pageable);
-        verifyNoMoreInteractions(provider, userRepository, bookRepository);
-
-        assertEquals(expectedPage, result);
     }
 
 

@@ -1,6 +1,8 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,8 +34,8 @@ public class Accommodation extends BaseEntity {
     private int category;
     @Column(name = "name")
     private String name;
-    @Column(name = "score")
-    private double score;
+    @Column(name = "score") //공유 필요
+    private Double score;
     @Column(name = "region")
     private String region;
     @Column(name = "ano")
@@ -54,4 +56,26 @@ public class Accommodation extends BaseEntity {
 
     @OneToMany(mappedBy = "accommodation")
     private List<Room> rooms;
+
+    @OneToMany(mappedBy = "accommodation")
+    private List<Review> reviews = new ArrayList<>();
+
+    //score값 변경(Double로 객체로 null 허용)
+    public void updateScore(Double score) {
+        if (reviews == null || reviews.isEmpty() && score == null) {
+            this.score = 0.0;
+            return;
+        }
+
+        double totalRate = 0.0;
+        int reviewCount = 0;
+
+        for (Review review : reviews) {
+            totalRate += review.getRate();
+            reviewCount++;
+        }
+        score += totalRate / reviewCount;
+
+        this.score = score;
+    }
 }

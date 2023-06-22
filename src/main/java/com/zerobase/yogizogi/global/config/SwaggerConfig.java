@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.config;
+package com.zerobase.yogizogi.global.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import io.swagger.annotations.ApiModel;
@@ -52,7 +52,7 @@ public class SwaggerConfig {
     private Integer page;
 
     @ApiModelProperty(value = "페이지 크기", allowableValues = "range[0,100]")
-    private Integer size;
+    private Integer pagesize;
 
     @ApiModelProperty(value = "정렬(사용법: 컬럼명,ASC|DESC)")
     private List<String> sort;

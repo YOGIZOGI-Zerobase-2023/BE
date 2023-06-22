@@ -1,22 +1,23 @@
 package com.zerobase.yogizogi.book.service;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
 import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
+import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.repository.BookRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +31,7 @@ public class BookService {
     private final PriceRepository priceRepository;
 
     //User의 BookList를 가지고 옵니다.
-    public Page<Book> myBookList(String token, Pageable pageable) {
+    public List<BookResultDto> myBookList(String token) {
         if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -38,8 +39,18 @@ public class BookService {
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-        return bookRepository.findAllByUserId(user.getId(), pageable);
+        List<Book> books = bookRepository.findAllByUser(user);
+        List<BookResultDto> list = new ArrayList<>();
+        for (Book book : books) {
+            BookResultDto dto = BookResultDto.builder().bookName(book.getBookName())
+                .price(book.getPayAmount()).id(book.getId()).userId(book.getUser().getId())
+                .checkInDate(book.getCheckOutDate()).checkOutDate(book.getCheckOutDate())
+                .score(book.getAccommodation().getScore())
+                .picUrl(book.getAccommodation().getPicUrl())
+                .reviewRegistered(book.getReviewRegistered()).build();
+            list.add(dto);
+        }
+        return list;
     }
 
     //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
@@ -58,19 +69,22 @@ public class BookService {
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행** 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
         //현재 하드 코딩으로 1만 넣은 상황으로 진행
         //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
-        int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),bookForm.getCheckOutDate());
+        int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),
+            bookForm.getCheckOutDate());
         int payAmount = 0;
         Room room = roomRepository.findById(bookForm.getRoomId())
-            .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ROOM));
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
-        for(int i = 0; i < betweenDay; i++){
+        for (int i = 0; i < betweenDay; i++) {
             Integer priceCandidate = priceRepository.findAllByRoomAndDate(room,
                 bookForm.getCheckInDate().plusDays(i)).getPrice();
-            if(priceCandidate!=null) payAmount += priceCandidate;
+            if (priceCandidate != null) {
+                payAmount += priceCandidate;
+            }
         }
         Book book = Book.builder().user(user)
-            .startDate(bookForm.getCheckInDate())
-            .endDate(bookForm.getCheckOutDate())
+            .checkInDate(bookForm.getCheckInDate())
+            .checkOutDate(bookForm.getCheckOutDate())
             .people(bookForm.getPeople())
             .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
             .payAmount(payAmount)
