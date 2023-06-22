@@ -15,7 +15,7 @@ import lombok.Setter;
 public class BookForm {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private int people;
+    private Integer people;
     private Long RoomId;
     private String bookName;
 }

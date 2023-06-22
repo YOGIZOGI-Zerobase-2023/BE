@@ -17,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,6 @@ public class BookService {
             .collect(Collectors.toList());
     }
 
-    //예약을 만듭니다.*현재는 숙소 등록에 관한 관련성이 없는 상태입니다.
     //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
     public String makeBook(String token, BookForm bookForm) {
         if (!provider.validateToken(token)) {
@@ -66,25 +66,25 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        //TO DO예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
-
+        //Done예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
         //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행**
-        // 해당 숙소가 해당 기간 동안에 예약이 가능한지로 검색할 것**
-        //현재 하드 코딩으로 1만 넣은 상황으로 진행
-        //room을 예약할 때, 숙소 정보를 리뷰를 위해 가지고 와 저장하기**
+
         int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),
             bookForm.getCheckOutDate());
-        int payAmount = 0;
+
         Room room = roomRepository.findById(bookForm.getRoomId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
-        for (int i = 0; i < betweenDay; i++) {
-            Integer priceCandidate = priceRepository.findAllByRoomAndDate(room,
-                bookForm.getCheckInDate().plusDays(i)).getPrice();
-            if (priceCandidate != null) {
-                payAmount += priceCandidate;
-            }
-        }
+        int payAmount = IntStream.range(0, betweenDay)
+            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
+                bookForm.getCheckInDate().plusDays(i)))
+            .peek(price -> {
+                if (price.getRoomCnt() == 0) {
+                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
+                }
+            })
+            .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
+            .sum();
         Book book = Book.builder().user(user)
             .checkInDate(bookForm.getCheckInDate())
             .checkOutDate(bookForm.getCheckOutDate())
@@ -94,6 +94,18 @@ public class BookService {
             .reviewRegistered(false).build();
 
         bookRepository.save(book);
+        //가격 테이블 변경해주기.
+        IntStream.range(0, betweenDay)
+            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
+                bookForm.getCheckInDate().plusDays(i)))
+            .forEach(price -> {
+                if(price.getRoomCnt()==0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
+                    deleteBook(token, book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
+                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
+                }
+                price.setRoomCnt(price.getRoomCnt() - 1);
+                priceRepository.save(price);
+            });
         return "/success";
     }
 

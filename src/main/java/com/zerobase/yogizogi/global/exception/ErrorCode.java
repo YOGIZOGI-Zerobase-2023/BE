@@ -25,7 +25,7 @@ public enum ErrorCode {
 
     //예약 관련
     NOT_FOUND_BOOK(HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다."),
-
+    ALREADY_BOOKED_ROOM(HttpStatus.BAD_REQUEST, "예약하고자 하는 방이 이미 예약되어 버렸습니다."),
 
     //공통
     NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 삭제할 권한이 없습니다."),
