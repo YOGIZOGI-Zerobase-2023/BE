@@ -1,7 +1,6 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
-import com.zerobase.yogizogi.room.domain.entity.Room;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,9 +52,6 @@ public class Accommodation extends BaseEntity {
     @Column(name = "detail")
     private String detail;
 
-    // 숙소 등록자?
-//  @ManyToOne
-//  private AppUser user;
     @OneToMany(mappedBy = "accommodation")
     private List<Room> rooms;
 }
