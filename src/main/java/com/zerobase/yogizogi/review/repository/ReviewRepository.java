@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.review.repository;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Page<Review> findAllByAccommodationId(Long AccommodationId, Pageable pageable);
-
-    Optional<Review> findFirstByAccommodationId(Long AccomodationId);
+    Page<Review> findAllByAccommodation(Accommodation accommodation, Pageable pageable);
 
 }

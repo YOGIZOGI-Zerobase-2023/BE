@@ -39,7 +39,7 @@ public class Price {
     @JoinColumn(name = "roomId")
     private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "bookId")
-    private Book book;
+//    @ManyToOne
+//    @JoinColumn(name = "bookId")
+//    private Book book;
 }

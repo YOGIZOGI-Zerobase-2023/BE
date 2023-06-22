@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/accommodation/{accommodationId}/review")
+@RequestMapping("/api/accommodation/{accommodation_id}/review")
 public class ReviewController {
 
     private final String TOKEN = "X-AUTH-TOKEN";
@@ -27,7 +27,7 @@ public class ReviewController {
 
     @GetMapping("")
     public ResponseEntity<?> reviewsList(
-        @PathVariable(name = "accommodationId") Long accommodationId,
+        @PathVariable(name = "accommodation_id") Long accommodationId,
         @RequestParam(name = "page", defaultValue = "0") int page,
         @RequestParam(name = "pagesize", defaultValue = "2") int size,
         @RequestParam(name = "sort", defaultValue = "id,desc") String sort) {
@@ -40,7 +40,7 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<?> makeReview(
-        @PathVariable(name = "accommodationId") Long accommodationId,
+        @PathVariable(name = "accommodation_id") Long accommodationId,
         @RequestHeader(name = TOKEN) String token,
         @RequestBody ReviewForm reviewForm) {
         return ResponseEntity.ok(reviewService.makeReview(accommodationId, token, reviewForm));
@@ -48,7 +48,7 @@ public class ReviewController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<?> deleteReview(
-        @PathVariable(name = "accommodationId") Long accommodationId,
+        @PathVariable(name = "accommodation_id") Long accommodationId,
         @RequestHeader(name = TOKEN) String token,
         @PathVariable(name = "reviewId") Long reviewId) {
         return ResponseEntity.ok().body(reviewService.deleteReview(token, reviewId));

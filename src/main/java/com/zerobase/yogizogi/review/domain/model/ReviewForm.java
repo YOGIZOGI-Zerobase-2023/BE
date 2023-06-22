@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewForm {
-    private long bookId;
-    private int rate;
+    private Long bookId;
+    private Integer score;
     private String contents;
 }

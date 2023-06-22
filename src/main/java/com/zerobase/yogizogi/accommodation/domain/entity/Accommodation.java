@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Builder
 @Getter
@@ -49,16 +52,17 @@ public class Accommodation extends BaseEntity {
     private String picUrl;
     @Column(name = "address")
     private String address;
-    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accommodation")
     @Column(name = "picUrls")
     private List<Picture> picUrls;
     @Column(name = "detail")
     private String detail;
 
-    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accommodation")
     private List<Room> rooms;
 
-    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accommodation")
+    @JsonManagedReference
     private List<Review> reviews = new ArrayList<>();
 
     //score값 변경(Double로 객체로 null 허용)
@@ -68,15 +72,25 @@ public class Accommodation extends BaseEntity {
             return;
         }
 
-        double totalRate = 0.0;
-        int reviewCount = 0;
+        Double totalRate = 0.0;
+        Integer reviewCount = 0;
 
         for (Review review : reviews) {
-            totalRate += review.getRate();
+            if (review.getScore() != null) {
+                totalRate += review.getScore();
+                reviewCount++;
+            }
+        }
+        //현재와 같이 값이 잡혀 있는 이유는, 현재 데이터에는 기본 평점이 있기 때문.
+        if (score != null) {
+            totalRate += score;
             reviewCount++;
         }
-        score += totalRate / reviewCount;
 
-        this.score = score;
+        if (reviewCount > 0) {
+            this.score = totalRate / reviewCount;
+        } else {
+            this.score = 0.0;
+        }
     }
 }

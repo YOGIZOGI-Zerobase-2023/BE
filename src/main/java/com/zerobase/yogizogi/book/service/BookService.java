@@ -54,6 +54,7 @@ public class BookService {
                 .bookName(book.getBookName())
                 .price(book.getPayAmount())
                 .id(book.getId())
+                .accommodationId(book.getAccommodation().getId())
                 .userId(book.getUser().getId())
                 .checkInDate(book.getCheckOutDate())
                 .checkOutDate(book.getCheckOutDate())
@@ -95,7 +96,7 @@ public class BookService {
             })
             .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
             .sum();
-        Book book = Book.builder().user(user)
+        Book book = Book.builder().user(user)//외래키 저장하려면 명시적으로 넣어야 하는 부분의 수정 가능성.
             .accommodation(accommodation)
             .room(room)
             .checkInDate(bookForm.getCheckInDate())

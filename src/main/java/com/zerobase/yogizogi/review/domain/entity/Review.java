@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.review.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
@@ -28,14 +29,16 @@ public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int rate;
+    private Integer score;
     private String contents;
     //외래키
     //bookId 저장할 필요가 없습니다.
     @OneToOne
+    @JoinColumn(name = "appUser_id")
     private AppUser user;//삭제에 필요합니다.
-    @ManyToOne
-    @JoinColumn(name = "accommodationId")
+    @ManyToOne//QnA
+    @JoinColumn(name = "accommodation_id")//정말 사소한 문제다... accommodationId로 하면 안 되고, _id로 하면 된다.
+    @JsonBackReference
     private Accommodation accommodation;
 
 }

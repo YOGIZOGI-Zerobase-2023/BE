@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Builder
 @Getter
@@ -51,12 +54,11 @@ public class AppUser extends BaseEntity {
     private LocalDateTime emailAuthDateTime;
 
     //외래키
-    @OneToMany(mappedBy = "user")//mappedBy는 자체 속성 변수명으로 해야함
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//mappedBy는 자체 속성 변수명으로 해야함
+    @Cascade(CascadeType.DELETE)
     private List<Book> books;
 
-    // 숙소 등록자가 숙소를 가져서 관계설정?
-//    @OneToMany
-//    private List<Accommodation> accommodations;
+
     //@OneToMany
     //private List<ChattingRoom> chattingRooms;
     //@OneToMany
