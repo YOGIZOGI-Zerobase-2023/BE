@@ -1,42 +1,42 @@
-package com.zerobase.yogizogi.book.service;
-
-import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
-import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
-import com.zerobase.yogizogi.book.repository.BookRepository;
-import com.zerobase.yogizogi.user.repository.UserRepository;
-import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-public class BookServiceTest {
-
-    @Mock
-    private JwtAuthenticationProvider provider;
-    @Mock
-    private BookRepository bookRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private RoomRepository roomRepository;
-    @Mock
-    private PriceRepository priceRepository;
-    private BookService bookService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        bookService = new BookService(provider, bookRepository, userRepository,roomRepository,priceRepository);
-    }
-
-    @Test
-    @DisplayName("사용자의 예약 페이지 조회 테스트")
-    public void testMyBookList() {
-        // given
-
-    }
+//package com.zerobase.yogizogi.book.service;
+//
+//import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
+//import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
+//import com.zerobase.yogizogi.book.repository.BookRepository;
+//import com.zerobase.yogizogi.user.repository.UserRepository;
+//import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.mockito.Mock;
+//import org.mockito.MockitoAnnotations;
+//
+//public class BookServiceTest {
+//
+//    @Mock
+//    private JwtAuthenticationProvider provider;
+//    @Mock
+//    private BookRepository bookRepository;
+//    @Mock
+//    private UserRepository userRepository;
+//    @Mock
+//    private RoomRepository roomRepository;
+//    @Mock
+//    private PriceRepository priceRepository;
+//    private BookService bookService;
+//
+//    @BeforeEach
+//    public void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//        bookService = new BookService(provider, bookRepository, userRepository,roomRepository,priceRepository);
+//    }
+//
+//    @Test
+//    @DisplayName("사용자의 예약 페이지 조회 테스트")
+//    public void testMyBookList() {
+//        // given
+//
+//    }
 
 
 //    @Test
@@ -78,4 +78,4 @@ public class BookServiceTest {
 //        assertEquals("delete/success", result);
 //        verify(bookRepository, times(1)).delete(any(Book.class));
 //    }
-}
+//}

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +30,10 @@ public class ReviewController {
     public ResponseEntity<?> reviewsList(
         @PathVariable(name = "accommodationId") Long accommodationId,
         @RequestParam(name = "page", defaultValue = "0") int page,
-        @RequestParam(name = "pagesize", defaultValue = "2") int size,
-        @RequestParam(name = "sort", defaultValue = "id,desc") String sort) {
-        String[] sortProperties = sort.split(",");
-        Sort.Direction direction = sortProperties[1].equalsIgnoreCase("desc")
-            ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortProperties[0]));
+        @RequestParam(name = "pagesize", defaultValue = "2") int size) {
+
+        //desc 외에는 필요가 없으므로, Default로 넘겨주는 아래의 형태로.
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, "id"));
         return ResponseEntity.ok(reviewService.reviewList(accommodationId, pageable));
     }
 
