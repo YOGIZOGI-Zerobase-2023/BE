@@ -86,16 +86,17 @@ public class BookService {
         Room room = roomRepository.findById(bookForm.getRoomId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
-        int payAmount = IntStream.range(0, betweenDay)
-            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
-                bookForm.getCheckInDate().plusDays(i)))
-            .peek(price -> {
-                if (price.getRoomCnt() == 0) {
-                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
-                }
-            })
-            .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
-            .sum();
+        //요청을 보낼 때, 총합이 이미 넘어오기 때문에 검증할 필요가 없습니다.
+//        int payAmount = IntStream.range(0, betweenDay)
+//            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
+//                bookForm.getCheckInDate().plusDays(i)))
+//            .peek(price -> {
+//                if (price.getRoomCnt() == 0) {
+//                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
+//                }
+//            })
+//            .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
+//            .sum();
         //예약 페이지 구성 확정 요소.(위 로직._프론트에서 어떻게 나누어야 할까?)
 
         //예약 페이지(확정 점검_아래 로직)
@@ -106,7 +107,7 @@ public class BookService {
             .checkOutDate(bookForm.getCheckOutDate())
             .people(bookForm.getPeople())
             .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
-            .payAmount(payAmount)
+            .payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
 
         bookRepository.save(book);

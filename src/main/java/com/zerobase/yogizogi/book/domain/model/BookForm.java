@@ -18,5 +18,6 @@ public class BookForm {
     private LocalDate checkOutDate;
     private Integer people;
     private Long RoomId;
+    private Integer payAmount;
     private String bookName;
 }
