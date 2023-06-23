@@ -38,7 +38,8 @@ public class UserLogInService {
         }
 
         Map<String, Object> data = new TreeMap<>();
-        data.put("X-AUTH-TOKEN", provider.createToken(user.getEmail(), user.getId()));
+        data.put("X-AUTH-TOKEN", provider.createToken(user.getEmail(), user.getId(),
+            user.getNickName()));
         data.put("email", user.getEmail());
         data.put("nickname", user.getNickName());
 
