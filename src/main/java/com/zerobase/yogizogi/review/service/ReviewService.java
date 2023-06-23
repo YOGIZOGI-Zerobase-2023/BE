@@ -34,8 +34,8 @@ public class ReviewService {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
         Page<Review> page = reviewRepository.findAllByAccommodation(accommodation, pageable);
-        return page.map(ReviewDto::new);
 
+        return page.map(ReviewDto::new);
     }
 
     public String makeReview(Long accommodationId, String token, ReviewForm reviewForm) {
