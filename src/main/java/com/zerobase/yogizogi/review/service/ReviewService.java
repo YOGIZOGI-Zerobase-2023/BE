@@ -43,7 +43,7 @@ public class ReviewService {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 
-        if (reviewForm.getScore() < 0 || reviewForm.getScore() > 10) {
+        if (reviewForm.getRate() < 0 || reviewForm.getRate() > 10) {
             throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
         }
 
@@ -61,12 +61,12 @@ public class ReviewService {
 
         Review review = reviewRepository.save(Review.builder().user(user)
             .accommodation(book.getRoom().getAccommodation())
-            .score(reviewForm.getScore())
+            .rate(reviewForm.getRate())
             .contents(reviewForm.getContents()).build());
 
         // 숙소 평점 업데이트
         accommodation.getReviews().add(review);
-        accommodation.updateScore(accommodation.getScore());
+        accommodation.updateScore(accommodation.getRate());
         accommodationRepository.save(accommodation);
 
         // review 했다고 업데이트

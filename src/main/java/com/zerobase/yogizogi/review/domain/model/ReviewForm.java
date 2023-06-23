@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReviewForm {
     private Long bookId;
-    private Integer score;
+    private Integer rate;
     private String contents;
 }

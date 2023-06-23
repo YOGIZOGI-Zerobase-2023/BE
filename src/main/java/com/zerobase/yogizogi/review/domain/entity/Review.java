@@ -28,7 +28,7 @@ public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer score;
+    private Integer rate;
     private String contents;
     //외래키
     //bookId 저장할 필요가 없습니다.

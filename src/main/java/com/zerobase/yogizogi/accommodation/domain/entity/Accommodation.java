@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,8 +17,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 @Builder
 @Getter
@@ -67,7 +64,7 @@ public class Accommodation extends BaseEntity {
 
     //score값 변경(Double로 객체로 null 허용)
     public void updateScore(Double rate) {
-        if (reviews == null || reviews.isEmpty() && score == null) {
+        if (reviews == null || reviews.isEmpty() && rate == null) {
             this.rate = 0.0;
             return;
         }
@@ -76,8 +73,8 @@ public class Accommodation extends BaseEntity {
         Integer reviewCount = 0;
 
         for (Review review : reviews) {
-            if (review.getScore() != null) {
-                totalRate += review.getScore();
+            if (review.getRate() != null) {
+                totalRate += review.getRate();
                 reviewCount++;
             }
         }

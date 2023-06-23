@@ -58,7 +58,7 @@ public class BookService {
                 .userId(book.getUser().getId())
                 .checkInDate(book.getCheckOutDate())
                 .checkOutDate(book.getCheckOutDate())
-                .score(book.getAccommodation().getScore())
+                .score(book.getAccommodation().getRate())
                 .picUrl(book.getAccommodation().getPicUrl())
                 .reviewRegistered(book.getReviewRegistered())
                 .build())
@@ -117,7 +117,7 @@ public class BookService {
                 bookForm.getCheckInDate().plusDays(i)))
             .forEach(price -> {
                 if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
-                    deleteBook(token, book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
+                    deleteBook(token,user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
                     throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
                 }
                 price.setRoomCnt(price.getRoomCnt() - 1);
@@ -126,7 +126,7 @@ public class BookService {
         return "/success";
     }
 
-    public String deleteBook(String token, Long bookId) {
+    public String deleteBook(String token,Long userId, Long bookId) {
         if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -135,6 +135,9 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
+        if(!Objects.equals(userDto.getId(), userId)){
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+        }
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 

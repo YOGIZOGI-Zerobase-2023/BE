@@ -16,13 +16,13 @@ public class ReviewDto {
     private Long id;
     private Long userId;
     private Long accommodationId;
-    private Integer rating;
+    private Integer rate;
     private String description;
     public ReviewDto(Review review) {
         this.id = review.getId();
         this.userId = review.getUser().getId();
         this.accommodationId = review.getAccommodation().getId();
-        this.rating = review.getScore();
+        this.rate = review.getRate();
         this.description = review.getContents();
     }
 
