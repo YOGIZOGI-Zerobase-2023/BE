@@ -39,7 +39,7 @@ public class ReviewService {
     }
 
     public String makeReview(Long accommodationId, String token, ReviewForm reviewForm) {
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 
@@ -77,7 +77,7 @@ public class ReviewService {
     }
 
     public String deleteReview(String token, Long reviewId) {
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
         UserDto userDto = provider.getUserDto(token);

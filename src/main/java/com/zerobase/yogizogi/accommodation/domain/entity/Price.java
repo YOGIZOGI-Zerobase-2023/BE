@@ -1,6 +1,5 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
-import com.zerobase.yogizogi.book.domain.entity.Book;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,8 +38,4 @@ public class Price {
   @JoinColumn(name = "roomId")
   private Room room;
 
-  //해당 내용 공유하기
-//    @ManyToOne
-//    @JoinColumn(name = "bookId")
-//    private Book book;
 }

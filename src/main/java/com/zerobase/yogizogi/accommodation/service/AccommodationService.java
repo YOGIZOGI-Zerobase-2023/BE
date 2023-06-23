@@ -21,7 +21,7 @@ public class AccommodationService {
     private final UserRepository userRepository;
 
     public String makeAccommodation(String token, AccommodationForm form) {
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 

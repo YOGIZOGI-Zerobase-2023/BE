@@ -22,7 +22,7 @@ public class UserLogOutService {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
         String token = all.substring(7);//토큰 가져오기.
-        if(!provider.validateToken(token)){
+        if(provider.validateToken(token)){
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 

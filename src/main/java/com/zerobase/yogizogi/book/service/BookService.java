@@ -36,6 +36,7 @@ public class BookService {
 
     //User의 BookList를 가지고 옵니다.
     public List<BookResultDto> myBookList(Long userId, String token) {
+
         if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
