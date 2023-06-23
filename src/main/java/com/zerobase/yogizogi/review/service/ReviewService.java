@@ -23,25 +23,27 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
     private final JwtAuthenticationProvider provider;
     private final ReviewRepository reviewRepository;
     private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+
     public Page<?> reviewList(Long accommodationId, Pageable pageable) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
         Page<Review> page = reviewRepository.findAllByAccommodation(accommodation, pageable);
-        Page<ReviewDto> pageDto = page.map(ReviewDto::new);
-        return pageDto;
+        return page.map(ReviewDto::new);
+
     }
 
-    public String makeReview(Long accommodationId, String token,ReviewForm reviewForm) {
-        if(!provider.validateToken(token)){
+    public String makeReview(Long accommodationId, String token, ReviewForm reviewForm) {
+        if (!provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 
-        if(reviewForm.getScore() < 0 || reviewForm.getScore() > 10){
+        if (reviewForm.getScore() < 0 || reviewForm.getScore() > 10) {
             throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
         }
 
@@ -49,13 +51,13 @@ public class ReviewService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
         Book book = bookRepository.findById(reviewForm.getBookId())
-            .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_BOOK));
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
-        if(book.getReviewRegistered()){
+        if (book.getReviewRegistered()) {
             throw new CustomException(ErrorCode.AlREADY_REGISTER_REVIEW);
         }
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
-            .orElseThrow(()-> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
         Review review = reviewRepository.save(Review.builder().user(user)
             .accommodation(book.getRoom().getAccommodation())
