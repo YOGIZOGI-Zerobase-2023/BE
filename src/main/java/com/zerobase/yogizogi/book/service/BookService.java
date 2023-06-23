@@ -9,6 +9,8 @@ import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
 import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.repository.BookRepository;
+import com.zerobase.yogizogi.global.ApiResponse;
+import com.zerobase.yogizogi.global.ResponseCode;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
@@ -21,6 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,9 +38,9 @@ public class BookService {
     private final AccommodationRepository accommodationRepository;
 
     //User의 BookList를 가지고 옵니다.
-    public List<BookResultDto> myBookList(Long userId, String token) {
+    public ResponseEntity<?> myBookList(Long userId, String token) {
 
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 
@@ -50,7 +53,7 @@ public class BookService {
         }
 
         List<Book> books = bookRepository.findAllByUser(user);
-        return books.stream()
+        List<BookResultDto> bookResultDtos = books.stream()
             .map(book -> BookResultDto.builder()
                 .bookName(book.getBookName())
                 .price(book.getPayAmount())
@@ -64,11 +67,20 @@ public class BookService {
                 .reviewRegistered(book.getReviewRegistered())
                 .build())
             .collect(Collectors.toList());
+
+        ApiResponse<List<BookResultDto>> response = new ApiResponse<>(
+            ResponseCode.RESPONSE_SUCCESS.getCode(),
+            ResponseCode.RESPONSE_SUCCESS.getStatus(),
+            ResponseCode.RESPONSE_SUCCESS.getMsg(),
+            bookResultDtos
+    );
+
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
     public String makeBook(String token, BookForm bookForm) {
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 
@@ -128,7 +140,7 @@ public class BookService {
     }
 
     public String deleteBook(String token,Long userId, Long bookId) {
-        if (!provider.validateToken(token)) {
+        if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
 

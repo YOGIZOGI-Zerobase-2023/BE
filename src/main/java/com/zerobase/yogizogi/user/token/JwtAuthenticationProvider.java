@@ -33,9 +33,9 @@ public class JwtAuthenticationProvider {
         try {
             //시간 만료되었는지로 검증
          Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-         return !claims.getBody().getExpiration().before(new Date());
+         return claims.getBody().getExpiration().before(new Date()); //true 만료 . false 만료가 아님
         } catch (Exception e) {
-            return false;
+            return true;
         }
     }
 
@@ -49,11 +49,6 @@ public class JwtAuthenticationProvider {
         if (id == null) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
-
-//        String decryptedId = Aes256Utils.decrypt(id);
-//        if (decryptedId == null) {
-//            throw new CustomException(ErrorCode.INVALID_TOKEN);
-//        }
 
         return new UserDto(Long.valueOf(id), claims.getSubject());
     }
