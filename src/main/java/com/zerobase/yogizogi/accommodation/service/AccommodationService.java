@@ -50,7 +50,7 @@ public class AccommodationService {
             .name(accommodation.getName())
             .category(accommodation.getCategory())
             .address(accommodation.getAddress())
-            .score(accommodation.getScore())
+            .score(accommodation.getRate())
             .picUrl(accommodation.getPicUrl())
             .lon(accommodation.getLng())
             .lat(accommodation.getLat())
