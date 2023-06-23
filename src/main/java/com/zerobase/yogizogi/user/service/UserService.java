@@ -5,31 +5,32 @@ import com.zerobase.yogizogi.global.ResponseCode;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
+import com.zerobase.yogizogi.user.domain.model.LogInForm;
 import com.zerobase.yogizogi.user.domain.model.UserSignUpForm;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.smtp.domain.model.MessageForm;
 import com.zerobase.yogizogi.user.smtp.service.EmailService;
+import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
-public class UserSignUpService {
-
+@RequiredArgsConstructor
+public class UserService {
     private final UserRepository userRepository;
+    private final JwtAuthenticationProvider provider;
+    private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
     private final PasswordEncoder encoder;
-
     public ApiResponse<?> signUp(UserSignUpForm userSignUpForm) {
-        // userSignUpForm, PhoneNumber 양식 맞는지, 겹치는지 확인(All)
-        // nickName 겹치는지 확인(USER_Only)
 
         //이미 회원가입 한 경우.
         if (userRepository.findByEmail(userSignUpForm.getEmail()).isPresent()) {
@@ -96,12 +97,63 @@ public class UserSignUpService {
         mailSend(uuid, userSignUpForm.getEmail());
     }
 
-        //localhost //3.37.116.66
+    //localhost //3.37.116.66
     private void mailSend(String uuid, String to) {
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")
             .message(
                 "<div><a target='_blank' href='http://localhost:8080/users/email-auth?id=" + uuid
                     + "'> 로그인을 활성화 하려면 여기를 눌러 주세요. </a></div>"
             ).build());
+    }
+
+    public ApiResponse<?> login(LogInForm logInForm) {
+
+        //존재하지 않는 유저
+        AppUser user = userRepository.findByEmail(logInForm.getEmail())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+        //비번이 일치하지 않는 경우
+        if (!validateLogIn(logInForm.getPassword(), user)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_ID_PASSWORD);
+        }
+        if (!user.isActive()) {
+            throw new CustomException(ErrorCode.NOT_ACTIVE_USER);
+        }
+
+        Map<String, Object> data = new TreeMap<>();
+        data.put("X-AUTH-TOKEN", provider.createToken(user.getEmail(), user.getId(),
+            user.getNickName()));
+        data.put("email", user.getEmail());
+        data.put("nickname", user.getNickName());
+
+        return new ApiResponse<>(
+            ResponseCode.RESPONSE_SUCCESS.getCode(),
+            HttpStatus.OK,
+            "SUCCESS",
+            data
+        );
+    }
+
+    private boolean validateLogIn(String rawPassword, AppUser user) {
+
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public ApiResponse<?> logout(HttpServletRequest request) {
+        String all = request.getHeader("Authorization");
+        if (all == null || !all.startsWith("Bearer ")) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+        String token = all.substring(7);//토큰 가져오기.
+        if(provider.validateToken(token)){
+            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
+        }
+
+        return new ApiResponse<>(
+            ResponseCode.RESPONSE_SUCCESS.getCode(),
+            HttpStatus.OK,
+            "SUCCESS",
+            null
+        );
     }
 }

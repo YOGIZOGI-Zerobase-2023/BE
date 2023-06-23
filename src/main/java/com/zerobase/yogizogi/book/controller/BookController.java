@@ -1,7 +1,12 @@
 package com.zerobase.yogizogi.book.controller;
 
 import com.zerobase.yogizogi.book.domain.model.BookForm;
+import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.service.BookService;
+import com.zerobase.yogizogi.global.ApiResponse;
+import com.zerobase.yogizogi.global.ResponseCode;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +27,14 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("/user/{userId}/mybook")
-    public ResponseEntity<?> myBook(@PathVariable(name = "userId") Long userId,
+    public ResponseEntity<ApiResponse<List<BookResultDto>>> myBook(
+        @PathVariable(name = "userId") Long userId,
         @RequestHeader(name = TOKEN) String token) {
-        return ResponseEntity.ok(bookService.myBookList(userId, token));
+        List<BookResultDto> Dtos = bookService.myBookList(userId, token).stream()
+            .map(BookResultDto::from)
+            .collect(Collectors.toList());
+
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(Dtos).build().toEntity() ;
     }
 
     @PostMapping("/accommodation/{accommodationId}/book")
@@ -39,6 +49,6 @@ public class BookController {
     public ResponseEntity<?> deleteBook(@RequestHeader(name = TOKEN) String token,
         @PathVariable(name = "userId") Long userId,
         @PathVariable(name = "bookId") Long bookId) {
-        return ResponseEntity.ok().body(bookService.deleteBook(token, userId ,bookId));
+        return ResponseEntity.ok().body(bookService.deleteBook(token, userId, bookId));
     }
 }

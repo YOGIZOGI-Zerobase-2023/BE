@@ -31,9 +31,11 @@ public class ReviewService {
     private final BookRepository bookRepository;
 
     public Page<?> reviewList(Long accommodationId, Pageable pageable) {
-        Accommodation accommodation = accommodationRepository.findById(accommodationId)
-            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
-        Page<Review> page = reviewRepository.findAllByAccommodation(accommodation, pageable);
+        if (!accommodationRepository.existsById(accommodationId)) {
+            throw new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION);
+        }
+
+        Page<Review> page = reviewRepository.findAllByAccommodation_Id(accommodationId, pageable);
 
         return page.map(ReviewDto::new);
     }

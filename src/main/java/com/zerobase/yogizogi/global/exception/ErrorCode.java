@@ -45,7 +45,6 @@ public enum ErrorCode implements Code {
     endSample(HttpStatus.BAD_REQUEST, "마무리 샘플입니다.");
 
 
-
     private final HttpStatus status;
     private final String msg;
 }

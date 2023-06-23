@@ -7,10 +7,7 @@ import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
 import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.book.domain.model.BookForm;
-import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.repository.BookRepository;
-import com.zerobase.yogizogi.global.ApiResponse;
-import com.zerobase.yogizogi.global.ResponseCode;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
@@ -20,10 +17,8 @@ import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +33,7 @@ public class BookService {
     private final AccommodationRepository accommodationRepository;
 
     //User의 BookList를 가지고 옵니다.
-    public ResponseEntity<?> myBookList(Long userId, String token) {
+    public List<Book> myBookList(Long userId, String token) {
 
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
@@ -52,30 +47,7 @@ public class BookService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-        List<Book> books = bookRepository.findAllByUser(user);
-        List<BookResultDto> bookResultDtos = books.stream()
-            .map(book -> BookResultDto.builder()
-                .bookName(book.getBookName())
-                .price(book.getPayAmount())
-                .id(book.getId())
-                .accommodationId(book.getAccommodation().getId())
-                .userId(book.getUser().getId())
-                .checkInDate(book.getCheckOutDate())
-                .checkOutDate(book.getCheckOutDate())
-                .score(book.getAccommodation().getRate())
-                .picUrl(book.getAccommodation().getPicUrl())
-                .reviewRegistered(book.getReviewRegistered())
-                .build())
-            .collect(Collectors.toList());
-
-        ApiResponse<List<BookResultDto>> response = new ApiResponse<>(
-            ResponseCode.RESPONSE_SUCCESS.getCode(),
-            ResponseCode.RESPONSE_SUCCESS.getStatus(),
-            ResponseCode.RESPONSE_SUCCESS.getMsg(),
-            bookResultDtos
-    );
-
-        return ResponseEntity.status(response.getStatus()).body(response);
+        return bookRepository.findAllByUser_Id(userId);
     }
 
     //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
@@ -126,7 +98,7 @@ public class BookService {
         bookRepository.save(book);
         //가격 테이블 변경해주기.
         IntStream.range(0, betweenDay)
-            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
+            .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(room.getId(),
                 bookForm.getCheckInDate().plusDays(i)))
             .forEach(price -> {
                 if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인

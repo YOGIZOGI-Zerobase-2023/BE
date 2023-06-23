@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class JwtAuthenticationProvider {
 
-    private final String secretKey = "secretKey";
+    private static final String secretKey = "secretKey"; // 계속 쓰이는 변수는 전역변수로 관리하자!(값이 있는 해당 형태만 static final 가능!)
 
     public String createToken(String email, Long id,String nickName) {
         Claims claims = Jwts.claims()

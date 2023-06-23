@@ -20,4 +20,5 @@ public class BookForm {
     private Long RoomId;
     private Integer payAmount;
     private String bookName;
+    //public static BookForm from(Book )
 }
