@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.user.domain.entity;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -18,8 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 @Builder
 @Getter
@@ -55,9 +54,9 @@ public class AppUser extends BaseEntity {
 
     //외래키
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//mappedBy는 자체 속성 변수명으로 해야함
-    @Cascade(CascadeType.DELETE)
     private List<Book> books;
-
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Review> reviews;
 
     //@OneToMany
     //private List<ChattingRoom> chattingRooms;

@@ -96,6 +96,9 @@ public class BookService {
             })
             .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
             .sum();
+        //예약 페이지 구성 확정 요소.(위 로직._프론트에서 어떻게 나누어야 할까?)
+
+        //예약 페이지(확정 점검_아래 로직)
         Book book = Book.builder().user(user)//외래키 저장하려면 명시적으로 넣어야 하는 부분의 수정 가능성.
             .accommodation(accommodation)
             .room(room)

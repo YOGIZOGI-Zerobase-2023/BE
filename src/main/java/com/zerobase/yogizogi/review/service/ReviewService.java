@@ -8,6 +8,7 @@ import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
+import com.zerobase.yogizogi.review.dto.ReviewDto;
 import com.zerobase.yogizogi.review.repository.ReviewRepository;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
@@ -27,11 +28,12 @@ public class ReviewService {
     private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    public Page<Review> reviewList(Long accommodationId, Pageable pageable) {
+    public Page<?> reviewList(Long accommodationId, Pageable pageable) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
-
-        return reviewRepository.findAllByAccommodation(accommodation, pageable);
+        Page<Review> page = reviewRepository.findAllByAccommodation(accommodation, pageable);
+        Page<ReviewDto> pageDto = page.map(ReviewDto::new);
+        return pageDto;
     }
 
     public String makeReview(Long accommodationId, String token,ReviewForm reviewForm) {

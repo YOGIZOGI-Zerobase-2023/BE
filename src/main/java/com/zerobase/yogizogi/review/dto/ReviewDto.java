@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.review.dto;
 
+import com.zerobase.yogizogi.review.domain.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewDto {
-    private Long reviewId;
-    private String contents;
-    private int rate;
+    private Long id;
+    private Long userId;
+    private Long accommodationId;
+    private Integer rating;
+    private String description;
+    public ReviewDto(Review review) {
+        this.id = review.getId();
+        this.userId = review.getUser().getId();
+        this.accommodationId = review.getAccommodation().getId();
+        this.rating = review.getScore();
+        this.description = review.getContents();
+    }
+
 }

@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,11 +32,11 @@ public class Review extends BaseEntity {
     private String contents;
     //외래키
     //bookId 저장할 필요가 없습니다.
-    @OneToOne
-    @JoinColumn(name = "appUser_id")
+    @ManyToOne
+    @JoinColumn(name = "userId")
     private AppUser user;//삭제에 필요합니다.
     @ManyToOne//QnA
-    @JoinColumn(name = "accommodation_id")//정말 사소한 문제다... accommodationId로 하면 안 되고, _id로 하면 된다.
+    @JoinColumn(name = "accommodationId")
     @JsonBackReference
     private Accommodation accommodation;
 
