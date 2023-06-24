@@ -29,10 +29,10 @@ public class JwtAuthenticationProvider {
             .compact();
     }
 
-    public boolean validateToken(String jwtToken) {
+    public boolean validateToken(String token) {
         try {
             //시간 만료되었는지로 검증
-         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
          return claims.getBody().getExpiration().before(new Date()); //true 만료 . false 만료가 아님
         } catch (Exception e) {
             return true;

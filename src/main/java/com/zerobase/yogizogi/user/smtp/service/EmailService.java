@@ -25,9 +25,9 @@ public class EmailService {
             mimeMessageHelper.setSubject(messageForm.getSubject()); // 메일 제목
             mimeMessageHelper.setText(messageForm.getMessage(), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
-            log.info("Success!!");
+            log.info("Success");
         } catch (CustomException | MessagingException e) {
-            log.info("fail!!");
+            log.warn("fail");
             throw new CustomException(ErrorCode.NOT_VALID_EMAIL);
         }
     }

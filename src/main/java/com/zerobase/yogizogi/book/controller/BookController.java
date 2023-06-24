@@ -23,32 +23,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class BookController {
 
-    private final String TOKEN = "X-AUTH-TOKEN";
+    private static final String TOKEN = "X-AUTH-TOKEN";//계속 쓰이는 동일한 값은 static으로
     private final BookService bookService;
 
     @GetMapping("/user/{userId}/mybook")
-    public ResponseEntity<ApiResponse<List<BookResultDto>>> myBook(
+    public ResponseEntity<ApiResponse<Object>> myBook(
         @PathVariable(name = "userId") Long userId,
         @RequestHeader(name = TOKEN) String token) {
         List<BookResultDto> Dtos = bookService.myBookList(userId, token).stream()
             .map(BookResultDto::from)
             .collect(Collectors.toList());
 
-        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(Dtos).build().toEntity() ;
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(Dtos).toEntity();
     }
 
     @PostMapping("/accommodation/{accommodationId}/book")
-    public ResponseEntity<?> makeBook(@RequestHeader(name = TOKEN) String token,
+    public ResponseEntity<ApiResponse<Object>> makeBook(@RequestHeader(name = TOKEN) String token,
         @PathVariable(name = "accommodationId") Long accommodationId,
         @RequestBody BookForm bookForm) {
-
-        return ResponseEntity.ok(bookService.makeBook(token, bookForm));
+        bookService.makeBook(token, bookForm);
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).toEntity();
     }
 
     @DeleteMapping("/user/{userId}/mybook/{bookId}")
-    public ResponseEntity<?> deleteBook(@RequestHeader(name = TOKEN) String token,
+    public ResponseEntity<ApiResponse<Object>> deleteBook(@RequestHeader(name = TOKEN) String token,
         @PathVariable(name = "userId") Long userId,
         @PathVariable(name = "bookId") Long bookId) {
-        return ResponseEntity.ok().body(bookService.deleteBook(token, userId, bookId));
+        bookService.deleteBook(token, userId, bookId);
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).toEntity();
     }
 }

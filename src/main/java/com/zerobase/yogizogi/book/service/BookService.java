@@ -51,7 +51,7 @@ public class BookService {
     }
 
     //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
-    public String makeBook(String token, BookForm bookForm) {
+    public void makeBook(String token, BookForm bookForm) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -71,20 +71,6 @@ public class BookService {
         Room room = roomRepository.findById(bookForm.getRoomId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
-        //요청을 보낼 때, 총합이 이미 넘어오기 때문에 검증할 필요가 없습니다.
-//        int payAmount = IntStream.range(0, betweenDay)
-//            .mapToObj(i -> priceRepository.findAllByRoomAndDate(room,
-//                bookForm.getCheckInDate().plusDays(i)))
-//            .peek(price -> {
-//                if (price.getRoomCnt() == 0) {
-//                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
-//                }
-//            })
-//            .mapToInt(price -> price.getPrice() == null ? 0 : price.getPrice())
-//            .sum();
-        //예약 페이지 구성 확정 요소.(위 로직._프론트에서 어떻게 나누어야 할까?)
-
-        //예약 페이지(확정 점검_아래 로직)
         Book book = Book.builder().user(user)//외래키 저장하려면 명시적으로 넣어야 하는 부분의 수정 가능성.
             .accommodation(accommodation)
             .room(room)
@@ -102,16 +88,15 @@ public class BookService {
                 bookForm.getCheckInDate().plusDays(i)))
             .forEach(price -> {
                 if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
-                    deleteBook(token,user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
+                    deleteBook(token, user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
                     throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
                 }
                 price.setRoomCnt(price.getRoomCnt() - 1);
                 priceRepository.save(price);
             });
-        return "/success";
     }
 
-    public String deleteBook(String token,Long userId, Long bookId) {
+    public void deleteBook(String token, Long userId, Long bookId) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -120,7 +105,7 @@ public class BookService {
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        if(!Objects.equals(userDto.getId(), userId)){
+        if (!Objects.equals(userDto.getId(), userId)) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
         Book book = bookRepository.findById(bookId)
@@ -129,8 +114,6 @@ public class BookService {
         if (!Objects.equals(book.getUser().getId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
         }
-
         bookRepository.delete(book);
-        return "delete/success";
     }
 }
