@@ -5,7 +5,9 @@ import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.service.BookService;
 import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.global.ResponseCode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,9 @@ public class BookController {
         @PathVariable(name = "accommodationId") Long accommodationId,
         @RequestBody BookForm bookForm) {
         bookService.makeBook(token, bookForm);
-        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).toEntity();
+        Map<String, String> msg = new HashMap<>();
+        msg.put("msg", "예약이 성공적으로 이루어졌습니다.");
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(msg).toEntity();
     }
 
     @DeleteMapping("/user/{userId}/mybook/{bookId}")
@@ -50,6 +54,8 @@ public class BookController {
         @PathVariable(name = "userId") Long userId,
         @PathVariable(name = "bookId") Long bookId) {
         bookService.deleteBook(token, userId, bookId);
-        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).toEntity();
+        Map<String, String> msg = new HashMap<>();
+        msg.put("msg", "성공적으로 작업을 수행 했습니다.");
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(msg).toEntity();
     }
 }

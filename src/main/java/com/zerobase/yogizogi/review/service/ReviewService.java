@@ -8,7 +8,7 @@ import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import com.zerobase.yogizogi.review.domain.model.ReviewForm;
-import com.zerobase.yogizogi.review.dto.ReviewDto;
+import com.zerobase.yogizogi.review.domain.model.ReviewUpdateForm;
 import com.zerobase.yogizogi.review.repository.ReviewRepository;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
@@ -30,17 +30,14 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public Page<?> reviewList(Long accommodationId, Pageable pageable) {
+    public Page<Review> reviewList(Long accommodationId, Pageable pageable) {
         if (!accommodationRepository.existsById(accommodationId)) {
             throw new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION);
         }
-
-        Page<Review> page = reviewRepository.findAllByAccommodation_Id(accommodationId, pageable);
-
-        return page.map(ReviewDto::new);
+        return reviewRepository.findAllByAccommodation_Id(accommodationId, pageable);
     }
 
-    public String makeReview(Long accommodationId, String token, ReviewForm reviewForm) {
+    public void makeReview(Long accommodationId, String token, ReviewForm reviewForm) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -54,7 +51,7 @@ public class ReviewService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
         Book book = bookRepository.findById(reviewForm.getBookId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
-
+        //리뷰 작성 가능 여부 확인
         if (book.getReviewRegistered()) {
             throw new CustomException(ErrorCode.AlREADY_REGISTER_REVIEW);
         }
@@ -64,7 +61,7 @@ public class ReviewService {
         Review review = reviewRepository.save(Review.builder().user(user)
             .accommodation(book.getRoom().getAccommodation())
             .rate(reviewForm.getRate())
-            .contents(reviewForm.getContents()).build());
+            .description(reviewForm.getDescription()).build());
 
         // 숙소 평점 업데이트
         accommodation.getReviews().add(review);
@@ -74,11 +71,46 @@ public class ReviewService {
         // review 했다고 업데이트
         book.setReviewRegistered(true);
         bookRepository.save(book);
-
-        return "/success";
     }
+    public void updateReview(Long accommodationId ,Long reviewId, String token, ReviewUpdateForm reviewForm){
+        if (provider.validateToken(token)) {
+            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
+        }
+        UserDto userDto = provider.getUserDto(token);
+        AppUser user = userRepository.findById(userDto.getId())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-    public String deleteReview(String token, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+        //점수 업데이트도 필요 할 수 있음.
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
+
+        if(!Objects.equals(accommodationId, review.getAccommodation().getId())){
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+        }
+
+        if (!Objects.equals(review.getUser().getId(), user.getId())) {
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+        }
+
+        if (reviewForm.getRate() != null && (reviewForm.getRate() < 0 || reviewForm.getRate() > 10)) {
+            throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
+        }
+        if(reviewForm.getRate()!=null && !Objects.equals(review.getRate(), reviewForm.getRate())) {
+            review.setRate(reviewForm.getRate());
+            reviewRepository.save(review); //필요한 경우만 사용할 수 있게 분기
+            //평점 변경이 필요
+            accommodation.updateScore(accommodation.getRate());
+            accommodationRepository.save(accommodation);
+        }
+        if(reviewForm.getDescription()!=null &&!Objects.equals(review.getDescription(), reviewForm.getDescription())) {
+            review.setDescription(reviewForm.getDescription());
+            reviewRepository.save(review);
+        }
+
+    }
+    public void deleteReview(Long accommodationId, String token, Long reviewId) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -89,12 +121,13 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (!Objects.equals(review.getUser().getId(), user.getId())) {
-            throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
+        if(!Objects.equals(accommodationId, review.getAccommodation().getId())){
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
+        if (!Objects.equals(review.getUser().getId(), user.getId())) {
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+        }
         reviewRepository.delete(review);
-
-        return "/delete/success";
     }
 }

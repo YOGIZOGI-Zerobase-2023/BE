@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum ErrorCode implements Code {
+    //공통
+    NOT_ALLOW_ACCESS(HttpStatus.BAD_REQUEST, "허용하지 않는 접근입니다."),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "적절하지 않은 토큰입니다."),
     //USER관련
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다."),
     ALREADY_REGISTER_EMAIL(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
@@ -17,20 +20,17 @@ public enum ErrorCode implements Code {
     NOT_ACTIVE_USER(HttpStatus.BAD_REQUEST, "아직 계정 활성화가 되지 않은 유저입니다. 인증을 완료해 주십시오."),
     NOT_FOUND_AUTH_KEY(HttpStatus.BAD_REQUEST, "존재하지 않는 인증 코드입니다."),
     NOT_VALID_EMAIL(HttpStatus.BAD_REQUEST,"이메일이 유효하지 않아 메일을 발송하는데 실패했습니다"),
-    NOT_ALLOW_ACCESS(HttpStatus.BAD_REQUEST, "허용하지 않는 접근입니다."),
+
     //로그인 관련
     NOT_MATCH_ID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
     //로그인(토큰) 관련
     DO_NOT_ALLOW_TOKEN(HttpStatus.BAD_REQUEST, "사용이 허용되지 않는 토큰입니다. 적절한 토큰을 발급 받아 사용해 주세요."),
     ALREADY_EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "이미 만료된 토큰입니다."),
+
     //예약 관련
     NOT_FOUND_BOOK(HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다."),
     ALREADY_BOOKED_ROOM(HttpStatus.BAD_REQUEST, "예약하고자 하는 방이 이미 예약되어 버렸습니다."),
-
-    //공통
-    NOT_ALLOW_DELETE(HttpStatus.BAD_REQUEST, "해당 유저는 삭제할 권한이 없습니다."),
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "적절하지 않은 토큰입니다."),
 
     //리뷰 관련
     NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "존재하지 않는 리뷰입니다."),

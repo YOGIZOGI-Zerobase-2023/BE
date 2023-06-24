@@ -108,12 +108,14 @@ public class BookService {
         if (!Objects.equals(userDto.getId(), userId)) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
+
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
         if (!Objects.equals(book.getUser().getId(), user.getId())) {
-            throw new CustomException(ErrorCode.NOT_ALLOW_DELETE);
+            throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
+
         bookRepository.delete(book);
     }
 }

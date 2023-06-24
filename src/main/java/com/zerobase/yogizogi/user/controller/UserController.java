@@ -48,8 +48,10 @@ public class UserController {
     public ResponseEntity<ApiResponse<Object>> login(@RequestBody LogInForm logInForm) {
         String token = userService.login(logInForm);
         Map<String,String> data = new TreeMap<>();
+
         data.put("X-AUTH-TOKEN", token);
         data.put("email", logInForm.getEmail());
+        //서비스에서 검증했기 때문에 사용 가능.
         data.put("nickname",  userRepository.findByEmail(logInForm.getEmail()).get().getNickName());
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(data).toEntity();
     }
