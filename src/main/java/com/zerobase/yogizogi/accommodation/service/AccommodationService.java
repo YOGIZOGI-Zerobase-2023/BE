@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AccommodationService {
+
     private final JwtAuthenticationProvider provider;
     private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
@@ -54,7 +55,8 @@ public class AccommodationService {
             .picUrl(accommodation.getPicUrl())
             .lon(accommodation.getLng())
             .lat(accommodation.getLat())
-            .price(accommodation.getRooms().get(0).getPrices().stream().findFirst().get().getPrice())
+            .price(
+                accommodation.getRooms().get(0).getPrices().stream().findFirst().get().getPrice())
             .build();
     }
 }

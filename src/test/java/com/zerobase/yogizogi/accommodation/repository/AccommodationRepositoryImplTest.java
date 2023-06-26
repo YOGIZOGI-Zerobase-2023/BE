@@ -1,24 +1,19 @@
 package com.zerobase.yogizogi.accommodation.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 
 @SpringBootTest
 class AccommodationRepositoryImplTest {
 
-    @Autowired
-    private JPAQueryFactory jpaQuery;
 
     @Autowired
     private AccommodationRepository accommodationRepository;
@@ -109,23 +104,30 @@ class AccommodationRepositoryImplTest {
             LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "price",
             "desc", 10000, 50000, null, null, null);
 
+        List<Accommodation> bySearchOptionDistance = accommodationRepository.findBySearchOption(
+            "역삼",
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "distance",
+            "desc", 10000, 50000, null, 37.563724611104156, 126.97775897488705);
+
         //when
         //then
         System.out.println(bySearchOption.size());
+
+        // score sort test
         assertTrue(bySearchOption.get(0).getScore() >= bySearchOption.get(1).getScore());
         assertTrue(bySearchOption.get(5).getScore() >= bySearchOption.get(6).getScore());
         assertTrue(bySearchOption.get(10).getScore() >= bySearchOption.get(15).getScore());
 
-        // To-Do
-        // price test 추가 (mysql 로 확인 완료)
-//        assertTrue(bySearchOptionPrice.get(0).getRooms().stream().min(x -> x.getPrices().stream().sorted((a,b)-> a.getPrice() - b.getPrice()))>= bySearchOptionPrice.get(1).getScore());
-//        assertTrue(bySearchOptionPrice.get(5).getScore() >= bySearchOptionPrice.get(6).getScore());
-//        assertTrue(bySearchOptionPrice.get(10).getScore() >= bySearchOptionPrice.get(15).getScore());
+        // price sort test
+        assertEquals(bySearchOptionPrice.get(0).getId(), 4);
+        assertEquals(bySearchOptionPrice.get(5).getId(), 1);
+        assertEquals(bySearchOptionPrice.get(10).getId(), 26);
+
+        assertEquals(bySearchOptionDistance.get(0).getId(), 90);
+        assertEquals(bySearchOptionDistance.get(5).getId(), 30);
+        assertEquals(bySearchOptionDistance.get(10).getId(), 15);
 
     }
-
-
-
 
 
 }

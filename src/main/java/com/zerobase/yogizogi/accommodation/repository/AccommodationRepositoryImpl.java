@@ -2,12 +2,12 @@ package com.zerobase.yogizogi.accommodation.repository;
 
 import static com.querydsl.jpa.JPAExpressions.selectDistinct;
 import static com.zerobase.yogizogi.accommodation.domain.entity.QAccommodation.accommodation;
-import static com.zerobase.yogizogi.accommodation.domain.entity.QPrice.*;
+import static com.zerobase.yogizogi.accommodation.domain.entity.QPrice.price1;
 import static com.zerobase.yogizogi.accommodation.domain.entity.QRoom.room;
-import static org.springframework.data.relational.core.sql.StatementBuilder.select;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
@@ -49,28 +49,33 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 //            (org.springframework.data.domain.Pageable) pageable, query.fetchCount());
 //    }
 
-    public List<Accommodation> findBySearchOption( String keyword,
+    public List<Accommodation> findBySearchOption(String keyword,
         LocalDate checkInDate, LocalDate checkOutDate, Integer people, String sort,
         String direction,
         Integer minPrice, Integer maxPrice, Integer category, Double lat, Double lon) {
 
         // query 생성
-        JPAQuery<Accommodation> query = queryFactory.selectDistinct(accommodation).from(accommodation)
+        JPAQuery<Accommodation> query = queryFactory.selectDistinct(accommodation)
+            .from(accommodation)
             .leftJoin(accommodation.rooms, room)
             .fetchJoin()
             .leftJoin(room.prices, price1)
             .fetchJoin()
             .where(containKeyword(keyword), checkDate(checkInDate, checkOutDate),
-                checkPeople(people), eqCategory(category))
+                checkPeople(people), eqCategory(category), checkRoomCnt())
             .groupBy(accommodation.id)
             .having(checkPrice(minPrice, maxPrice))
-            .orderBy(sortBy(sort, direction));
+            .orderBy(sortBy(sort, direction, lat, lon));
 
 //        List<Accommodation> accommodations = this.getQuerydsl().applyPagination(
 //                (org.springframework.data.domain.Pageable) pageable, query)
 //            .fetch();
 
         return query.fetch();
+    }
+
+    private BooleanExpression checkRoomCnt() {
+        return price1.roomCnt.gt(0);
     }
 
     // where
@@ -81,7 +86,8 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
             return null;
         }
         // 지역에 keyword 가 있다면
-        return accommodation.region.containsIgnoreCase(keyword).or(accommodation.name.containsIgnoreCase(keyword));
+        return accommodation.region.containsIgnoreCase(keyword)
+            .or(accommodation.name.containsIgnoreCase(keyword));
     }
 
 
@@ -126,44 +132,31 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 
     // orderBy
     //sort 를 enum 으로 변경?
-    // double, integer 이 같이 있음 integer 을 double 로 변환 or object를 쓸지
-    private static OrderSpecifier<?> sortBy(String sort, String direction) {
-        if (sort.equals("price")) {
-            return direction == "desc" ? price1.price.min().desc() : price1.price.min().asc();
-        } else if (sort.equals("rate")) {
-            return direction.equals("desc") ? accommodation.score.desc() : accommodation.score.asc();
-        } else if (sort.equals("distance")) {
-            // To-DO 경도, 위도로 거리를 구하여 정렬
-//            return direction == "desc" ? accommodation.
-            return null;
+    // double, integer 이 같이 있음 integer 을 double 로 변환 or object 를 쓸지
+    private static OrderSpecifier<?> sortBy(String sort, String direction, Double baseLat,
+        Double baseLng) {
+        if (sort == null) {
+            // sort 가 Null일 시 평점 순 desc
+            return accommodation.score.desc();
         }
-        return null;
-    }
 
-
-    //두 지점 간의 거리 계산 (킬로미터)
-    private static double distance(double lat1, double lon1, double lat2, double lon2) {
-
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
-
-        return dist;
-    }
-
-
-    // This function converts decimal degrees to radians
-    private static double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-
-    // This function converts radians to decimal degrees
-    private static double rad2deg(double rad) {
-        return (rad * 180 / Math.PI);
+        if (sort.equals("price")) {
+            return direction.equals("desc") ? price1.price.min().desc() : price1.price.min().asc();
+        } else if (sort.equals("rate")) {
+            return direction.equals("desc") ? accommodation.score.desc()
+                : accommodation.score.asc();
+        } else if (sort.equals("distance")) {
+            // 경도, 위도로 거리를 구하여 정렬 (get_distance 사용자 정의 함수 사용)
+            // 경도, 위도 값이 없을 때는 경도, 위도를 0으로 설정하여 정렬
+            return direction.equals("desc") ? Expressions.stringTemplate(
+                "get_distance({0},{1},{2},{3})",
+                accommodation.lat, accommodation.lng, baseLat, baseLng).desc()
+                : Expressions.stringTemplate("get_distance({0},{1},{2},{3})", accommodation.lat,
+                    accommodation.lng, baseLat, baseLng).asc();
+        } else {
+            // sort 가 Null일 시 평점 순 desc
+            return accommodation.score.desc();
+        }
     }
 
 
