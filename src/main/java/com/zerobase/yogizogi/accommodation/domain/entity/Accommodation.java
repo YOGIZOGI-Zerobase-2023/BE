@@ -69,8 +69,8 @@ public class Accommodation extends BaseEntity {
             return;
         }
 
-        Double totalRate = 0.0;
-        Integer reviewCount = 0;
+        double totalRate = 0.0;
+        int reviewCount = 0;
 
         for (Review review : reviews) {
             if (review.getRate() != null) {
