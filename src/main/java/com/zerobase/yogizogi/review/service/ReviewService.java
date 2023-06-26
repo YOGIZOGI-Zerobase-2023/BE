@@ -14,6 +14,7 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.time.LocalDate;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,12 @@ public class ReviewService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
         Book book = bookRepository.findById(reviewForm.getBookId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
+
+        // 예약이 이미 지난 경우에만 리뷰 작성 가능*추가
+        LocalDate now = LocalDate.now();
+        if (book.getCheckOutDate().isAfter(now)) {
+            throw new CustomException(ErrorCode.NOT_ALLOW_WRITE_REVIEW);
+        }
         //리뷰 작성 가능 여부 확인
         if (book.getReviewRegistered()) {
             throw new CustomException(ErrorCode.AlREADY_REGISTER_REVIEW);

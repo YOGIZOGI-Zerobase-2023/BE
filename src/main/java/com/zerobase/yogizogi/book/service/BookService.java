@@ -14,6 +14,7 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
@@ -100,9 +101,8 @@ public class BookService {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
-        // TODO
-        // 예약일이 지난 예약은 삭제 불가능.
-        // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
+
+
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
@@ -114,10 +114,27 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
+        // 예약일이 지난 예약은 삭제 불가능.
+        LocalDate now = LocalDate.now();
+        if(book.getCheckInDate().isBefore(now)){
+            throw new CustomException(ErrorCode.NOT_ALLOW_DELETE_BOOK);
+        }
+
         if (!Objects.equals(book.getUser().getId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
+        // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
+        int betweenDay = (int) ChronoUnit.DAYS.between(book.getCheckInDate(), book.getCheckOutDate());
+        IntStream.range(0, betweenDay)
+            .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(book.getRoom().getId(),
+                book.getCheckInDate().plusDays(i)))
+            .forEach(price -> {price.setRoomCnt(price.getRoomCnt() + 1);
+                priceRepository.save(price);
+            });
+
         bookRepository.delete(book);
+
+
     }
 }

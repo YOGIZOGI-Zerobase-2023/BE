@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PriceRepository extends JpaRepository<Price, Long> {
-   Price findAllByRoom_IdAndDate(Long roomId, LocalDate date);
+
+    Price findAllByRoom_IdAndDate(Long roomId, LocalDate date);
+
 }
