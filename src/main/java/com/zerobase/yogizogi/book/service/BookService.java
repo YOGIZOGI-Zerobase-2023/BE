@@ -100,7 +100,9 @@ public class BookService {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
-
+        // TODO
+        // 예약일이 지난 예약은 삭제 불가능.
+        // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));

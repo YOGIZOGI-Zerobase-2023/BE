@@ -3,9 +3,11 @@ package com.zerobase.yogizogi.review.dto;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
 @AllArgsConstructor
+@Getter
 public class ReviewDto {
     private Long id;
     private String nickName;

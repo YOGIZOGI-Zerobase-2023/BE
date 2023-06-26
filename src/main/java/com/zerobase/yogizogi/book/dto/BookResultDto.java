@@ -23,6 +23,9 @@ public class BookResultDto {
     //정적 팩터리 메서드
     public static BookResultDto from(Book book){
         return BookResultDto.builder()
+            .id(book.getId())
+            .userId(book.getUser().getId())
+            .accommodationId(book.getAccommodation().getId())
             .bookName(book.getBookName())
             .payAmount(book.getPayAmount())
             .rate(book.getAccommodation().getRate())

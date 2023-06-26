@@ -100,9 +100,10 @@ public class ReviewService {
             || reviewForm.getRate() > 10)) {
             throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
         }
-
+        int beforeRate = -1;
         if (reviewForm.getRate() != null && !Objects.equals(review.getRate(),
             reviewForm.getRate())) {
+            beforeRate = review.getRate();
             review.setRate(reviewForm.getRate());
         }
 
@@ -113,8 +114,7 @@ public class ReviewService {
 
         reviewRepository.save(review);
 
-        if (reviewForm.getRate() != null && !Objects.equals(review.getRate(),
-            reviewForm.getRate())) {
+        if (beforeRate != -1) {
             accommodation.updateScore(accommodation.getRate());
             accommodationRepository.save(accommodation);
         }
