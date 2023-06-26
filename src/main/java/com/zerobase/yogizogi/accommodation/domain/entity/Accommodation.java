@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,7 +49,7 @@ public class Accommodation extends BaseEntity {
     private String address;
     @OneToMany(mappedBy = "accommodation")
     @Column(name = "picUrls")
-    private List<Picture> picUrls;
+    private Set<Picture> picUrls;
     @Column(name = "detail")
     private String detail;
 

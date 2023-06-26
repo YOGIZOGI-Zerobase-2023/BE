@@ -68,6 +68,59 @@ class AccommodationRepositoryImplTest {
         //when
         //then
         System.out.println(bySearchOption.size());
+        assertEquals(45, bySearchOption.size());
+
+    }
+
+    @Test
+    void findBySearchOptionDate() {
+        //given
+        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption(null,
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, null,
+            null, 10000, 50000, null, null, null);
+
+        //when
+        //then
+        System.out.println(bySearchOption.size());
+        assertEquals(43, bySearchOption.size());
+    }
+
+    @Test
+    void findBySearchOptionKeyword() {
+        //given
+        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption("역삼",
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, null,
+            null, 10000, 50000, null, null, null);
+
+        //when
+        //then
+        System.out.println(bySearchOption.size());
+        assertEquals(25, bySearchOption.size());
+    }
+
+    @Test
+    void findBySearchOptionSort() {
+        //given
+        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption("역삼",
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "rate",
+            "desc", 10000, 50000, null, null, null);
+
+        List<Accommodation> bySearchOptionPrice = accommodationRepository.findBySearchOption("역삼",
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "price",
+            "desc", 10000, 50000, null, null, null);
+
+        //when
+        //then
+        System.out.println(bySearchOption.size());
+        assertTrue(bySearchOption.get(0).getScore() >= bySearchOption.get(1).getScore());
+        assertTrue(bySearchOption.get(5).getScore() >= bySearchOption.get(6).getScore());
+        assertTrue(bySearchOption.get(10).getScore() >= bySearchOption.get(15).getScore());
+
+        // To-Do
+        // price test 추가 (mysql 로 확인 완료)
+//        assertTrue(bySearchOptionPrice.get(0).getRooms().stream().min(x -> x.getPrices().stream().sorted((a,b)-> a.getPrice() - b.getPrice()))>= bySearchOptionPrice.get(1).getScore());
+//        assertTrue(bySearchOptionPrice.get(5).getScore() >= bySearchOptionPrice.get(6).getScore());
+//        assertTrue(bySearchOptionPrice.get(10).getScore() >= bySearchOptionPrice.get(15).getScore());
 
     }
 

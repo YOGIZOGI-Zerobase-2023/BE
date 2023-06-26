@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,8 +47,8 @@ public class Room extends BaseEntity {
     private Accommodation accommodation;
 
     @OneToMany(mappedBy = "room")
-    private List<RoomPicture> pictures;
+    private Set<RoomPicture> pictures;
 
     @OneToMany(mappedBy = "room")
-    private List<Price> prices;
+    private Set<Price> prices;
 }

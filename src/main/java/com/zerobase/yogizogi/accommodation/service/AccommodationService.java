@@ -44,7 +44,7 @@ public class AccommodationService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
         // TO-DO
-        // price 결측치에 대한 처리 필요
+        // price 결측치에 대한 처리 필요 -> price, room을 list -> set으로 변경하여 get() 사용 불가
         return AccommodationDto.builder()
             .id(accommodation.getId())
             .name(accommodation.getName())
@@ -54,7 +54,7 @@ public class AccommodationService {
             .picUrl(accommodation.getPicUrl())
             .lon(accommodation.getLng())
             .lat(accommodation.getLat())
-            .price(accommodation.getRooms().get(0).getPrices().get(0).getPrice())
+            .price(accommodation.getRooms().get(0).getPrices().stream().findFirst().get().getPrice())
             .build();
     }
 }

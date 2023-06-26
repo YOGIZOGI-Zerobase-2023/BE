@@ -1,10 +1,8 @@
 package com.zerobase.yogizogi.accommodation.repository;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.data.domain.Page;
 
 public interface AccommodationRepositoryCustom {
 
