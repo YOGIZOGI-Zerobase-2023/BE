@@ -81,7 +81,7 @@ public class UserService {
 
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")
             .message(
-                "<div><a target='_blank' href='http://localhost:8080/user/email-verify?id=" + uuid
+                "<div><a target='_blank' href='https://13.209.131.228:8080/user/email-verify?id=" + uuid
                     + "'> 로그인을 활성화 하려면 여기를 눌러 주세요. </a></div>"
             ).build());
     }

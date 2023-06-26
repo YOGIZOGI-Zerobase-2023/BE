@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.beans.factory.annotation.Value;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -26,6 +26,10 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+
+    @Value("${mainpage.url}")
+    private String MAINPAGE;
+
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResponse<Object>> signUp(@RequestBody UserSignUpForm userSignUpForm) {
         userService.signUp(userSignUpForm);
@@ -39,7 +43,7 @@ public class UserController {
         userService.emailVerify(request.getParameter("id"));
         Map<String, String> msg = new HashMap<>();
         msg.put("msg", "회원 가입 인증이 완료 되었습니다.");
-        msg.put("메인페이지로 이동하기","http://localhost:8080");//메인페이지로 가는 등의 형태가 필요할 것으로 보임.
+        msg.put("메인페이지로 이동하기", MAINPAGE);//메인페이지로 가는 등의 형태가 필요할 것으로 보임.
         //메인페이지로 리다이렉트 하는 방법(?)
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(msg).toEntity();
     }
@@ -47,7 +51,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Object>> login(@RequestBody LogInForm logInForm) {
         String token = userService.login(logInForm);
-        Map<String,String> data = new TreeMap<>();
+        Map<String, String> data = new TreeMap<>();
 
         data.put("X-AUTH-TOKEN", token);
         data.put("email", logInForm.getEmail());
@@ -58,7 +62,7 @@ public class UserController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Object>> logout(HttpServletRequest request) {
-                userService.logout(request);
+        userService.logout(request);
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).toEntity();
     }
 }
