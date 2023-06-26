@@ -132,6 +132,9 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
+
         if (!Objects.equals(accommodationId, review.getAccommodation().getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
@@ -140,7 +143,11 @@ public class ReviewService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-        //TODO 리뷰 삭제 시 평점 변경.
+
         reviewRepository.delete(review);
+
+        accommodation.updateScore(accommodation.getRate());
+        accommodationRepository.save(accommodation);
+        //Review 삭제 시 재작성이 가능한 로직은 작성하지 않음.
     }
 }
