@@ -139,6 +139,8 @@ public class ReviewService {
         if (!Objects.equals(review.getUser().getId(), user.getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
+
+        //TODO 리뷰 삭제 시 평점 변경.
         reviewRepository.delete(review);
     }
 }
