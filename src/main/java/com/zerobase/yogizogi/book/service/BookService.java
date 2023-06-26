@@ -81,27 +81,29 @@ public class BookService {
             .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
             .payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
-
-        bookRepository.save(book);
-        //가격 테이블 변경해주기.
         IntStream.range(0, betweenDay)
             .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(room.getId(),
                 bookForm.getCheckInDate().plusDays(i)))
-            .forEach(price -> {if(price != null) {
-                if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
-                    deleteBook(token, user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
-                    throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
+            .forEach(price -> {
+                if (price != null) {
+                    if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
+                        deleteBook(token, user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
+                        throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
+                    }
+                    price.setRoomCnt(price.getRoomCnt() - 1);
+                    priceRepository.save(price);
                 }
-                price.setRoomCnt(price.getRoomCnt() - 1);
-                priceRepository.save(price);
-            }});
+                throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
+            });
+        bookRepository.save(book);
+        //가격 테이블 변경해주기.
+
     }
 
     public void deleteBook(String token, Long userId, Long bookId) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
-
 
         UserDto userDto = provider.getUserDto(token);
         AppUser user = userRepository.findById(userDto.getId())
@@ -116,7 +118,7 @@ public class BookService {
 
         // 예약일이 지난 예약은 삭제 불가능.
         LocalDate now = LocalDate.now();
-        if(book.getCheckInDate().isBefore(now)){
+        if (book.getCheckInDate().isBefore(now)) {
             throw new CustomException(ErrorCode.NOT_ALLOW_DELETE_BOOK);
         }
 
@@ -125,13 +127,17 @@ public class BookService {
         }
 
         // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
-        int betweenDay = (int) ChronoUnit.DAYS.between(book.getCheckInDate(), book.getCheckOutDate());
+        int betweenDay = (int) ChronoUnit.DAYS.between(book.getCheckInDate(),
+            book.getCheckOutDate());
         IntStream.range(0, betweenDay)
             .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(book.getRoom().getId(),
                 book.getCheckInDate().plusDays(i)))
-            .forEach(price -> {if(price != null) {price.setRoomCnt(price.getRoomCnt() + 1);
-                priceRepository.save(price);
-            }});
+            .forEach(price -> {
+                if (price != null) {
+                    price.setRoomCnt(price.getRoomCnt() + 1);
+                    priceRepository.save(price);
+                }
+            });
 
         bookRepository.delete(book);
 
