@@ -87,14 +87,14 @@ public class BookService {
         IntStream.range(0, betweenDay)
             .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(room.getId(),
                 bookForm.getCheckInDate().plusDays(i)))
-            .forEach(price -> {
+            .forEach(price -> {if(price != null) {
                 if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
                     deleteBook(token, user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
                     throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
                 }
                 price.setRoomCnt(price.getRoomCnt() - 1);
                 priceRepository.save(price);
-            });
+            }});
     }
 
     public void deleteBook(String token, Long userId, Long bookId) {
@@ -129,9 +129,9 @@ public class BookService {
         IntStream.range(0, betweenDay)
             .mapToObj(i -> priceRepository.findAllByRoom_IdAndDate(book.getRoom().getId(),
                 book.getCheckInDate().plusDays(i)))
-            .forEach(price -> {price.setRoomCnt(price.getRoomCnt() + 1);
+            .forEach(price -> {if(price != null) {price.setRoomCnt(price.getRoomCnt() + 1);
                 priceRepository.save(price);
-            });
+            }});
 
         bookRepository.delete(book);
 

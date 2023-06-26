@@ -5,6 +5,7 @@ import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.service.BookService;
 import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.global.ResponseCode;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class BookController {
         List<BookResultDto> Dtos = bookService.myBookList(userId, token).stream()
             .map(BookResultDto::from)
             .collect(Collectors.toList());
-
+        Collections.reverse(Dtos);// id 역순으로 가져오기 위한 방법
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(Dtos).toEntity();
     }
 
