@@ -36,8 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
-# Application Properties
-application.properties
+
 
 #
-**/src/resources/ssl/**
+**/src/main/resources/ssl/**
+**/src/main/resources/application.properties
+**/src/main/resources/application-secure.properties
