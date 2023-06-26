@@ -1,7 +1,6 @@
 package com.zerobase.yogizogi.global;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,10 +53,6 @@ public class ApiResponse<T> {
         public ApiResponseBuilder<T> data(T data) {
             this.data = data;
             return this;
-        }
-
-        public ApiResponse<T> build() {
-            return new ApiResponse<T>(code, data);
         }
 
         public ResponseEntity<ApiResponse<T>>toEntity() {

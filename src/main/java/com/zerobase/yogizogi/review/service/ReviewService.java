@@ -72,7 +72,9 @@ public class ReviewService {
         book.setReviewRegistered(true);
         bookRepository.save(book);
     }
-    public void updateReview(Long accommodationId ,Long reviewId, String token, ReviewUpdateForm reviewForm){
+
+    public void updateReview(Long accommodationId, Long reviewId, String token,
+        ReviewUpdateForm reviewForm) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -86,7 +88,7 @@ public class ReviewService {
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
-        if(!Objects.equals(accommodationId, review.getAccommodation().getId())){
+        if (!Objects.equals(accommodationId, review.getAccommodation().getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
@@ -94,22 +96,31 @@ public class ReviewService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-        if (reviewForm.getRate() != null && (reviewForm.getRate() < 0 || reviewForm.getRate() > 10)) {
+        if (reviewForm.getRate() != null && (reviewForm.getRate() < 0
+            || reviewForm.getRate() > 10)) {
             throw new CustomException(ErrorCode.NOT_CORRECT_RANGE);
         }
-        if(reviewForm.getRate()!=null && !Objects.equals(review.getRate(), reviewForm.getRate())) {
+
+        if (reviewForm.getRate() != null && !Objects.equals(review.getRate(),
+            reviewForm.getRate())) {
             review.setRate(reviewForm.getRate());
-            reviewRepository.save(review); //필요한 경우만 사용할 수 있게 분기
-            //평점 변경이 필요
+        }
+
+        if (reviewForm.getDescription() != null && !Objects.equals(review.getDescription(),
+            reviewForm.getDescription())) {
+            review.setDescription(reviewForm.getDescription());
+        }
+
+        reviewRepository.save(review);
+
+        if (reviewForm.getRate() != null && !Objects.equals(review.getRate(),
+            reviewForm.getRate())) {
             accommodation.updateScore(accommodation.getRate());
             accommodationRepository.save(accommodation);
         }
-        if(reviewForm.getDescription()!=null &&!Objects.equals(review.getDescription(), reviewForm.getDescription())) {
-            review.setDescription(reviewForm.getDescription());
-            reviewRepository.save(review);
-        }
 
     }
+
     public void deleteReview(Long accommodationId, String token, Long reviewId) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
@@ -121,7 +132,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if(!Objects.equals(accommodationId, review.getAccommodation().getId())){
+        if (!Objects.equals(accommodationId, review.getAccommodation().getId())) {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
