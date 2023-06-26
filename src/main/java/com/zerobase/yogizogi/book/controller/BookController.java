@@ -1,12 +1,16 @@
 package com.zerobase.yogizogi.book.controller;
 
 import com.zerobase.yogizogi.book.domain.model.BookForm;
+import com.zerobase.yogizogi.book.dto.BookResultDto;
 import com.zerobase.yogizogi.book.service.BookService;
+import com.zerobase.yogizogi.global.ApiResponse;
+import com.zerobase.yogizogi.global.ResponseCode;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,36 +19,44 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/books")
+@RequestMapping("/api")
 public class BookController {
-    private final String TOKEN ="X-AUTH-TOKEN";
+
+    private static final String TOKEN = "X-AUTH-TOKEN";//계속 쓰이는 동일한 값은 static으로
     private final BookService bookService;
 
-    @GetMapping()
-    public ResponseEntity<?> myBook(@RequestHeader(name = TOKEN) String token,
-        @RequestParam(name = "page", defaultValue = "0") int page,
-        @RequestParam(name = "size", defaultValue = "2") int size,
-        @RequestParam(name = "sort", defaultValue = "id") String sort){
-        String[] sortProperties = sort.split(",");
-        Sort.Direction direction = sortProperties[1].equalsIgnoreCase("desc")
-            ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortProperties[0]));
-        return ResponseEntity.ok(bookService.myBookList(token, pageable));
+    @GetMapping("/user/{userId}/mybook")
+    public ResponseEntity<ApiResponse<Object>> myBook(
+        @PathVariable(name = "userId") Long userId,
+        @RequestHeader(name = TOKEN) String token) {
+        List<BookResultDto> Dtos = bookService.myBookList(userId, token).stream()
+            .map(BookResultDto::from)
+            .collect(Collectors.toList());
+        Collections.reverse(Dtos);// id 역순으로 가져오기 위한 방법
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(Dtos).toEntity();
     }
 
-    @PostMapping()
-    public ResponseEntity<?> makeBook(@RequestHeader(name=TOKEN) String token,
-        @RequestBody BookForm bookForm){
-        return ResponseEntity.ok(bookService.makeBook(token, bookForm));
+    @PostMapping("/accommodation/{accommodationId}/book")
+    public ResponseEntity<ApiResponse<Object>> makeBook(@RequestHeader(name = TOKEN) String token,
+        @PathVariable(name = "accommodationId") Long accommodationId,
+        @RequestBody BookForm bookForm) {
+        bookService.makeBook(token, bookForm);
+        Map<String, String> msg = new HashMap<>();
+        msg.put("msg", "예약이 성공적으로 이루어졌습니다.");
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(msg).toEntity();
     }
-    @DeleteMapping("/{bookId}")
-    public ResponseEntity<?> deleteBook(@RequestHeader(name = TOKEN) String token,
+
+    @DeleteMapping("/user/{userId}/mybook/{bookId}")
+    public ResponseEntity<ApiResponse<Object>> deleteBook(@RequestHeader(name = TOKEN) String token,
+        @PathVariable(name = "userId") Long userId,
         @PathVariable(name = "bookId") Long bookId) {
-        return ResponseEntity.ok().body(bookService.deleteBook(token, bookId));
+        bookService.deleteBook(token, userId, bookId);
+        Map<String, String> msg = new HashMap<>();
+        msg.put("msg", "성공적으로 작업을 수행 했습니다.");
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(msg).toEntity();
     }
 }

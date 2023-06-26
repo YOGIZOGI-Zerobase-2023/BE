@@ -1,6 +1,9 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,19 +32,19 @@ public class Accommodation extends BaseEntity {
     @Column(name = "accommodationId")
     private Long id;
     @Column(name = "category")
-    private int category;
+    private Integer category;
     @Column(name = "name")
     private String name;
-    @Column(name = "score")
-    private double score;
+    @Column(name = "rate") //공유 필요
+    private Double rate;
     @Column(name = "region")
     private String region;
     @Column(name = "ano")
-    private int ano;
+    private Integer ano;
     @Column(name = "lat")
-    private double lat;
+    private Double lat;
     @Column(name = "lng")
-    private double lng;
+    private Double lng;
     @Column(name = "picUrl")
     private String picUrl;
     @Column(name = "address")
@@ -54,4 +57,37 @@ public class Accommodation extends BaseEntity {
 
     @OneToMany(mappedBy = "accommodation")
     private List<Room> rooms;
+
+    @OneToMany(mappedBy = "accommodation")
+    @JsonManagedReference
+    private List<Review> reviews = new ArrayList<>();
+
+    //score값 변경(Double로 객체로 null 허용)
+    public void updateScore(Double rate) {
+        if (reviews == null || reviews.isEmpty() && rate == null) {
+            this.rate = 0.0;
+            return;
+        }
+
+        Double totalRate = 0.0;
+        Integer reviewCount = 0;
+
+        for (Review review : reviews) {
+            if (review.getRate() != null) {
+                totalRate += review.getRate();
+                reviewCount++;
+            }
+        }
+        //현재와 같이 값이 잡혀 있는 이유는, 현재 데이터에는 기본 평점이 있기 때문.
+        if (rate != null) {
+            totalRate += rate;
+            reviewCount++;
+        }
+
+        if (reviewCount > 0) {
+            this.rate = totalRate / reviewCount;
+        } else {
+            this.rate = 0.0;
+        }
+    }
 }

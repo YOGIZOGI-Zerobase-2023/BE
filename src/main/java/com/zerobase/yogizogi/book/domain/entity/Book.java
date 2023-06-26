@@ -1,9 +1,11 @@
 package com.zerobase.yogizogi.book.domain.entity;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import java.time.LocalDate;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,22 +31,26 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Book extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "bookId")
+    @Column(name = "bookId")
     private Long id;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDate checkInDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate endDate;
+    private LocalDate checkOutDate;
     private String bookName;
-    private int people;
-    private int payAmount;
-    private boolean reviewRegistered;
+    private Integer people;
+    private Integer payAmount;
+    private Boolean reviewRegistered;
+
     //외래키
     @OneToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "accommodationId")
+    private Accommodation accommodation;
+    @OneToOne
+    @JoinColumn(name = "roomId")
     private Room room;
     @ManyToOne
-    @JoinColumn(name = "appUser_id")
+    @JoinColumn(name = "appUserId") //이름 바뀌면 테이블도 바뀜 체크
     private AppUser user;
 
     //private boolean accept; 락을 걸고 예약을 홀드하는 기능 스케쥴러 활용 동시 예약을 막을 수 있는 기능

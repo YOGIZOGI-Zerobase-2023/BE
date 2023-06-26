@@ -13,9 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookForm {
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int people;
+    private Long accommodationId;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
+    private Integer people;
     private Long RoomId;
+    private Integer payAmount;
     private String bookName;
+    //public static BookForm from(Book )
 }

@@ -2,10 +2,12 @@ package com.zerobase.yogizogi.user.domain.entity;
 
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,12 +53,11 @@ public class AppUser extends BaseEntity {
     private LocalDateTime emailAuthDateTime;
 
     //외래키
-    @OneToMany(mappedBy = "user")//mappedBy는 자체 속성 변수명으로 해야함
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//mappedBy는 자체 속성 변수명으로 해야함
     private List<Book> books;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Review> reviews;
 
-    // 숙소 등록자가 숙소를 가져서 관계설정?
-//    @OneToMany
-//    private List<Accommodation> accommodations;
     //@OneToMany
     //private List<ChattingRoom> chattingRooms;
     //@OneToMany

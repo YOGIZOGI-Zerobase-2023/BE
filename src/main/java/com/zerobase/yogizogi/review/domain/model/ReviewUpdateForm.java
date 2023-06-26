@@ -1,11 +1,8 @@
 package com.zerobase.yogizogi.review.domain.model;
 
 import lombok.Getter;
-
 @Getter
-public class ReviewForm {
-
-    private Long bookId;
+public class ReviewUpdateForm {
     private Integer rate;
     private String description;
 
