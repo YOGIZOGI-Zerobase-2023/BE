@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final PasswordEncoder encoder;
+    @Value("${email.redirect.url}")
+    private String emailUrl;
 
     public void signUp(UserSignUpForm userSignUpForm) {
 
@@ -81,7 +84,7 @@ public class UserService {
 
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")
             .message(
-                "<div><a target='_blank' href='https://13.209.131.228:8080/user/email-verify?id=" + uuid
+                "<div><a target='_blank' href='"+emailUrl + uuid
                     + "'> 로그인을 활성화 하려면 여기를 눌러 주세요. </a></div>"
             ).build());
     }
