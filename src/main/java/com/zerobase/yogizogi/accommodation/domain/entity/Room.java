@@ -1,7 +1,5 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
-import com.zerobase.yogizogi.global.entity.BaseEntity;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "room")
-public class Room extends BaseEntity {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
