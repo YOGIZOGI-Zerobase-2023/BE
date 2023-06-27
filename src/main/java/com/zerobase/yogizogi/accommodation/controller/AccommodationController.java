@@ -2,6 +2,8 @@ package com.zerobase.yogizogi.accommodation.controller;
 
 
 import com.zerobase.yogizogi.accommodation.service.AccommodationService;
+import com.zerobase.yogizogi.global.ApiResponse;
+import com.zerobase.yogizogi.global.ResponseCode;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,7 +41,7 @@ public class AccommodationController {
 
         System.out.println(result.size());
 
-        return ResponseEntity.ok(result);
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 
     @GetMapping("/{accommodationId}/")
@@ -49,6 +51,7 @@ public class AccommodationController {
         @RequestParam Integer people) {
         var result = accommodationService.getAccommodationDetail(accommodationId, checkindate,
             checkoutdaet, people);
-        return ResponseEntity.ok(result);
+
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 }
