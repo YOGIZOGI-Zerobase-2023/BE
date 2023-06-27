@@ -1,6 +1,9 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
+import com.zerobase.yogizogi.review.domain.entity.Review;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
@@ -61,7 +64,7 @@ public class Accommodation extends BaseEntity {
 
     //rate 변경(Double로 객체로 null 허용)
     public void updateScore(double rate) {
-        if (reviews == null || reviews.isEmpty() && rate == null) {
+        if (reviews == null || reviews.isEmpty()) {
             this.rate = 0.0;
             return;
         }
