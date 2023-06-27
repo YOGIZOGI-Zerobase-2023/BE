@@ -1,6 +1,8 @@
 package com.zerobase.yogizogi.accommodation.service;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationDetailDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
@@ -25,21 +27,29 @@ public class AccommodationService {
 
         // TO-DO
         // price 결측치에 대한 처리 필요 -> price, room을 list -> set으로 변경하여 get() 사용 불가
-        return AccommodationDto.builder()
-            .id(accommodation.getId())
-            .name(accommodation.getName())
-            .category(accommodation.getCategory())
-            .address(accommodation.getAddress())
-            .rate(accommodation.getRate())
-            .picUrl(accommodation.getPicUrl())
-            .lon(accommodation.getLon())
-            .lat(accommodation.getLat())
-            .price(
-                accommodation.getRooms().stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices()
-                    .stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
-            .build();
+        return AccommodationDto.from(accommodation);
+    }
+
+    // 숙소 상세정보 조회
+    public AccommodationDetailDto getAccommodationDetail(Long id, LocalDate checkInDate,
+        LocalDate checkOutDate, Integer people) {
+
+        // 숙소 정보 가져오기
+        Accommodation accommodation = accommodationRepository.findById(id)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
+
+        // repository 에서 가져올것인가? 아래 getRoomDetail 을 사용할 것인가?
+        // 방 정보 가져오기 : min(price)를 가져옴 모든 price 정보 X
+        List<RoomDetailForm> rooms = accommodationRepository.findRoomDetailByIdAndDateAndPeople(id,
+            checkInDate, checkOutDate, people);
+
+        return new AccommodationDetailDto(accommodation, rooms);
+    }
+
+    public List<RoomDetailForm> getRoomDetail(Long id, LocalDate checkInDate,
+        LocalDate checkOutDate, Integer people) {
+        return accommodationRepository.findRoomDetailByIdAndDateAndPeople(id,
+            checkInDate, checkOutDate, people);
     }
 
     // 숙소 검색

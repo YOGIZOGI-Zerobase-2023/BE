@@ -2,8 +2,6 @@ package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.review.domain.entity.Review;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,17 +47,21 @@ public class Accommodation {
     private String picUrl;
     @Column(name = "address")
     private String address;
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "accommodation")
     @Column(name = "picUrls")
     private Set<Picture> picUrls;
     @Column(name = "detail")
     private String detail;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "accommodation")
     private Set<Room> rooms;
+
     @OneToMany(mappedBy = "accommodation")
     @JsonManagedReference
-    private List<Review> reviews = new ArrayList<>();
+    private Set<Review> reviews;
 
     //rate 변경(Double로 객체로 null 허용)
     public void updateScore(double rate) {
@@ -71,13 +73,12 @@ public class Accommodation {
         double totalRate = 0.0;
         int reviewCount = 0;
         for (Review review : reviews) {
-                totalRate += review.getRate();
-                reviewCount++;
+            totalRate += review.getRate();
+            reviewCount++;
         }
         //현재와 같이 값이 잡혀 있는 이유는, 현재 데이터에는 기본 평점이 있기 때문.
-            totalRate += rate;
-            reviewCount++;
-
+        totalRate += rate;
+        reviewCount++;
 
         if (reviewCount > 0) {
             this.rate = totalRate / reviewCount;

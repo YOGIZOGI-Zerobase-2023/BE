@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,9 +42,13 @@ public class AccommodationController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> autocomplete(@RequestParam Long id) {
-        var result = accommodationService.getAccommodation(id);
+    @GetMapping("/{accommodationId}/")
+    public ResponseEntity<?> getAccommodationDetail(@PathVariable Long accommodationId,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdaet,
+        @RequestParam Integer people) {
+        var result = accommodationService.getAccommodationDetail(accommodationId, checkindate,
+            checkoutdaet, people);
         return ResponseEntity.ok(result);
     }
 }
