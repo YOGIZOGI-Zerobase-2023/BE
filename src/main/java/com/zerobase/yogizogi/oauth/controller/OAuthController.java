@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("user")
+@RequestMapping("/api/user")
 public class OAuthController {
 
     private final OauthService oauthService;
