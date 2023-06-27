@@ -6,8 +6,6 @@ import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.repository.UserRepository;
-import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccommodationService {
 
-    private final JwtAuthenticationProvider provider;
     private final AccommodationRepository accommodationRepository;
-    private final UserRepository userRepository;
 
     // TEST
     // 숙소 조회
@@ -39,8 +35,8 @@ public class AccommodationService {
             .lon(accommodation.getLon())
             .lat(accommodation.getLat())
             .price(
-                accommodation.getRooms().stream().findFirst().get().getPrices().stream().findFirst()
-                    .get().getPrice())
+                accommodation.getRooms().stream().findFirst().orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices().stream().findFirst()
+                    .orElseThrow(()->new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
             .build();
     }
 
