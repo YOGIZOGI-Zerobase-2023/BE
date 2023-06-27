@@ -1,7 +1,6 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "accommodation")
-public class Accommodation extends BaseEntity {
+public class Accommodation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
