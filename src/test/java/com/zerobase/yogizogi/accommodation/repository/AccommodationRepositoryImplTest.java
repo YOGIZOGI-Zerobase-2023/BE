@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionPeople() {
         //given
-        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
             null, null, 4, null,
             null, null, null, null, null, null);
         //when
@@ -35,15 +37,15 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionCategory() {
         //given
-        List<Accommodation> category1 = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> category1 = accommodationRepository.findBySearchOption(null,
             null, null, null, null,
             null, null, null, 1, null, null);
 
-        List<Accommodation> category2 = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> category2 = accommodationRepository.findBySearchOption(null,
             null, null, null, null,
             null, null, null, 2, null, null);
 
-        List<Accommodation> category3 = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> category3 = accommodationRepository.findBySearchOption(null,
             null, null, null, null,
             null, null, null, 3, null, null);
         //when
@@ -56,34 +58,34 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionPrice() {
         //given
-        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption(null,
-            null, null, null, null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
+            null, null, 2, null,
             null, 10000, 50000, null, null, null);
 
         //when
         //then
         System.out.println(bySearchOption.size());
         assertEquals(45, bySearchOption.size());
-
     }
 
     @Test
     void findBySearchOptionDate() {
         //given
-        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption(null,
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
+            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), 2, null,
             null, 10000, 50000, null, null, null);
 
         //when
         //then
         System.out.println(bySearchOption.size());
+
         assertEquals(43, bySearchOption.size());
     }
 
     @Test
     void findBySearchOptionKeyword() {
         //given
-        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption("역삼",
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption("역삼",
             LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, null,
             null, 10000, 50000, null, null, null);
 
@@ -96,15 +98,15 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionSort() {
         //given
-        List<Accommodation> bySearchOption = accommodationRepository.findBySearchOption("역삼",
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption("역삼",
             LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "rate",
             "desc", 10000, 50000, null, null, null);
 
-        List<Accommodation> bySearchOptionPrice = accommodationRepository.findBySearchOption("역삼",
+        List<AccommodationSearchDto> bySearchOptionPrice = accommodationRepository.findBySearchOption("역삼",
             LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "price",
             "desc", 10000, 50000, null, null, null);
 
-        List<Accommodation> bySearchOptionDistance = accommodationRepository.findBySearchOption(
+        List<AccommodationSearchDto> bySearchOptionDistance = accommodationRepository.findBySearchOption(
             "역삼",
             LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "distance",
             "desc", 10000, 50000, null, 37.563724611104156, 126.97775897488705);

@@ -54,5 +54,5 @@ public class Accommodation extends BaseEntity {
     private String detail;
 
     @OneToMany(mappedBy = "accommodation")
-    private List<Room> rooms;
+    private Set<Room> rooms;
 }

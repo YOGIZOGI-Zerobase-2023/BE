@@ -11,6 +11,9 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
+import com.zerobase.yogizogi.accommodation.dto.QAccommodationSearchDto;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +52,18 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 //            (org.springframework.data.domain.Pageable) pageable, query.fetchCount());
 //    }
 
-    public List<Accommodation> findBySearchOption(String keyword,
+    public List<AccommodationSearchDto> findBySearchOption(String keyword,
         LocalDate checkInDate, LocalDate checkOutDate, Integer people, String sort,
         String direction,
         Integer minPrice, Integer maxPrice, Integer category, Double lat, Double lon) {
 
-        // query 생성
-        JPAQuery<Accommodation> query = queryFactory.selectDistinct(accommodation)
+        // query 생성성
+        JPAQuery<AccommodationSearchDto> query = queryFactory.selectDistinct(
+                new QAccommodationSearchDto(accommodation, price1.price.min(), room.maxPeople.max()))
             .from(accommodation)
             .leftJoin(accommodation.rooms, room)
             .fetchJoin()
             .leftJoin(room.prices, price1)
-            .fetchJoin()
             .where(containKeyword(keyword), checkDate(checkInDate, checkOutDate),
                 checkPeople(people), eqCategory(category), checkRoomCnt())
             .groupBy(accommodation.id)

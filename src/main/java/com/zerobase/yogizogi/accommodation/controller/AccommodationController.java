@@ -2,7 +2,10 @@ package com.zerobase.yogizogi.accommodation.controller;
 
 import com.zerobase.yogizogi.accommodation.domain.model.AccommodationForm;
 import com.zerobase.yogizogi.accommodation.service.AccommodationService;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +31,28 @@ public class AccommodationController {
     }
 
     // 숙소 리스트 조회
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam(required = false) String keyword,
+        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
+        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
+        @RequestParam(required = false) Integer people,
+        @RequestParam(required = false) String sort,
+        @RequestParam(required = false) String direction,
+        @RequestParam(required = false) Integer minprice,
+        @RequestParam(required = false) Integer maxprice,
+        @RequestParam(required = false) Integer category,
+        @RequestParam(required = false) Double lat, @RequestParam(required = false) Double lon) {
+        var result = accommodationService.searchAccommodation(keyword, checkindate, checkoutdate,
+            people,
+            sort, direction, minprice, maxprice, category, lat, lon);
+
+        System.out.println(result.size());
+
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/")
     public ResponseEntity<?> autocomplete(@RequestParam Long id) {
         var result = accommodationService.getAccommodation(id);
