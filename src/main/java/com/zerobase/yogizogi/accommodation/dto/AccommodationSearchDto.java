@@ -16,11 +16,11 @@ public class AccommodationSearchDto {
         this.id = accommodation.getId();
         this.name = accommodation.getName();
         this.category = accommodation.getCategory();
-        this.score = accommodation.getScore();
+        this.rate = accommodation.getRate();
         this.picUrl = accommodation.getPicUrl();
         this.address = accommodation.getAddress();
         this.lat = accommodation.getLat();
-        this.lon = accommodation.getLng();
+        this.lon = accommodation.getLon();
         this.price = price;
         this.peopleMax = peopleMax;
     }
@@ -28,7 +28,7 @@ public class AccommodationSearchDto {
     private Long id;
     private String name;
     private int category;
-    private Double score;
+    private Double rate;
     private String picUrl;
     private String address;
     private Double lat;

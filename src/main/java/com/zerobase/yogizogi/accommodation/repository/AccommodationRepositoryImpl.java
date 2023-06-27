@@ -11,7 +11,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.dto.QAccommodationSearchDto;
 import java.time.LocalDate;
@@ -140,25 +139,25 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
         Double baseLng) {
         if (sort == null) {
             // sort 가 Null일 시 평점 순 desc
-            return accommodation.score.desc();
+            return accommodation.rate.desc();
         }
 
         if (sort.equals("price")) {
             return direction.equals("desc") ? price1.price.min().desc() : price1.price.min().asc();
         } else if (sort.equals("rate")) {
-            return direction.equals("desc") ? accommodation.score.desc()
-                : accommodation.score.asc();
+            return direction.equals("desc") ? accommodation.rate.desc()
+                : accommodation.rate.asc();
         } else if (sort.equals("distance")) {
             // 경도, 위도로 거리를 구하여 정렬 (get_distance 사용자 정의 함수 사용)
             // 경도, 위도 값이 없을 때는 경도, 위도를 0으로 설정하여 정렬
             return direction.equals("desc") ? Expressions.stringTemplate(
                 "get_distance({0},{1},{2},{3})",
-                accommodation.lat, accommodation.lng, baseLat, baseLng).desc()
+                accommodation.lat, accommodation.lon, baseLat, baseLng).desc()
                 : Expressions.stringTemplate("get_distance({0},{1},{2},{3})", accommodation.lat,
-                    accommodation.lng, baseLat, baseLng).asc();
+                    accommodation.lon, baseLat, baseLng).asc();
         } else {
             // sort 가 Null일 시 평점 순 desc
-            return accommodation.score.desc();
+            return accommodation.rate.desc();
         }
     }
 

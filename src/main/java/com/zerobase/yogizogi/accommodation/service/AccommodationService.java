@@ -1,14 +1,11 @@
 package com.zerobase.yogizogi.accommodation.service;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.accommodation.domain.model.AccommodationForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
-import com.zerobase.yogizogi.user.domain.entity.AppUser;
-import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.LocalDate;
@@ -37,9 +34,9 @@ public class AccommodationService {
             .name(accommodation.getName())
             .category(accommodation.getCategory())
             .address(accommodation.getAddress())
-            .score(accommodation.getScore())
+            .rate(accommodation.getRate())
             .picUrl(accommodation.getPicUrl())
-            .lon(accommodation.getLng())
+            .lon(accommodation.getLon())
             .lat(accommodation.getLat())
             .price(
                 accommodation.getRooms().stream().findFirst().get().getPrices().stream().findFirst()
