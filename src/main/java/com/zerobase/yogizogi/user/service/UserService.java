@@ -35,21 +35,12 @@ public class UserService {
         if (userRepository.findByEmail(userSignUpForm.getEmail()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_EMAIL);
         }
-        //(230608)이메일 형식은 프론트에서 email로 값을 주면 이외의 가입이 불가능하므로 예외처리를 따로 두지 않음.
 
-        //전화번호가 이미 등록 되었는지
-        if (userRepository.findByPhoneNumber(userSignUpForm.getPhoneNumber()).isPresent()) {
-            throw new CustomException(ErrorCode.ALREADY_REGISTER_PHONE_NUMBER);
-        }
         //비밀번호 encoding
         String rawPassword = userSignUpForm.getPassword();
         String encodePassword = encoder.encode(rawPassword);
         userSignUpForm.setPassword(encodePassword);
 
-        //전화번호 양식이 정상적인지
-        if (!userSignUpForm.getPhoneNumber().matches("^(01[016-9])-(\\d{3,4})-(\\d{4})$")) {
-            throw new CustomException(ErrorCode.NOT_VALID_PHONE_NUMBER_FORMAT);
-        }
         //닉네임이 이미 등록되어 있는 것은 아닌지
         if (userRepository.findByNickName(userSignUpForm.getNickName()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_NICK_NAME);
@@ -69,9 +60,7 @@ public class UserService {
                 .sns(false)
                 .email(userSignUpForm.getEmail())
                 .nickName(userSignUpForm.getNickName())
-                .bookName(userSignUpForm.getBookName())
                 .password(userSignUpForm.getPassword())
-                .phoneNumber(userSignUpForm.getPhoneNumber())
                 .emailAuthKey(uuid)
                 .active(false)
                 .build()

@@ -25,21 +25,7 @@ public class AccommodationService {
 
         // TO-DO
         // price 결측치에 대한 처리 필요 -> price, room을 list -> set으로 변경하여 get() 사용 불가
-        return AccommodationDto.builder()
-            .id(accommodation.getId())
-            .name(accommodation.getName())
-            .category(accommodation.getCategory())
-            .address(accommodation.getAddress())
-            .rate(accommodation.getRate())
-            .picUrl(accommodation.getPicUrl())
-            .lon(accommodation.getLon())
-            .lat(accommodation.getLat())
-            .price(
-                accommodation.getRooms().stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices()
-                    .stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
-            .build();
+        return AccommodationDto.from(accommodation);//팩토리 메서드로 변환
     }
 
     // 숙소 검색
@@ -63,5 +49,11 @@ public class AccommodationService {
         return accommodationRepository.findBySearchOption(keyword,
             checkInDate, checkOutDate, people, sort,
             direction, minPrice, maxPrice, category, lat, lon);
+    }
+
+    public List<Accommodation> getAccommodationsByArea(double leftUpLat, double rightDownLat,
+        double leftUpLon, double rightDownLon) {
+        return accommodationRepository.findInArea(leftUpLat, rightDownLat,
+            leftUpLon, rightDownLon);
     }
 }

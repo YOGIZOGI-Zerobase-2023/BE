@@ -11,10 +11,13 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.domain.entity.QAccommodation;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.dto.QAccommodationSearchDto;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
@@ -24,6 +27,9 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
 
     @Autowired
     private JPAQueryFactory queryFactory;
+
+    @PersistenceContext
+    private EntityManager em;
 
     public AccommodationRepositoryImpl() {
         super(Accommodation.class);
@@ -160,6 +166,15 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
             return accommodation.rate.desc();
         }
     }
+    @Override
+    public List<Accommodation> findInArea(double leftUpLat, double rightDownLat, double leftUpLon, double rightDownLon) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QAccommodation accommodation = QAccommodation.accommodation; // Q 클래스 인스턴스
 
+        return queryFactory.selectFrom(accommodation)
+            .where(accommodation.lat.between(rightDownLat, leftUpLat)//세로선
+                .and(accommodation.lon.between(leftUpLon, rightDownLon)))//가로선
+            .fetch();
+    }
 
 }

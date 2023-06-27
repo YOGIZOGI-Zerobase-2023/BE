@@ -15,7 +15,5 @@ public class UserSignUpForm {
 
     private String email;
     private String nickName;
-    private String bookName;
     private String password;
-    private String phoneNumber;
 }

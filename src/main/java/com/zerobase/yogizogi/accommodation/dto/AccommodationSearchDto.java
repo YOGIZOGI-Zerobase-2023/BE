@@ -14,7 +14,7 @@ public class AccommodationSearchDto {
     @QueryProjection
     public AccommodationSearchDto(Accommodation accommodation, Integer price, Integer peopleMax) {
         this.id = accommodation.getId();
-        this.name = accommodation.getName();
+        this.accommodationName = accommodation.getName();
         this.category = accommodation.getCategory();
         this.rate = accommodation.getRate();
         this.picUrl = accommodation.getPicUrl();
@@ -26,7 +26,7 @@ public class AccommodationSearchDto {
     }
 
     private Long id;
-    private String name;
+    private String accommodationName;
     private int category;
     private Double rate;
     private String picUrl;
