@@ -35,8 +35,10 @@ public class AccommodationService {
             .lon(accommodation.getLon())
             .lat(accommodation.getLat())
             .price(
-                accommodation.getRooms().stream().findFirst().orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices().stream().findFirst()
-                    .orElseThrow(()->new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
+                accommodation.getRooms().stream().findFirst()
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices()
+                    .stream().findFirst()
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
             .build();
     }
 
@@ -47,6 +49,16 @@ public class AccommodationService {
         Integer people, String sort, String direction, Integer minPrice, Integer maxPrice,
         Integer category,
         Double lat, Double lon) {
+
+        if (checkInDate != null & checkOutDate != null) {
+            if ((checkInDate.isBefore(LocalDate.now()) || checkInDate.isBefore(
+                LocalDate.of(2023, 7, 1))
+                || checkOutDate.isAfter(LocalDate.of(2023, 10, 1)))) {
+                throw new CustomException(ErrorCode.NOT_CORRECT_DATE);
+            } else if (checkOutDate.isAfter(checkInDate.plusDays(7))) {
+                throw new CustomException(ErrorCode.NOT_CORRECT_DATE_RANGE);
+            }
+        }
 
         return accommodationRepository.findBySearchOption(keyword,
             checkInDate, checkOutDate, people, sort,

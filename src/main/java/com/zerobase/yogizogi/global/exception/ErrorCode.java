@@ -43,7 +43,13 @@ public enum ErrorCode implements Code {
     NOT_FOUND_ACCOMMODATION(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
     //숙소- 방 관련
     NOT_FOUND_ROOM(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
-    endSample(HttpStatus.BAD_REQUEST, "마무리 샘플입니다."), ;
+    endSample(HttpStatus.BAD_REQUEST, "마무리 샘플입니다."),
+
+    // 검색 관련
+    NOT_CORRECT_DATE(HttpStatus.BAD_REQUEST, "날짜는 2023-07-01 ~ 2023-09-30 까지의 날짜만 검색이 가능합니다."),
+    NOT_CORRECT_DATE_RANGE(HttpStatus.BAD_REQUEST, "최대 7일의 정보만 조회가능합니다.");
+
+
 
 
     private final HttpStatus status;

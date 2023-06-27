@@ -3,9 +3,6 @@ package com.zerobase.yogizogi.accommodation.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +21,8 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionPeople() {
         //given
-        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(
+            null,
             null, null, 4, null,
             null, null, null, null, null, null);
         //when
@@ -58,7 +56,8 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionPrice() {
         //given
-        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(
+            null,
             null, null, 2, null,
             null, 10000, 50000, null, null, null);
 
@@ -71,8 +70,9 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionDate() {
         //given
-        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(null,
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), 2, null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(
+            null,
+            LocalDate.of(2023, 7, 8), LocalDate.of(2023, 7, 10), 2, null,
             null, 10000, 50000, null, null, null);
 
         //when
@@ -85,8 +85,9 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionKeyword() {
         //given
-        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption("역삼",
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, null,
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(
+            "역삼",
+            LocalDate.of(2023, 7, 8), LocalDate.of(2023, 7, 10), null, null,
             null, 10000, 50000, null, null, null);
 
         //when
@@ -98,17 +99,19 @@ class AccommodationRepositoryImplTest {
     @Test
     void findBySearchOptionSort() {
         //given
-        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption("역삼",
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "rate",
+        List<AccommodationSearchDto> bySearchOption = accommodationRepository.findBySearchOption(
+            "역삼",
+            LocalDate.of(2023, 7, 8), LocalDate.of(2023, 7, 10), null, "rate",
             "desc", 10000, 50000, null, null, null);
 
-        List<AccommodationSearchDto> bySearchOptionPrice = accommodationRepository.findBySearchOption("역삼",
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "price",
+        List<AccommodationSearchDto> bySearchOptionPrice = accommodationRepository.findBySearchOption(
+            "역삼",
+            LocalDate.of(2023, 7, 8), LocalDate.of(2023, 7, 10), null, "price",
             "desc", 10000, 50000, null, null, null);
 
         List<AccommodationSearchDto> bySearchOptionDistance = accommodationRepository.findBySearchOption(
             "역삼",
-            LocalDate.of(2023, 07, 8), LocalDate.of(2023, 07, 10), null, "distance",
+            LocalDate.of(2023, 7, 8), LocalDate.of(2023, 7, 10), null, "distance",
             "desc", 10000, 50000, null, 37.563724611104156, 126.97775897488705);
 
         //when
@@ -116,9 +119,9 @@ class AccommodationRepositoryImplTest {
         System.out.println(bySearchOption.size());
 
         // score sort test
-        assertTrue(bySearchOption.get(0).getScore() >= bySearchOption.get(1).getScore());
-        assertTrue(bySearchOption.get(5).getScore() >= bySearchOption.get(6).getScore());
-        assertTrue(bySearchOption.get(10).getScore() >= bySearchOption.get(15).getScore());
+        assertTrue(bySearchOption.get(0).getRate() >= bySearchOption.get(1).getRate());
+        assertTrue(bySearchOption.get(5).getRate() >= bySearchOption.get(6).getRate());
+        assertTrue(bySearchOption.get(10).getRate() >= bySearchOption.get(15).getRate());
 
         // price sort test
         assertEquals(bySearchOptionPrice.get(0).getId(), 4);
