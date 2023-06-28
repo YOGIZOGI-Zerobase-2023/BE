@@ -23,6 +23,7 @@ public class AccommodationSearchDto {
         this.lon = accommodation.getLon();
         this.price = price;
         this.peopleMax = peopleMax;
+        this.info = accommodation.getDetail();
     }
 
     private Long id;
@@ -35,4 +36,6 @@ public class AccommodationSearchDto {
     private Double lon;
     private int category;
     private Integer peopleMax;
+    private String info;
+
 }

@@ -20,7 +20,6 @@ public class AccommodationDetailDto {
         this.accommodationName = accommodation.getName();
         this.category = accommodation.getCategory();
         this.rate = accommodation.getRate();
-        this.picUrl = accommodation.getPicUrl();
         this.address = accommodation.getAddress();
         this.region = accommodation.getRegion();
         this.lat = accommodation.getLat();
@@ -36,7 +35,6 @@ public class AccommodationDetailDto {
     private Double rate;
     private String address;
     private String region;
-    private String picUrl;
     private Double lat;
     private Double lon;
     private String info;
