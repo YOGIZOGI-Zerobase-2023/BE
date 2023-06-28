@@ -55,10 +55,10 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}/")
     public ResponseEntity<?> getAccommodationDetail(@PathVariable Long accommodationId,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
-        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdaet,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
         @RequestParam Integer people) {
         var result = accommodationService.getAccommodationDetail(accommodationId, checkindate,
-            checkoutdaet, people);
+            checkoutdate, people);
 
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
