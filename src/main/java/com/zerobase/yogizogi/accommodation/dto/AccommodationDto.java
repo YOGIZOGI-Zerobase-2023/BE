@@ -1,21 +1,19 @@
 package com.zerobase.yogizogi.accommodation.dto;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.global.exception.CustomException;
-import com.zerobase.yogizogi.global.exception.ErrorCode;
+import com.zerobase.yogizogi.accommodation.domain.entity.Price;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class AccommodationDto {
 
     private Long id;
-    private String name;
+    private String accommodationName;
     private int category;
     private Double rate;
     private String picUrl;
@@ -25,20 +23,23 @@ public class AccommodationDto {
     private Integer price;
 
     public static AccommodationDto from(Accommodation accommodation) {
+        int minPrice = accommodation.getRooms().stream()
+            .filter(room -> !room.getPrices().isEmpty())
+            .flatMap(room -> room.getPrices().stream())
+            .map(Price::getPrice)
+            .filter(Objects::nonNull)
+            .min(Integer::compare).orElse(40000);
+//날짜값이 추가가 된다면, 성능이 개선될 것으로 생각되어짐.
         return AccommodationDto.builder()
             .id(accommodation.getId())
-            .name(accommodation.getName())
+            .accommodationName(accommodation.getName())
             .category(accommodation.getCategory())
             .address(accommodation.getAddress())
-            .rate(accommodation.getRate())
-            .picUrl(accommodation.getPicUrl())
-            .lon(accommodation.getLon())
             .lat(accommodation.getLat())
-            .price(
-                accommodation.getRooms().stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM)).getPrices()
-                    .stream().findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_ALLOW_ACCESS)).getPrice())
+            .lon(accommodation.getLon())
+            .picUrl(accommodation.getPicUrl())
+            .rate(accommodation.getRate())
+            .price(minPrice)
             .build();
     }
 }

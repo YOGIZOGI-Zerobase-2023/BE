@@ -74,4 +74,10 @@ public class AccommodationService {
             checkInDate, checkOutDate, people, sort,
             direction, minPrice, maxPrice, category, lat, lon);
     }
+
+    public List<Accommodation> getAccommodationsByArea(double leftUpLat, double rightDownLat,
+        double leftUpLon, double rightDownLon) {
+        return accommodationRepository.findInArea(leftUpLat, rightDownLat,
+            leftUpLon, rightDownLon);
+    }
 }

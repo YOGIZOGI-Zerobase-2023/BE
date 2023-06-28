@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,17 +40,8 @@ public class AppUser extends BaseEntity {
     private String password;
     @Column(unique = true)
     private String nickName;
-
-    private String bookName;
-
-    @Column(unique = true)
-    @Pattern(regexp = "^(01[016-9])-(\\d{3,4})-(\\d{4})$", message = "휴대폰 번호 형식이 유효하지 않습니다.")
-    private String phoneNumber;
-
     private boolean active;
-
     private String emailAuthKey;
-
     private LocalDateTime emailAuthDateTime;
 
     //외래키
@@ -62,8 +52,4 @@ public class AppUser extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Review> reviews;
 
-    //@OneToMany
-    //private List<ChattingRoom> chattingRooms;
-    //@OneToMany
-    //private List<Message> messages;
 }
