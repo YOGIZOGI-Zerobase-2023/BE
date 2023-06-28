@@ -3,7 +3,6 @@ package com.zerobase.yogizogi.accommodation.dto;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Price;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,13 +23,13 @@ public class AccommodationDto {
     private Integer price;
 
     public static AccommodationDto from(Accommodation accommodation) {
-        Optional<Integer> minPrice = accommodation.getRooms().stream()
+        int minPrice = accommodation.getRooms().stream()
             .filter(room -> !room.getPrices().isEmpty())
             .flatMap(room -> room.getPrices().stream())
             .map(Price::getPrice)
             .filter(Objects::nonNull)
-            .min(Integer::compare);
-
+            .min(Integer::compare).orElse(40000);
+//날짜값이 추가가 된다면, 성능이 개선될 것으로 생각되어짐.
         return AccommodationDto.builder()
             .id(accommodation.getId())
             .accommodationName(accommodation.getName())
@@ -40,7 +39,7 @@ public class AccommodationDto {
             .lon(accommodation.getLon())
             .picUrl(accommodation.getPicUrl())
             .rate(accommodation.getRate())
-            .price(minPrice.orElse(0))
+            .price(minPrice)
             .build();
     }
 }

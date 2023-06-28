@@ -27,6 +27,8 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
     @Value("${mainpage.url}")
     private String MAINPAGE;
 
