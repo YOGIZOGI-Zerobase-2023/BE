@@ -2,6 +2,7 @@ package com.zerobase.yogizogi.accommodation.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.review.domain.entity.Review;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,6 +63,10 @@ public class Accommodation {
     @OneToMany(mappedBy = "accommodation")
     @JsonManagedReference
     private Set<Review> reviews;
+
+    @OneToMany(mappedBy = "accommodation")
+    @JsonManagedReference
+    private List<Convenience> conveniences;
 
     //rate 변경(Double로 객체로 null 허용)
     public void updateScore() {

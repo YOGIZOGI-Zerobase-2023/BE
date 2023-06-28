@@ -6,6 +6,7 @@ import com.zerobase.yogizogi.accommodation.domain.entity.Picture;
 import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,8 @@ public class AccommodationDetailDto {
         this.info = accommodation.getDetail();
         this.picUrlList = accommodation.getPicUrls();
         this.rooms = roomDetailForm;
+        this.convenienceList = accommodation.getConveniences().stream()
+            .map(ConvenienceDto::from).collect(Collectors.toList());
     }
 
     private Long id;
@@ -39,6 +42,7 @@ public class AccommodationDetailDto {
     private Double lon;
     private String info;
     private Set<Picture> picUrlList;
+    private List<ConvenienceDto> convenienceList;
     private List<RoomDetailForm> rooms;
 
 }
