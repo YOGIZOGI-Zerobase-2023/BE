@@ -64,7 +64,7 @@ public class Accommodation {
     private Set<Review> reviews;
 
     //rate 변경(Double로 객체로 null 허용)
-    public void updateScore(double rate) {
+    public void updateScore() {
         if (reviews == null || reviews.isEmpty()) {
             this.rate = 0.0;
             return;
@@ -76,9 +76,6 @@ public class Accommodation {
             totalRate += review.getRate();
             reviewCount++;
         }
-        //현재와 같이 값이 잡혀 있는 이유는, 현재 데이터에는 기본 평점이 있기 때문.
-        totalRate += rate;
-        reviewCount++;
 
         if (reviewCount > 0) {
             this.rate = totalRate / reviewCount;

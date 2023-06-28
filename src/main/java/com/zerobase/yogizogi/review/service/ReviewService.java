@@ -72,7 +72,7 @@ public class ReviewService {
 
         // 숙소 평점 업데이트
         accommodation.getReviews().add(review);
-        accommodation.updateScore(accommodation.getRate());
+        accommodation.updateScore();
         accommodationRepository.save(accommodation);
 
         // review 했다고 업데이트
@@ -122,7 +122,7 @@ public class ReviewService {
         reviewRepository.save(review);
 
         if (beforeRate != -1) {
-            accommodation.updateScore(accommodation.getRate());
+            accommodation.updateScore();
             accommodationRepository.save(accommodation);
         }
 
@@ -153,7 +153,7 @@ public class ReviewService {
 
         reviewRepository.delete(review);
 
-        accommodation.updateScore(accommodation.getRate());
+        accommodation.updateScore();
         accommodationRepository.save(accommodation);
         //Review 삭제 시 재작성이 가능한 로직은 작성하지 않음.
     }
