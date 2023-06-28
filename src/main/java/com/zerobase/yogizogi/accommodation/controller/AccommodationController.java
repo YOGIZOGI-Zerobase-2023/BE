@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -62,14 +60,13 @@ public class AccommodationController {
 
         PageRequest pageRequest = PageRequest.of(page, pagesize, Sort.Direction.fromString(direction), sort);
 
-        List<AccommodationSearchDto> result =
-            accommodationService.searchAccommodation(keyword, checkindate, checkoutdate,
+        Page<AccommodationSearchDto> result = accommodationService
+            .searchAccommodation(
+                keyword, checkindate, checkoutdate,
                 people, sort, direction, minprice, maxprice,
-                category, lat, lon);
-        System.out.println(result.size());
-        Page<AccommodationSearchDto> resultPage = new PageImpl<>(result, pageRequest, result.size());
+                category, lat, lon, pageRequest);
 
-        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(resultPage).toEntity();
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 
     @GetMapping("/{accommodationId}/")

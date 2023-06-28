@@ -11,6 +11,9 @@ import com.zerobase.yogizogi.global.exception.ErrorCode;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,11 +57,11 @@ public class AccommodationService {
 
     // 숙소 검색
 
-    public List<AccommodationSearchDto> searchAccommodation(String keyword, LocalDate checkInDate,
+    public Page<AccommodationSearchDto> searchAccommodation(String keyword, LocalDate checkInDate,
         LocalDate checkOutDate,
         Integer people, String sort, String direction, Integer minPrice, Integer maxPrice,
         Integer category,
-        Double lat, Double lon) {
+        Double lat, Double lon, Pageable pageable) {
 
         if (checkInDate != null & checkOutDate != null) {
             if ((checkInDate.isBefore(LocalDate.now()) || checkInDate.isBefore(
@@ -70,9 +73,16 @@ public class AccommodationService {
             }
         }
 
-        return accommodationRepository.findBySearchOption(keyword,
-            checkInDate, checkOutDate, people, sort,
-            direction, minPrice, maxPrice, category, lat, lon);
+        List<AccommodationSearchDto> resultList = accommodationRepository.findBySearchOption(keyword,
+                checkInDate, checkOutDate, people, sort,
+                direction, minPrice, maxPrice, category, lat, lon);
+        System.out.println("total : " + resultList.size());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), resultList.size());
+        System.out.println("페이지 내의 값의 개수 : " + (end - start));
+        List<AccommodationSearchDto> pagedResultList = resultList.subList(start, end);
+
+        return new PageImpl<>(pagedResultList, pageable, resultList.size());
     }
 
     public List<Accommodation> getAccommodationsByArea(double leftUpLat, double rightDownLat,
