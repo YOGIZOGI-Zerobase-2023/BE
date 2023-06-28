@@ -11,7 +11,6 @@ import com.zerobase.yogizogi.user.smtp.service.EmailService;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,7 +67,6 @@ public class UserService {
 
     }
 
-    //localhost //13.209.131.228
     private void mailSend(String uuid, String to) {
 
         emailService.sendMail(MessageForm.builder().to(to).subject("회원 활성화 인증 메일")
@@ -81,6 +79,9 @@ public class UserService {
     public void emailVerify(String uuid) {
         AppUser user = userRepository.findByEmailAuthKey(uuid)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_AUTH_KEY));
+        if(user.isActive()){
+            throw new CustomException(ErrorCode.ALREADY_VERIFY_EMAIL);
+        }
         user.setActive(true);
         user.setEmailAuthDateTime(LocalDateTime.now());
         userRepository.save(user);
@@ -103,17 +104,6 @@ public class UserService {
         }
         return provider.createToken(user.getEmail(), user.getId(),
             user.getNickName());
-    }
-
-    public void logout(HttpServletRequest request) {
-        String all = request.getHeader("Authorization");
-        if (all == null || !all.startsWith("Bearer ")) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
-        }
-        String token = all.substring(7);//토큰 가져오기.
-        if (provider.validateToken(token)) {
-            throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
-        }
     }
 
     private boolean validateLogIn(String rawPassword, AppUser user) {
