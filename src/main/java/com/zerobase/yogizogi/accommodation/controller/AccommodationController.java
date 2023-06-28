@@ -4,6 +4,7 @@ package com.zerobase.yogizogi.accommodation.controller;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.model.PositionRequestForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.service.AccommodationService;
 import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.global.ResponseCode;
@@ -11,13 +12,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,14 +48,28 @@ public class AccommodationController {
         @RequestParam(required = false) Integer minprice,
         @RequestParam(required = false) Integer maxprice,
         @RequestParam(required = false) Integer category,
-        @RequestParam(required = false) Double lat, @RequestParam(required = false) Double lon) {
-        var result = accommodationService.searchAccommodation(keyword, checkindate, checkoutdate,
-            people,
-            sort, direction, minprice, maxprice, category, lat, lon);
+        @RequestParam(required = false) Double lat,
+        @RequestParam(required = false) Double lon,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int pagesize) {
 
+        if (sort == null) {
+            sort = "rate";
+        }
+        if (direction == null) {
+            direction = "desc";
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, pagesize, Sort.Direction.fromString(direction), sort);
+
+        List<AccommodationSearchDto> result =
+            accommodationService.searchAccommodation(keyword, checkindate, checkoutdate,
+                people, sort, direction, minprice, maxprice,
+                category, lat, lon);
         System.out.println(result.size());
+        Page<AccommodationSearchDto> resultPage = new PageImpl<>(result, pageRequest, result.size());
 
-        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(resultPage).toEntity();
     }
 
     @GetMapping("/{accommodationId}/")
@@ -62,6 +82,7 @@ public class AccommodationController {
 
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
+
     @PostMapping("/map")
     public ResponseEntity<ApiResponse<Object>> getAccommodationsByArea(
         @RequestBody PositionRequestForm positionRequestForm) {
@@ -72,7 +93,8 @@ public class AccommodationController {
             .filter(accommodation -> !accommodation.getRooms().isEmpty())
             .filter(
                 accommodation -> accommodation.getRooms().stream().flatMap(room -> room.getPrices()
-                    .stream()).anyMatch(price -> price.getRoomCnt() > 0)) //방 수가 0 즉 예약 불가능은 가져오지 않음.
+                        .stream())
+                    .anyMatch(price -> price.getRoomCnt() > 0)) //방 수가 0 즉 예약 불가능은 가져오지 않음.
             .map(AccommodationDto::from).collect(
                 Collectors.toList());
         System.out.println(result.size());
