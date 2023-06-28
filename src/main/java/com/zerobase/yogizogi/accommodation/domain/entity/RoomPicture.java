@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,8 @@ public class RoomPicture {
     private Long id;
     @Column(name = "url")
     private String url;
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "roomId")
     private Room room;

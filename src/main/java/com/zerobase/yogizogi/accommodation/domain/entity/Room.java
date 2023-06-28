@@ -1,5 +1,7 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,13 +42,17 @@ public class Room {
     @Column(name = "maxPeople")
     private Integer maxPeople;
     //외래키
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "accommodationId")
     private Accommodation accommodation;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "room")
     private Set<RoomPicture> pictures;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "room")
     private Set<Price> prices;
+
 }

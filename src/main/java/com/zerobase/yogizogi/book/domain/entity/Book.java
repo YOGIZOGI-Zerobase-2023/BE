@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.book.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
@@ -29,6 +30,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @Table(name = "book")
 public class Book extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookId")
@@ -49,6 +51,7 @@ public class Book extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "roomId")
     private Room room;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "appUserId") //이름 바뀌면 테이블도 바뀜 체크
     private AppUser user;

@@ -3,6 +3,7 @@ package com.zerobase.yogizogi.accommodation.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,23 @@ class AccommodationRepositoryImplTest {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+
+
+    @Test
+    void findByIdAndDateAndPeople() {
+
+        //given
+        List<RoomDetailForm> results = accommodationRepository.findRoomDetailByIdAndDateAndPeople(
+            1L,
+            LocalDate.of(2023, 7, 6), LocalDate.of(2023, 7, 8),
+            2);
+
+        //when
+        //then
+        System.out.println(results.size());
+        results.forEach(result -> System.out.println(result.getId()));
+
+    }
 
     // 사람수
     @Test

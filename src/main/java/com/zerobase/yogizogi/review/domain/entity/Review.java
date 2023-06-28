@@ -32,6 +32,7 @@ public class Review extends BaseEntity {
     private String description;
     //외래키
     //bookId 저장할 필요가 없습니다.
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userId")
     private AppUser user;//삭제에 필요합니다.

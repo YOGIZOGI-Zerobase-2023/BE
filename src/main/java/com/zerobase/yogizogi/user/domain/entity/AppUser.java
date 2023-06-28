@@ -1,10 +1,12 @@
 package com.zerobase.yogizogi.user.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zerobase.yogizogi.book.domain.entity.Book;
 import com.zerobase.yogizogi.global.entity.BaseEntity;
 import com.zerobase.yogizogi.review.domain.entity.Review;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,8 +55,10 @@ public class AppUser extends BaseEntity {
     private LocalDateTime emailAuthDateTime;
 
     //외래키
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//mappedBy는 자체 속성 변수명으로 해야함
-    private List<Book> books;
+    private Set<Book> books;
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Review> reviews;
 

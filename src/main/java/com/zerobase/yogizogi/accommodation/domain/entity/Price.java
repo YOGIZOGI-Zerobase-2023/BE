@@ -1,5 +1,6 @@
 package com.zerobase.yogizogi.accommodation.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,6 +35,7 @@ public class Price {
   private LocalDate date;
   @Column(name = "roomCnt")
   private int roomCnt;
+  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "roomId")
   private Room room;
