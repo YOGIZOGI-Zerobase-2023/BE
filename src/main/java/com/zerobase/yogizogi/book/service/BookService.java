@@ -92,8 +92,9 @@ public class BookService {
                     }
                     price.setRoomCnt(price.getRoomCnt() - 1);
                     priceRepository.save(price);
+                } else {
+                    throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
                 }
-                throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
             });
         bookRepository.save(book);
         //가격 테이블 변경해주기.
