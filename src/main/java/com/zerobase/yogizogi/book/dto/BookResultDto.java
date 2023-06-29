@@ -14,10 +14,11 @@ public class BookResultDto {
     Long userId;
     Long accommodationId;
     String bookName;
+    String accommodationName;
     String picUrl;
     LocalDate checkInDate;
     LocalDate checkOutDate;
-    Integer payAmount;
+    Integer price;
     Double rate;
     Boolean reviewRegistered;
     //정적 팩터리 메서드
@@ -25,9 +26,10 @@ public class BookResultDto {
         return BookResultDto.builder()
             .id(book.getId())
             .userId(book.getUser().getId())
+            .accommodationName(book.getAccommodation().getName())
             .accommodationId(book.getAccommodation().getId())
             .bookName(book.getBookName())
-            .payAmount(book.getPayAmount())
+            .price(book.getPayAmount())
             .rate(book.getAccommodation().getRate())
             .checkInDate(book.getCheckInDate())
             .checkOutDate(book.getCheckOutDate())
