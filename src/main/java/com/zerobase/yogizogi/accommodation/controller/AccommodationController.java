@@ -85,13 +85,10 @@ public class AccommodationController {
         @RequestBody PositionRequestForm positionRequestForm) {
         List<Accommodation> accommodations = accommodationService.getAccommodationsByArea(
             positionRequestForm.getLeftUpLat(), positionRequestForm.getRightDownLat(),
-            positionRequestForm.getLeftUpLon(), positionRequestForm.getRightDownLon());
+            positionRequestForm.getLeftUpLon(), positionRequestForm.getRightDownLon(),
+            positionRequestForm.getCheckInDate(),positionRequestForm.getCheckOutDate());
         List<AccommodationDto> result = accommodations.stream()
-            .filter(accommodation -> !accommodation.getRooms().isEmpty())
-            .filter(
-                accommodation -> accommodation.getRooms().stream().flatMap(room -> room.getPrices()
-                        .stream())
-                    .anyMatch(price -> price.getRoomCnt() > 0)) //방 수가 0 즉 예약 불가능은 가져오지 않음.
+            //방 수가 0 즉 예약 불가능은 가져오지 않음.
             .map(AccommodationDto::from).collect(
                 Collectors.toList());
         System.out.println(result.size());

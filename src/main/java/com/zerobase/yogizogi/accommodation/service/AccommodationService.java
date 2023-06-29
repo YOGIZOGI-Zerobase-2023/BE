@@ -86,8 +86,8 @@ public class AccommodationService {
     }
 
     public List<Accommodation> getAccommodationsByArea(double leftUpLat, double rightDownLat,
-        double leftUpLon, double rightDownLon) {
+        double leftUpLon, double rightDownLon, LocalDate checkInDate, LocalDate checkOutDate) {
         return accommodationRepository.findInArea(leftUpLat, rightDownLat,
-            leftUpLon, rightDownLon);
+            leftUpLon, rightDownLon, checkInDate, checkOutDate);
     }
 }

@@ -4,9 +4,11 @@ import com.zerobase.yogizogi.review.domain.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class ReviewDto {
     private Long id;

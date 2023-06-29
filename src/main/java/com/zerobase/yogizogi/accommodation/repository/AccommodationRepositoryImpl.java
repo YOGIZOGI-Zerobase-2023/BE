@@ -12,6 +12,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.QAccommodation;
+import com.zerobase.yogizogi.accommodation.domain.entity.QPrice;
+import com.zerobase.yogizogi.accommodation.domain.entity.QRoom;
 import com.zerobase.yogizogi.accommodation.domain.model.QRoomDetailForm;
 import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
@@ -192,14 +194,24 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
                 return accommodation.rate.desc();
         }
     }
+
     @Override
-    public List<Accommodation> findInArea(double leftUpLat, double rightDownLat, double leftUpLon, double rightDownLon) {
+    public List<Accommodation> findInArea(double leftUpLat, double rightDownLat, double leftUpLon,
+        double rightDownLon, LocalDate checkInDate, LocalDate checkOutDate) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        QAccommodation accommodation = QAccommodation.accommodation; // Q 클래스 인스턴스
+        QAccommodation accommodation = QAccommodation.accommodation;
+        QRoom room = QRoom.room;
+        QPrice price = price1;
 
         return queryFactory.selectFrom(accommodation)
-            .where(accommodation.lat.between(rightDownLat, leftUpLat)//세로선
-                .and(accommodation.lon.between(leftUpLon, rightDownLon)))//가로선
+            .join(accommodation.rooms, room).fetchJoin()
+            .join(room.prices, price).fetchJoin()
+            .where(accommodation.lat.between(rightDownLat, leftUpLat)
+                .and(accommodation.lon.between(leftUpLon, rightDownLon))
+                .and(price.date.between(checkInDate, checkOutDate))
+                .and(price.price.gt(0))
+                .and(price.roomCnt.gt(0)))
+            .distinct()
             .fetch();
     }
 
