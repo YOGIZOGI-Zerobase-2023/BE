@@ -69,7 +69,7 @@ public class AccommodationController {
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 
-    @GetMapping("/{accommodationId}/")
+    @GetMapping("/{accommodationId}")
     public ResponseEntity<?> getAccommodationDetail(@PathVariable Long accommodationId,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
