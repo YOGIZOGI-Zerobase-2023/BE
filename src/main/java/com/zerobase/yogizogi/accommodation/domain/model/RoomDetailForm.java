@@ -20,7 +20,7 @@ public class RoomDetailForm {
         this.id = room.getId();
         this.roomName = room.getName();
         this.checkInTime = room.getCheckInTime();
-        this.cheekOutTime = room.getCheekOutTime();
+        this.checkOutTime = room.getCheekOutTime();
         this.defaultPeople = room.getDefaultPeople();
         this.maxPeople = room.getMaxPeople();
         this.pictureUrlList = room.getPictures();
@@ -30,7 +30,7 @@ public class RoomDetailForm {
     private Long id;
     private String roomName;
     private String checkInTime;
-    private String cheekOutTime;
+    private String checkOutTime;
     private Integer defaultPeople;
     private Integer maxPeople;
     private Set<RoomPicture> pictureUrlList;
