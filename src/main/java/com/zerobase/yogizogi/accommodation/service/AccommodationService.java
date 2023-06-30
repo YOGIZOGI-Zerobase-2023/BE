@@ -1,11 +1,14 @@
 package com.zerobase.yogizogi.accommodation.service;
 
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDetailDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
+import com.zerobase.yogizogi.accommodation.dto.RoomCompareDto;
 import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
+import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
 import com.zerobase.yogizogi.global.exception.CustomException;
 import com.zerobase.yogizogi.global.exception.ErrorCode;
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
+    private final RoomRepository roomRepository;
 
     // TEST
     // 숙소 조회
@@ -73,9 +77,10 @@ public class AccommodationService {
             }
         }
 
-        List<AccommodationSearchDto> resultList = accommodationRepository.findBySearchOption(keyword,
-                checkInDate, checkOutDate, people, sort,
-                direction, minPrice, maxPrice, category, lat, lon);
+        List<AccommodationSearchDto> resultList = accommodationRepository.findBySearchOption(
+            keyword,
+            checkInDate, checkOutDate, people, sort,
+            direction, minPrice, maxPrice, category, lat, lon);
         System.out.println("total : " + resultList.size());
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), resultList.size());
@@ -89,5 +94,12 @@ public class AccommodationService {
         double leftUpLon, double rightDownLon, LocalDate checkInDate, LocalDate checkOutDate) {
         return accommodationRepository.findInArea(leftUpLat, rightDownLat,
             leftUpLon, rightDownLon, checkInDate, checkOutDate);
+    }
+
+    public RoomCompareDto getCompareRoom(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
+
+        return RoomCompareDto.from(room);
     }
 }

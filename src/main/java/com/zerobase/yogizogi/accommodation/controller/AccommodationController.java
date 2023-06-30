@@ -94,4 +94,13 @@ public class AccommodationController {
         System.out.println(result.size());
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
+
+    @GetMapping("/compare/room/{roomId}")
+    public ResponseEntity<ApiResponse<Object>> getCompareRoom(
+        @PathVariable Long roomId
+    ) {
+        var result = accommodationService.getCompareRoom(roomId);
+
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
+    }
 }
