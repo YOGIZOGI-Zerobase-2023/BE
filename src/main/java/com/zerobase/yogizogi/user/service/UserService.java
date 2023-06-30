@@ -22,8 +22,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtAuthenticationProvider provider;
-    private final EmailService emailService;
     private final PasswordEncoder encoder;
+    private final EmailService emailService;
+
     @Value("${email.redirect.url}")
     private String emailUrl;
 
