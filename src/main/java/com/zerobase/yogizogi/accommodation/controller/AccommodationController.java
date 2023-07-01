@@ -98,12 +98,12 @@ public class AccommodationController {
 
     @GetMapping("/compare/accommodation")
     public ResponseEntity<ApiResponse<Object>> getCompareAccommodation(
-        @RequestParam Long accommodationId,
+        @RequestParam Long accommodationid,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
         @RequestParam Integer people
     ) {
-        var result = accommodationService.getCompareAccommodation(accommodationId, checkindate,
+        var result = accommodationService.getCompareAccommodation(accommodationid, checkindate,
             checkoutdate, people);
 
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
@@ -111,12 +111,12 @@ public class AccommodationController {
 
     @GetMapping("/compare/room")
     public ResponseEntity<ApiResponse<Object>> getCompareRoom(
-        @RequestParam Long roomId,
+        @RequestParam Long roomid,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
         @RequestParam Integer people
     ) {
-        var result = accommodationService.getCompareRoom(roomId, checkindate, checkoutdate, people);
+        var result = accommodationService.getCompareRoom(roomid, checkindate, checkoutdate, people);
 
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
