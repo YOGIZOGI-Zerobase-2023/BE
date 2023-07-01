@@ -16,11 +16,12 @@ public enum ErrorCode implements Code {
     ALREADY_REGISTER_EMAIL(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 유저입니다."),
     ALREADY_REGISTER_NICK_NAME(HttpStatus.BAD_REQUEST, "이미 등록된 닉네임입니다."),
     ALREADY_REGISTER_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "이미 회원 가입을 완료한 번호입니다."),
-    NOT_VALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "유효한 전화번호 형식이 아닙니다. 01x-0000-0000으로 작성해 주세요."),
+    NOT_VALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST,
+        "유효한 전화번호 형식이 아닙니다. 01x-0000-0000으로 작성해 주세요."),
     NOT_ACTIVE_USER(HttpStatus.BAD_REQUEST, "아직 계정 활성화가 되지 않은 유저입니다. 인증을 완료해 주십시오."),
     NOT_FOUND_AUTH_KEY(HttpStatus.BAD_REQUEST, "존재하지 않는 인증 코드입니다."),
-    NOT_VALID_EMAIL(HttpStatus.BAD_REQUEST,"이메일이 유효하지 않아 메일을 발송하는데 실패했습니다"),
-    ALREADY_VERIFY_EMAIL(HttpStatus.BAD_REQUEST,"이미 인증을 완료한 회원입니다."),
+    NOT_VALID_EMAIL(HttpStatus.BAD_REQUEST, "이메일이 유효하지 않아 메일을 발송하는데 실패했습니다"),
+    ALREADY_VERIFY_EMAIL(HttpStatus.BAD_REQUEST, "이미 인증을 완료한 회원입니다."),
     //로그인 관련
     NOT_MATCH_ID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
@@ -42,14 +43,13 @@ public enum ErrorCode implements Code {
 
     NOT_FOUND_ACCOMMODATION(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
     //숙소- 방 관련
-    NOT_FOUND_ROOM(HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
+    NOT_FOUND_ROOM(HttpStatus.BAD_REQUEST, "존재하지 않는 방입니다."),
+    NOT_EXISTED_ROOM(HttpStatus.BAD_REQUEST, "사용가능한 방이 없습니다."),
 
 
     // 검색 관련
     NOT_CORRECT_DATE(HttpStatus.BAD_REQUEST, "날짜는 2023-07-01 ~ 2023-09-30 까지의 날짜만 검색이 가능합니다."),
     NOT_CORRECT_DATE_RANGE(HttpStatus.BAD_REQUEST, "최대 7일의 정보만 조회가능합니다.");
-
-
 
 
     private final HttpStatus status;

@@ -16,8 +16,14 @@ import com.zerobase.yogizogi.accommodation.domain.entity.QPrice;
 import com.zerobase.yogizogi.accommodation.domain.entity.QRoom;
 import com.zerobase.yogizogi.accommodation.domain.model.QRoomDetailForm;
 import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
+import com.zerobase.yogizogi.accommodation.dto.AccommodationCompareDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
+import com.zerobase.yogizogi.accommodation.dto.QAccommodationCompareDto;
 import com.zerobase.yogizogi.accommodation.dto.QAccommodationSearchDto;
+import com.zerobase.yogizogi.accommodation.dto.QRoomCompareDto;
+import com.zerobase.yogizogi.accommodation.dto.RoomCompareDto;
+import com.zerobase.yogizogi.global.exception.CustomException;
+import com.zerobase.yogizogi.global.exception.ErrorCode;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -77,6 +83,43 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
         return query.fetch();
     }
 
+    public RoomCompareDto findRoomByIdAndDateAndPeople(Long roomId,
+        LocalDate checkInDate,
+        LocalDate checkOutDate, Integer people) {
+
+        JPAQuery<RoomCompareDto> query = queryFactory.select(
+                new QRoomCompareDto(room, price1.price.sum()))
+            .from(room)
+            .leftJoin(room.prices, price1)
+            .where(checkRoomId(roomId), checkDate(checkInDate, checkOutDate),
+                checkPeople(people), checkRoomCnt())
+            .groupBy(room.id);
+
+        return query.fetch().get(0);
+    }
+
+
+    public AccommodationCompareDto findAccommodationByIdAndDateAndPeople(Long accommodationId,
+        LocalDate checkInDate,
+        LocalDate checkOutDate, Integer people) {
+
+        JPAQuery<AccommodationCompareDto> query = queryFactory.selectDistinct(
+                new QAccommodationCompareDto(accommodation, price1.price.min()))
+            .from(accommodation)
+            .leftJoin(accommodation.rooms, room)
+            .fetchJoin()
+            .leftJoin(room.prices, price1)
+            .where(checkAccommodationId(accommodationId), checkDate(checkInDate, checkOutDate),
+                checkPeople(people), checkRoomCnt())
+            .groupBy(accommodation.id);
+
+        if (query.fetch().isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXISTED_ROOM);
+        }
+
+        return query.fetch().get(0);
+    }
+
 
     public List<AccommodationSearchDto> findBySearchOption(String keyword,
         LocalDate checkInDate, LocalDate checkOutDate, Integer people, String sort,
@@ -96,11 +139,15 @@ public class AccommodationRepositoryImpl extends QuerydslRepositorySupport imple
             .having(checkPrice(minPrice, maxPrice))
             .orderBy(sortBy(sort, direction, lat, lon));
 
-//        List<Accommodation> accommodations = this.getQuerydsl().applyPagination(
-//                (org.springframework.data.domain.Pageable) pageable, query)
-//            .fetch();
-
         return query.fetch();
+    }
+
+    private BooleanExpression checkAccommodationId(Long accommodationId) {
+        return accommodation.id.eq(accommodationId);
+    }
+
+    private BooleanExpression checkRoomId(Long roomId) {
+        return room.id.eq(roomId);
     }
 
 

@@ -2,26 +2,25 @@ package com.zerobase.yogizogi.accommodation.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
-import com.zerobase.yogizogi.accommodation.domain.entity.Room;
+import java.util.ArrayList;
 import lombok.Getter;
 
 @Getter
-public class RoomCompareDto {
-
+public class AccommodationCompareDto {
 
     @QueryProjection
-    public RoomCompareDto(Room room, Integer price) {
-        Accommodation accommodation = room.getAccommodation();
+    public AccommodationCompareDto(Accommodation accommodation, Integer price) {
+        ArrayList<String> facility = new ArrayList<>();
+        accommodation.getConveniences().forEach(x -> facility.add(x.getFacility()));
 
-        this.id = room.getId();
+        String conveniences = facility.toString().replace("[", "").replace("]", "");
+
+        this.id = accommodation.getId();
         this.accommodationName = accommodation.getName();
         this.rate = accommodation.getRate();
         this.address = accommodation.getAddress();
-        this.roomName = room.getName();
-        this.convenience = room.getConveniences();
-        // TODO
-        // 사진 없을 시 null 처리 필요
-        this.picUrl = room.getPictures().stream().findFirst().get().getUrl();
+        this.convenience = conveniences;
+        this.picUrl = accommodation.getPicUrl();
         this.price = price;
     }
 
@@ -29,7 +28,6 @@ public class RoomCompareDto {
     private final String accommodationName;
     private final Double rate;
     private final String address;
-    private final String roomName;
     private final String convenience;
     private final String picUrl;
     private final Integer price;
