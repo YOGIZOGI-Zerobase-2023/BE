@@ -1,7 +1,6 @@
 package com.zerobase.yogizogi.user.service;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,11 +22,12 @@ import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.smtp.domain.model.MessageForm;
 import com.zerobase.yogizogi.user.smtp.service.EmailService;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,29 +50,38 @@ class UserServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userService = new UserService(userRepository, provider, encoder, emailService);
+        when(encoder.encode(anyString())).thenAnswer(
+            answer -> answer.getArgument(0));//encoder 정상작동을 위한 코드
+        when(encoder.matches(anyString(), anyString())).thenAnswer(
+            answer -> Objects.equals(answer.getArgument(0), answer.getArgument(1)));
     }
+
     @Test
     @DisplayName("회원가입 성공")
     void signUp_Success() {
         // given
         userService = new UserService(userRepository, provider, encoder, emailService);
 
-        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser", "password");
-        String uuid = UUID.randomUUID().toString();
+        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser",
+            "password");
 
         when(userRepository.findByEmail(userSignUpForm.getEmail())).thenReturn(Optional.empty());
-        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(Optional.empty());
+        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(
+            Optional.empty());
         when(encoder.encode(userSignUpForm.getPassword())).thenReturn("password");
 
         // when
-        assertDoesNotThrow(() -> userService.signUp(userSignUpForm));
+        userService.signUp(userSignUpForm);
 
         // then
         verify(userRepository, times(1)).findByEmail(userSignUpForm.getEmail());
         verify(userRepository, times(1)).findByNickName(userSignUpForm.getNickName());
         verify(encoder, times(1)).encode(userSignUpForm.getPassword());
         verify(emailService, times(1)).sendMail(any(MessageForm.class));
-        verify(userRepository, times(1)).save(any(AppUser.class));
+        ArgumentCaptor<AppUser> userCaptor = ArgumentCaptor.forClass(AppUser.class);
+        verify(userRepository, times(1)).save(userCaptor.capture());
+        AppUser savedUser = userCaptor.getValue();
+        assertEquals("password", savedUser.getPassword());
     }
 
     @Test
@@ -81,12 +90,15 @@ class UserServiceTest {
         // given
         userService = new UserService(userRepository, provider, encoder, emailService);
 
-        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser", "password");
+        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser",
+            "password");
 
-        when(userRepository.findByEmail(userSignUpForm.getEmail())).thenReturn(Optional.of(mock(AppUser.class)));
+        when(userRepository.findByEmail(userSignUpForm.getEmail())).thenReturn(
+            Optional.of(mock(AppUser.class)));
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> userService.signUp(userSignUpForm));
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.signUp(userSignUpForm));
 
         // then
         assertEquals(ErrorCode.ALREADY_REGISTER_EMAIL, exception.getErrorCode());
@@ -96,17 +108,21 @@ class UserServiceTest {
         verify(emailService, never()).sendMail(any(MessageForm.class));
         verify(userRepository, never()).save(any(AppUser.class));
     }
+
     @Test
     @DisplayName("회원가입 - 이미 등록된 닉네임")
     void signUp_AlreadyRegisteredNickName() {
         // given
-        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser", "password");
+        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser",
+            "password");
 
         when(userRepository.findByEmail(userSignUpForm.getEmail())).thenReturn(Optional.empty());
-        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(Optional.of(mock(AppUser.class)));
-        when(encoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(
+            Optional.of(mock(AppUser.class)));
+        when(encoder.encode(userSignUpForm.getPassword())).thenReturn("encodedPassword");
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> userService.signUp(userSignUpForm));
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.signUp(userSignUpForm));
 
         // then
         assertEquals(ErrorCode.ALREADY_REGISTER_NICK_NAME, exception.getErrorCode());
@@ -117,6 +133,7 @@ class UserServiceTest {
         verify(userRepository, never()).save(any(AppUser.class));
     }
 
+    //스프링 시큐리티의 passwordEncoder가 정상적으로 동작하지 않는 문제.
     @Test
     @DisplayName("로그인 성공")
     void login_Success() {
@@ -132,12 +149,14 @@ class UserServiceTest {
         user.setActive(true);
         user.setNickName("testUser");
 
-        when(encoder.encode(anyString())).thenReturn(encodedPassword); // encode 메서드는 주어진 입력 값을 그대로 반환하도록 수정
+        when(encoder.encode(anyString())).thenReturn(
+            encodedPassword); // encode 메서드는 주어진 입력 값을 그대로 반환하도록 수정
         when(userRepository.findByEmail(logInForm.getEmail())).thenReturn(Optional.of(user));
-        when(provider.createToken(user.getEmail(), user.getId(), user.getNickName())).thenReturn("token123");
+        when(provider.createToken(user.getEmail(), user.getId(), user.getNickName())).thenReturn(
+            "token123");
 
         // when
-        String token = assertDoesNotThrow(() -> userService.login(logInForm));
+        String token = userService.login(logInForm);
 
         // then
         assertNotNull(token);
@@ -158,7 +177,8 @@ class UserServiceTest {
         when(userRepository.findByEmail(logInForm.getEmail())).thenReturn(Optional.empty());
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> userService.login(logInForm));
+        CustomException exception = assertThrows(CustomException.class,
+            () -> userService.login(logInForm));
 
         // then
         assertEquals(ErrorCode.NOT_FOUND_USER, exception.getErrorCode());
