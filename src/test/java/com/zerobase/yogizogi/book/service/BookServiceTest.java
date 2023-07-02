@@ -1,5 +1,12 @@
 package com.zerobase.yogizogi.book.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Price;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
@@ -14,21 +21,16 @@ import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import com.zerobase.yogizogi.user.dto.UserDto;
 import com.zerobase.yogizogi.user.repository.UserRepository;
 import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
 
@@ -55,12 +57,13 @@ public class BookServiceTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
+    @DisplayName("내 예약리스트 가져오기")
     public void testMyBookList() {
-
+        //given
         String token = "token";
         when(provider.validateToken(token)).thenReturn(false);
         UserDto userDto = new UserDto(1L, "test@gmail.com");
@@ -68,12 +71,17 @@ public class BookServiceTest {
         AppUser user = new AppUser();
         user.setId(userDto.getId());
         when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        //when
         bookService.myBookList(userDto.getId(), token);
+        // then
         verify(bookRepository).findAllByUser_Id(userDto.getId());
     }
 
     @Test
+    @DisplayName("내 예약 만들기")
     public void testMakeBook() {
+        // given
         LocalDate now = LocalDate.now();
         String token = "token";
         BookForm bookForm = new BookForm();
@@ -94,25 +102,26 @@ public class BookServiceTest {
         Room room = new Room();
         room.setId(bookForm.getRoomId());
         when(roomRepository.findById(bookForm.getRoomId())).thenReturn(Optional.of(room));
+        // when & then
         assertThrows(CustomException.class, () -> bookService.makeBook(token, bookForm));
     }
+
     @Test
+    @DisplayName("내 예약 삭제")
     public void testDeleteBook() {
+        // given
         LocalDate now = LocalDate.now();
         String token = "token";
         Long userId = 1L;
         Long bookId = 1L;
+
         when(provider.validateToken(token)).thenReturn(false);
         UserDto userDto = new UserDto(userId, "test@gmail.com");
         when(provider.getUserDto(token)).thenReturn(userDto);
+
         AppUser user = new AppUser();
         user.setId(userId);
         when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
-        Book book = new Book();
-        book.setId(bookId);
-        book.setUser(user);
-        book.setCheckInDate(now);
-        book.setCheckOutDate(now.plusDays(1));
 
         Room room = new Room();
         room.setId(1L);
@@ -126,19 +135,32 @@ public class BookServiceTest {
         accommodation.setId(1L);
         room.setAccommodation(accommodation);
 
-
         Set<Price> prices = new HashSet<>();
         room.setPrices(prices);
 
-        book.setRoom(room);
-
         Price price = new Price();
         price.setRoomCnt(1);
-        when(priceRepository.findAllByRoom_IdAndDate(anyLong(), any(LocalDate.class))).thenReturn(price);
+
+        when(priceRepository.findAllByRoom_IdAndDate(anyLong(), any(LocalDate.class))).thenReturn(
+            price);
+
+        Book book = new Book();
+        book.setId(bookId);
+        book.setUser(user);
+        book.setCheckInDate(now);
+        book.setCheckOutDate(now.plusDays(1));
+        book.setRoom(room);
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        assertThrows(CustomException.class, () -> bookService.deleteBook(token, userId, bookId));
-    }
 
+        // when
+        bookService.deleteBook(token, userId, bookId);
+
+        // then
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(priceRepository, times(1)).findAllByRoom_IdAndDate(anyLong(), any(LocalDate.class));
+        verify(priceRepository, times(1)).save(price);
+        verify(bookRepository, times(1)).delete(book);
+    }
 
 }
