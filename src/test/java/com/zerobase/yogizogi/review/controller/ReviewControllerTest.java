@@ -85,7 +85,7 @@ public class ReviewControllerTest {
     @Test
     @DisplayName("리뷰 만들기")
     public void testMakeReview() throws Exception {
-        ReviewForm reviewForm = new ReviewForm();
+        ReviewForm reviewForm = new ReviewForm(1L,8,"test");
         Map<String, String> msg = new HashMap<>();
         msg.put("msg", "성공적으로 리뷰를 작성 했습니다.");
 
@@ -108,7 +108,7 @@ public class ReviewControllerTest {
     @Test
     @DisplayName("리뷰 업데이트")
     public void testUpdateReview() throws Exception {
-        ReviewUpdateForm reviewForm = new ReviewUpdateForm();
+        ReviewUpdateForm reviewForm = new ReviewUpdateForm(8,"test");
         Map<String, String> msg = new HashMap<>();
         msg.put("msg", "성공적으로 작업을 수행 했습니다.");
 
