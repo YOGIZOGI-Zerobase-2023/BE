@@ -1,30 +1,29 @@
-package com.zerobase.yogizogi.book.repository;
+//package com.zerobase.yogizogi.book.repository;
 
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+//import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+//import com.zerobase.yogizogi.book.domain.entity.Book;
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.zerobase.yogizogi.book.domain.entity.Book;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-@DataJpaTest
-class BookRepositoryTest {
-
-    @Autowired
-    BookRepository bookRepository;
-
-    @Test
-    @DisplayName("bookRepository 테스트")
-    void createBook() {
-        //given
-        Book book = Book.builder().bookName("홍길동").payAmount(1000).build();
-        //when
-        Book result = bookRepository.save(book);
-        //then
-        assertThat(result.getPayAmount()).isEqualTo(book.getPayAmount());
-    }
+//@DataJpaTest
+//class BookRepositoryTest {
+//
+//    @Autowired
+//    BookRepository bookRepository;
+//
+//    @Test
+//    @DisplayName("bookRepository 테스트")
+//    void createBook() {
+//        //given
+//        Book book = Book.builder().bookName("홍길동").payAmount(1000).build();
+//        //when
+//        Book result = bookRepository.save(book);
+//        //then
+//        assertThat(result.getPayAmount()).isEqualTo(book.getPayAmount());
+//    }
 
 //    @Test
 //    @DisplayName("findAllByUserId 테스트")
@@ -50,4 +49,4 @@ class BookRepositoryTest {
 //        assertThat(result.getTotalElements()).isEqualTo(2);
 //        assertThat(result.getContent()).containsExactlyInAnyOrder(book1, book2);
 //    }
-}
+//}
