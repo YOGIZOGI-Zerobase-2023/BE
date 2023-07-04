@@ -3,6 +3,8 @@ package com.zerobase.yogizogi.oauth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.yogizogi.oauth.domain.model.OAuthToken;
 import com.zerobase.yogizogi.oauth.service.OauthService;
+import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j

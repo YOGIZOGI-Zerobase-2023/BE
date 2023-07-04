@@ -1,4 +1,4 @@
-package com.zerobase.yogizogi.config;
+package com.zerobase.yogizogi.global.config;
 
 import org.hibernate.dialect.MySQL57Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;

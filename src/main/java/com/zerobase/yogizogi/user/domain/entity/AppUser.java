@@ -44,9 +44,8 @@ public class AppUser extends BaseEntity {
     private String emailAuthKey;
     private LocalDateTime emailAuthDateTime;
 
-    //외래키
     @JsonManagedReference
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//mappedBy는 자체 속성 변수명으로 해야함
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Book> books;
     @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
