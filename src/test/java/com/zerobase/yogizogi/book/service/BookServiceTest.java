@@ -78,30 +78,34 @@ public class BookServiceTest {
         verify(bookRepository).findAllByUser_Id(userDto.getId());
     }
 
-    @Test
+    @Test//수정필요
     @DisplayName("내 예약 만들기")
     public void testMakeBook() {
         // given
         LocalDate now = LocalDate.now();
-        String token = "token";
+        String token = "testToken";
         BookForm bookForm = new BookForm();
         bookForm.setAccommodationId(1L);
         bookForm.setRoomId(1L);
         bookForm.setCheckInDate(now);
         bookForm.setCheckOutDate(now.plusDays(1));
+
         when(provider.validateToken(token)).thenReturn(false);
         UserDto userDto = new UserDto(1L, "test@gmail.com");
         when(provider.getUserDto(token)).thenReturn(userDto);
         AppUser user = new AppUser();
         user.setId(1L);
         when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+
         Accommodation accommodation = new Accommodation();
         accommodation.setId(bookForm.getAccommodationId());
         when(accommodationRepository.findById(bookForm.getAccommodationId())).thenReturn(
             Optional.of(accommodation));
+
         Room room = new Room();
         room.setId(bookForm.getRoomId());
         when(roomRepository.findById(bookForm.getRoomId())).thenReturn(Optional.of(room));
+
         // when & then
         assertThrows(CustomException.class, () -> bookService.makeBook(token, bookForm));
     }

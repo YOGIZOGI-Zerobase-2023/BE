@@ -106,6 +106,7 @@ class ReviewServiceTest {
     @DisplayName("리뷰 만들기")
     public void makeReviewTest() {
         // given
+        LocalDate now = LocalDate.now();
         Long accommodationId = 1L;
         String token = "validToken";
         ReviewForm reviewForm = new ReviewForm(1L, 5, "great");
@@ -116,7 +117,7 @@ class ReviewServiceTest {
         user.setId(1L);
 
         Book book = new Book();
-        book.setCheckOutDate(LocalDate.now().minusDays(1));
+        book.setCheckOutDate(now.minusDays(1));
         book.setReviewRegistered(false);
 
         Room room = new Room();
@@ -155,6 +156,7 @@ class ReviewServiceTest {
     @DisplayName("리뷰 업데이트")
     public void updateReviewTest() {
         //given
+        LocalDate now = LocalDate.now();
         Long accommodationId = 1L;
         Long reviewId = 1L;
         String token = "validToken";
@@ -164,12 +166,11 @@ class ReviewServiceTest {
         user.setId(1L);
 
         Book book = new Book();
-        book.setCheckOutDate(LocalDate.now().minusDays(1));
+        book.setCheckOutDate(now.minusDays(1));
         book.setReviewRegistered(false);
 
         Room room = new Room();
-        Accommodation accommodation = Accommodation.builder().id(accommodationId).build();
-        accommodation.setReviews(new HashSet<>());
+        Accommodation accommodation = Accommodation.builder().id(accommodationId).reviews(new HashSet<>()).build();
         room.setAccommodation(accommodation);
         book.setRoom(room);
         Review review = Review.builder().id(reviewId).user(user).rate(8).description("test")

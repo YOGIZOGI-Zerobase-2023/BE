@@ -20,8 +20,6 @@ import com.zerobase.yogizogi.review.dto.ReviewDto;
 import com.zerobase.yogizogi.review.service.ReviewService;
 import com.zerobase.yogizogi.user.domain.entity.AppUser;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +83,7 @@ public class ReviewControllerTest {
     @Test
     @DisplayName("리뷰 만들기")
     public void testMakeReview() throws Exception {
-        ReviewForm reviewForm = new ReviewForm(1L,8,"test");
-        Map<String, String> msg = new HashMap<>();
-        msg.put("msg", "성공적으로 리뷰를 작성 했습니다.");
+        ReviewForm reviewForm = new ReviewForm(1L, 8, "test");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String reviewFormJson = objectMapper.writeValueAsString(reviewForm);
@@ -108,9 +104,7 @@ public class ReviewControllerTest {
     @Test
     @DisplayName("리뷰 업데이트")
     public void testUpdateReview() throws Exception {
-        ReviewUpdateForm reviewForm = new ReviewUpdateForm(8,"test");
-        Map<String, String> msg = new HashMap<>();
-        msg.put("msg", "성공적으로 작업을 수행 했습니다.");
+        ReviewUpdateForm reviewForm = new ReviewUpdateForm(8, "test");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String reviewFormJson = objectMapper.writeValueAsString(reviewForm);

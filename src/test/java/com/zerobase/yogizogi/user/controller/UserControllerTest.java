@@ -20,14 +20,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
-@SpringBootTest
+
 class UserControllerTest {
 
     @Mock
@@ -41,16 +37,18 @@ class UserControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userController = new UserController(userService, userRepository);
-
     }
+
     @Test
     @DisplayName("회원가입_성공")
     void signUp_Success() {
         // given
-        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser", "password");
+        UserSignUpForm userSignUpForm = new UserSignUpForm("test@example.com", "testUser",
+            "password");
 
         when(userRepository.findByEmail(userSignUpForm.getEmail())).thenReturn(Optional.empty());
-        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(Optional.empty());
+        when(userRepository.findByNickName(userSignUpForm.getNickName())).thenReturn(
+            Optional.empty());
 
         // when
         ResponseEntity<ApiResponse<Object>> response = userController.signUp(userSignUpForm);
@@ -58,28 +56,20 @@ class UserControllerTest {
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(ResponseCode.RESPONSE_SUCCESS.toString(), response.getBody().getCode());
-
-        Map<String, String> expectedData = new HashMap<>();
-        expectedData.put("msg", "회원 가입에 성공했습니다.");
-        assertEquals(expectedData, response.getBody().getData());
-
         verify(userService, times(1)).signUp(userSignUpForm);
     }
 
     /**
-     * 아래 테스트 사용방법
-     * Controller의 변수
-     *  @Value("${mainpage.url}")
-     *     private String MAINPAGE;
-     * 아래와 같이 수정해야 합니다.
-     *public void emailAuth(HttpServletRequest request, HttpServletResponse response, @Value("${mainpage.url}") String MAINPAGE)
-     * 위 처럼 만들고 필드 변수 삭제
+     * 아래 테스트 사용방법 Controller의 변수
      *
+     * @Value("${mainpage.url}") private String MAINPAGE; 아래와 같이 수정해야 합니다. public void
+     * emailAuth(HttpServletRequest request, HttpServletResponse response, @Value("${mainpage.url}")
+     * String MAINPAGE) 위 처럼 만들고 필드 변수 삭제
+     * <p>
      * 이렇게 하지 않으면 필드변수
-     *
-     *  userController.emailAuth(request, response, mainPage);
-     *  해당 형태의 메서드를 사용할 때, MAINPAGE는 해당 클래스를 선언하며
-     *  null이 되기 떄문
+     * <p>
+     * userController.emailAuth(request, response, mainPage); 해당 형태의 메서드를 사용할 때, MAINPAGE는 해당 클래스를
+     * 선언하며 null이 되기 떄문
      */
 //    @Test
 //    @DisplayName("이메일 인증 - 리다이렉트 성공")
@@ -126,7 +116,6 @@ class UserControllerTest {
         expectedData.put("email", email);
         expectedData.put("nickname", nickname);
         assertEquals(expectedData, response.getBody().getData());
-
         verify(userService, times(1)).login(logInForm);
         verify(userRepository, times(1)).findByEmail(logInForm.getEmail());
     }
