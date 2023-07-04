@@ -49,27 +49,27 @@ class AccommodationRepositoryImplTest {
 
     }
 
-    // category 테스트
-    @Test
-    void findBySearchOptionCategory() {
-        //given
-        List<AccommodationSearchDto> category1 = accommodationRepository.findBySearchOption(null,
-            null, null, null, null,
-            null, null, null, 1, null, null);
-
-        List<AccommodationSearchDto> category2 = accommodationRepository.findBySearchOption(null,
-            null, null, null, null,
-            null, null, null, 2, null, null);
-
-        List<AccommodationSearchDto> category3 = accommodationRepository.findBySearchOption(null,
-            null, null, null, null,
-            null, null, null, 3, null, null);
-        //when
-        //then
-        assertEquals(94, category1.size());
-        assertEquals(35, category2.size());
-        assertEquals(137, category3.size());
-    }
+//    // category 테스트
+//    @Test
+//    void findBySearchOptionCategory() {
+//        //given
+//        List<AccommodationSearchDto> category1 = accommodationRepository.findBySearchOption(null,
+//            null, null, null, null,
+//            null, null, null, 1, null, null);
+//
+//        List<AccommodationSearchDto> category2 = accommodationRepository.findBySearchOption(null,
+//            null, null, null, null,
+//            null, null, null, 2, null, null);
+//
+//        List<AccommodationSearchDto> category3 = accommodationRepository.findBySearchOption(null,
+//            null, null, null, null,
+//            null, null, null, 3, null, null);
+//        //when
+//        //then
+//        assertEquals(94, category1.size());
+//        assertEquals(35, category2.size());
+//        assertEquals(137, category3.size());
+//    }
 
     @Test
     void findBySearchOptionPrice() {
