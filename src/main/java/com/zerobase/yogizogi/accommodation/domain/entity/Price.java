@@ -25,19 +25,19 @@ import lombok.Setter;
 @Table(name = "price")
 public class Price {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "priceId")
-  private Long id;
-  @Column(name = "price")
-  private Integer price;
-  @Column(name = "date")
-  private LocalDate date;
-  @Column(name = "roomCnt")
-  private int roomCnt;
-  @JsonBackReference
-  @ManyToOne
-  @JoinColumn(name = "roomId")
-  private Room room;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "priceId")
+    private Long id;
+    @Column(name = "price")
+    private Integer price;
+    @Column(name = "date")
+    private LocalDate date;
+    @Column(name = "roomCnt")
+    private int roomCnt;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "roomId")
+    private Room room;
 
 }

@@ -27,10 +27,6 @@ public interface AccommodationRepositoryCustom {
         LocalDate checkInDate,
         LocalDate checkOutDate, Integer people);
 
-    //    Page<Accommodation> findBySearchOption(Pageable pageable, String keyword, LocalDate checkInDate,
-//        LocalDate checkOutDate, Integer people, String sort, String direction, Integer minPrice,
-//        Integer maxPrice,
-//        Integer category, Double lat, Double lon);
     List<Accommodation> findInArea(double leftUpLat, double rightDownLat, double leftUpLon,
         double rightDownLon, LocalDate checkInDate, LocalDate checkOutDate);
 }

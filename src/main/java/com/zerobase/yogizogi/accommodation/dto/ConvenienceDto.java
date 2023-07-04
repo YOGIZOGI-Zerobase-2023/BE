@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class ConvenienceDto {
 
-    private String facility;
+    private final String facility;
 
     public static ConvenienceDto from(Convenience convenience) {
         return ConvenienceDto.builder()

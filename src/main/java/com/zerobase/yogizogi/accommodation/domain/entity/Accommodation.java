@@ -68,7 +68,6 @@ public class Accommodation {
     @JsonManagedReference
     private List<Convenience> conveniences;
 
-    //rate 변경(Double로 객체로 null 허용)
     public void updateScore() {
         if (reviews == null || reviews.isEmpty()) {
             this.rate = 0.0;
@@ -88,4 +87,5 @@ public class Accommodation {
             this.rate = 0.0;
         }
     }
+
 }

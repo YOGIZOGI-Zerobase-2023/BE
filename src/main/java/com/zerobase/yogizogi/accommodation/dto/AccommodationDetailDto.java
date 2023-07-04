@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class AccommodationDetailDto {
 
     @QueryProjection
@@ -28,21 +26,21 @@ public class AccommodationDetailDto {
         this.info = accommodation.getDetail();
         this.picUrlList = accommodation.getPicUrls();
         this.rooms = roomDetailForm;
-        this.convenienceList = accommodation.getConveniences().stream()
-            .map(ConvenienceDto::from).collect(Collectors.toList());
+        this.convenienceList = accommodation.getConveniences().stream().map(ConvenienceDto::from)
+            .collect(Collectors.toList());
     }
 
-    private Long id;
-    private String accommodationName;
-    private int category;
-    private Double rate;
-    private String address;
-    private String region;
-    private Double lat;
-    private Double lon;
-    private String info;
-    private Set<Picture> picUrlList;
-    private List<ConvenienceDto> convenienceList;
-    private List<RoomDetailForm> rooms;
+    private final Long id;
+    private final String accommodationName;
+    private final int category;
+    private final Double rate;
+    private final String address;
+    private final String region;
+    private final Double lat;
+    private final Double lon;
+    private final String info;
+    private final Set<Picture> picUrlList;
+    private final List<ConvenienceDto> convenienceList;
+    private final List<RoomDetailForm> rooms;
 
 }

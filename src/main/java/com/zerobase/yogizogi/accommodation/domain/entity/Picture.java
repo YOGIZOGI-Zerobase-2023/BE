@@ -31,4 +31,5 @@ public class Picture {
     @ManyToOne
     @JoinColumn(name = "accommodationId")
     private Accommodation accommodation;
+
 }

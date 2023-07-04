@@ -3,6 +3,7 @@ package com.zerobase.yogizogi.accommodation.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.domain.entity.RoomPicture;
 import lombok.Getter;
 
 @Getter
@@ -19,9 +20,8 @@ public class RoomCompareDto {
         this.address = accommodation.getAddress();
         this.roomName = room.getName();
         this.convenience = room.getConveniences();
-        // TODO
-        // 사진 없을 시 null 처리 필요
-        this.picUrl = room.getPictures().stream().findFirst().get().getUrl();
+        this.picUrl = room.getPictures().stream().filter(picture -> picture.getRoom() != null)
+            .findFirst().map(RoomPicture::getUrl).orElse("");
         this.price = price;
     }
 

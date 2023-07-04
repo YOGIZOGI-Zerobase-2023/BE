@@ -33,8 +33,6 @@ public class AccommodationController {
 
     private final AccommodationService accommodationService;
 
-    // 숙소 리스트 조회
-
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Object>> search(
         @RequestParam(required = false) String keyword,
@@ -89,7 +87,6 @@ public class AccommodationController {
             positionRequestForm.getLeftUpLon(), positionRequestForm.getRightDownLon(),
             positionRequestForm.getCheckInDate(), positionRequestForm.getCheckOutDate());
         List<AccommodationDto> result = accommodations.stream()
-            //방 수가 0 즉 예약 불가능은 가져오지 않음.
             .map(AccommodationDto::from).collect(
                 Collectors.toList());
         System.out.println(result.size());
