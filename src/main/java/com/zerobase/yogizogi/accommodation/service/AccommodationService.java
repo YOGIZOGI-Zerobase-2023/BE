@@ -40,11 +40,9 @@ public class AccommodationService {
         Integer people, String sort, String direction, Integer minPrice, Integer maxPrice,
         Integer category,
         Double lat, Double lon, Pageable pageable) {
-
         if (checkInDate != null & checkOutDate != null) {
-            if ((checkInDate.isBefore(LocalDate.now()) || checkInDate.isBefore(
-                LocalDate.of(2023, 7, 1))
-                || checkOutDate.isAfter(LocalDate.of(2023, 10, 1)))) {
+            if (checkInDate.isBefore(LocalDate.of(2023, 7, 1))
+                || checkOutDate.isAfter(LocalDate.of(2023, 10, 1))) {
                 throw new CustomException(ErrorCode.NOT_CORRECT_DATE);
             } else if (checkOutDate.isAfter(checkInDate.plusDays(7))) {
                 throw new CustomException(ErrorCode.NOT_CORRECT_DATE_RANGE);
