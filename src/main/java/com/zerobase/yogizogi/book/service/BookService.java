@@ -123,7 +123,7 @@ public class BookService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-        // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
+        // 예약 삭제시, (정합하면, PriceDocument roomCnt 업데이트)
         int betweenDay = (int) ChronoUnit.DAYS.between(book.getCheckInDate(),
             book.getCheckOutDate());
         IntStream.range(0, betweenDay)

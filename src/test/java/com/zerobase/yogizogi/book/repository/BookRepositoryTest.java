@@ -34,7 +34,7 @@ class BookRepositoryTest {
 //        user.setId(1L);
 //        AppUser user2 = new AppUser();
 //        user2.setId(2L);
-//        Room room = new Room(); room.setId(1L);
+//        RoomDocument room = new RoomDocument(); room.setId(1L);
 //        Book book1 = Book.builder().bookName("홍길동").room(room).payAmount(1000).user(user).build();
 //        Book book2 = Book.builder().bookName("홍길순").room(room).payAmount(2000).user(user).build();
 //        Book book3 = Book.builder().bookName("홍길갑").room(room).payAmount(3000).user(user2).build();

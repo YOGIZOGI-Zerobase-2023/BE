@@ -6,7 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Document(indexName = "price", createIndex = true)
-public class Price {
+public class PriceDocument {
 
     @Field(type = FieldType.Auto, value = "priceId")
     private Long id;
