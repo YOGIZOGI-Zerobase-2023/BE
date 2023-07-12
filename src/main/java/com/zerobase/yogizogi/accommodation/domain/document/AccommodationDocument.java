@@ -1,15 +1,17 @@
 package com.zerobase.yogizogi.accommodation.domain.document;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Document(indexName = "accommodation", createIndex = true)
 public class AccommodationDocument {
-
+    @Id
     @Field(type = FieldType.Auto, value = "accommodationId")
     private Long id;
-
+    @Field(type = FieldType.Text, value = "address")
+    private String address;
     @Field(type = FieldType.Integer, value = "category")
     private int category;
 
