@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
+
     Page<Review> findAllByAccommodation_Id(Long accommodationId, Pageable pageable);
 
 }

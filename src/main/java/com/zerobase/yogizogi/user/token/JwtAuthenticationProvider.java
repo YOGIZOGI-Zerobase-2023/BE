@@ -11,15 +11,14 @@ import java.util.Date;
 
 public class JwtAuthenticationProvider {
 
-    private static final String secretKey = "secretKey"; // 계속 쓰이는 변수는 전역변수로 관리하자!(값이 있는 해당 형태만 static final 가능!)
+    private static final String secretKey = "secretKey";
 
-    public String createToken(String email, Long id,String nickName) {
+    public String createToken(String email, Long id, String nickName) {
         Claims claims = Jwts.claims()
             .setSubject(email).setIssuer(nickName)
             .setId(id.toString());
 
         Date now = new Date();
-        //인증 만료 하루
         long tokenValidTime = 1000L * 60 * 60 * 24;
         return Jwts.builder()
             .setClaims(claims)
@@ -31,9 +30,8 @@ public class JwtAuthenticationProvider {
 
     public boolean validateToken(String token) {
         try {
-            //시간 만료되었는지로 검증
-         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-         return claims.getBody().getExpiration().before(new Date()); //true 만료 . false 만료가 아님
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return true;
         }

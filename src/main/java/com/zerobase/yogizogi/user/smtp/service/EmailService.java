@@ -17,18 +17,19 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender javaMailSender;
 
-    public void sendMail(MessageForm messageForm) {//email 이 가지 않았을 때의 오류 메시지 필요.
+    public void sendMail(MessageForm messageForm) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setTo(messageForm.getTo()); // 메일 수신자
-            mimeMessageHelper.setSubject(messageForm.getSubject()); // 메일 제목
-            mimeMessageHelper.setText(messageForm.getMessage(), true); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setTo(messageForm.getTo());
+            mimeMessageHelper.setSubject(messageForm.getSubject());
+            mimeMessageHelper.setText(messageForm.getMessage(), true);
             javaMailSender.send(mimeMessage);
             log.info("Success");
         } catch (CustomException | MessagingException e) {
             log.warn("fail");
             throw new CustomException(ErrorCode.NOT_VALID_EMAIL);
         }
+
     }
 }

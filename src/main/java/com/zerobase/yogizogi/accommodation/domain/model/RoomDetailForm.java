@@ -4,15 +4,9 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.zerobase.yogizogi.accommodation.domain.entity.Room;
 import com.zerobase.yogizogi.accommodation.domain.entity.RoomPicture;
 import java.util.Set;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
 public class RoomDetailForm {
 
     @QueryProjection
@@ -27,12 +21,12 @@ public class RoomDetailForm {
         this.price = minPrice;
     }
 
-    private Long id;
-    private String roomName;
-    private String checkInTime;
-    private String checkOutTime;
-    private Integer defaultPeople;
-    private Integer maxPeople;
-    private Set<RoomPicture> pictureUrlList;
-    private Integer price;
+    private final Long id;
+    private final String roomName;
+    private final String checkInTime;
+    private final String checkOutTime;
+    private final Integer defaultPeople;
+    private final Integer maxPeople;
+    private final Set<RoomPicture> pictureUrlList;
+    private final Integer price;
 }

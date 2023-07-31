@@ -41,7 +41,9 @@ public class Room {
     private Integer defaultPeople;
     @Column(name = "maxPeople")
     private Integer maxPeople;
-    //외래키
+    @Column(name = "conveniences")
+    private String conveniences;
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "accommodationId")

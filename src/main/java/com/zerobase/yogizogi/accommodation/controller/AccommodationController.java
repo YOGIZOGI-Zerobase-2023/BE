@@ -33,8 +33,6 @@ public class AccommodationController {
 
     private final AccommodationService accommodationService;
 
-    // 숙소 리스트 조회
-
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Object>> search(
         @RequestParam(required = false) String keyword,
@@ -58,7 +56,8 @@ public class AccommodationController {
             direction = "desc";
         }
 
-        PageRequest pageRequest = PageRequest.of(page, pagesize, Sort.Direction.fromString(direction), sort);
+        PageRequest pageRequest = PageRequest.of(page, pagesize,
+            Sort.Direction.fromString(direction), sort);
 
         Page<AccommodationSearchDto> result = accommodationService
             .searchAccommodation(
@@ -69,7 +68,7 @@ public class AccommodationController {
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 
-    @GetMapping("/{accommodationId}/")
+    @GetMapping("/{accommodationId}")
     public ResponseEntity<?> getAccommodationDetail(@PathVariable Long accommodationId,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
@@ -85,16 +84,37 @@ public class AccommodationController {
         @RequestBody PositionRequestForm positionRequestForm) {
         List<Accommodation> accommodations = accommodationService.getAccommodationsByArea(
             positionRequestForm.getLeftUpLat(), positionRequestForm.getRightDownLat(),
-            positionRequestForm.getLeftUpLon(), positionRequestForm.getRightDownLon());
+            positionRequestForm.getLeftUpLon(), positionRequestForm.getRightDownLon(),
+            positionRequestForm.getCheckInDate(), positionRequestForm.getCheckOutDate());
         List<AccommodationDto> result = accommodations.stream()
-            .filter(accommodation -> !accommodation.getRooms().isEmpty())
-            .filter(
-                accommodation -> accommodation.getRooms().stream().flatMap(room -> room.getPrices()
-                        .stream())
-                    .anyMatch(price -> price.getRoomCnt() > 0)) //방 수가 0 즉 예약 불가능은 가져오지 않음.
             .map(AccommodationDto::from).collect(
                 Collectors.toList());
         System.out.println(result.size());
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
+    }
+
+    @GetMapping("/compare/accommodation")
+    public ResponseEntity<ApiResponse<Object>> getCompareAccommodation(
+        @RequestParam Long accommodationid,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
+        @RequestParam Integer people
+    ) {
+        var result = accommodationService.getCompareAccommodation(accommodationid, checkindate,
+            checkoutdate, people);
+
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
+    }
+
+    @GetMapping("/compare/room")
+    public ResponseEntity<ApiResponse<Object>> getCompareRoom(
+        @RequestParam Long roomid,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
+        @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
+        @RequestParam Integer people
+    ) {
+        var result = accommodationService.getCompareRoom(roomid, checkindate, checkoutdate, people);
+
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 }

@@ -53,12 +53,11 @@ public class ReviewService {
         Book book = bookRepository.findById(reviewForm.getBookId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOK));
 
-        // 예약이 이미 지난 경우에만 리뷰 작성 가능*추가
         LocalDate now = LocalDate.now();
         if (book.getCheckOutDate().isAfter(now)) {
             throw new CustomException(ErrorCode.NOT_ALLOW_WRITE_REVIEW);
         }
-        //리뷰 작성 가능 여부 확인
+
         if (book.getReviewRegistered()) {
             throw new CustomException(ErrorCode.AlREADY_REGISTER_REVIEW);
         }
@@ -70,12 +69,10 @@ public class ReviewService {
             .rate(reviewForm.getRate())
             .description(reviewForm.getDescription()).build());
 
-        // 숙소 평점 업데이트
         accommodation.getReviews().add(review);
         accommodation.updateScore();
         accommodationRepository.save(accommodation);
 
-        // review 했다고 업데이트
         book.setReviewRegistered(true);
         bookRepository.save(book);
     }
@@ -91,7 +88,6 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
-        //점수 업데이트도 필요 할 수 있음.
         Accommodation accommodation = accommodationRepository.findById(accommodationId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
 
@@ -150,11 +146,9 @@ public class ReviewService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-
         reviewRepository.delete(review);
 
         accommodation.updateScore();
         accommodationRepository.save(accommodation);
-        //Review 삭제 시 재작성이 가능한 로직은 작성하지 않음.
     }
 }

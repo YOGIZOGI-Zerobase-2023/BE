@@ -3,6 +3,7 @@ package com.zerobase.yogizogi.accommodation.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.zerobase.yogizogi.accommodation.domain.entity.Convenience;
 import com.zerobase.yogizogi.accommodation.domain.model.RoomDetailForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import java.time.LocalDate;
@@ -17,6 +18,20 @@ class AccommodationRepositoryImplTest {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+
+    @Autowired
+    private ConvenienceRepository convenienceRepository;
+
+    @Test
+    void convenienceTest() {
+        //given
+        List<Convenience> allByAccommodationId = convenienceRepository.findAllByAccommodationId(
+            100L);
+        //when
+
+        //then
+        System.out.println(allByAccommodationId.size());
+    }
 
 
     @Test
