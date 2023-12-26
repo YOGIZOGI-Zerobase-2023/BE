@@ -33,7 +33,6 @@ public class BookService {
     private final PriceRepository priceRepository;
     private final AccommodationRepository accommodationRepository;
 
-    //User의 BookList를 가지고 옵니다.
     public List<Book> myBookList(Long userId, String token) {
 
         if (provider.validateToken(token)) {
@@ -51,8 +50,7 @@ public class BookService {
         return bookRepository.findAllByUser_Id(userId);
     }
 
-    //현재는 등록 없이 사용을 위해 roomId를 가져오지 않지만 이후에는 roomId를 필수적으로 받을 것
-    public void makeBook(String token, BookForm bookForm) {
+        public void makeBook(String token, BookForm bookForm) {
         if (provider.validateToken(token)) {
             throw new CustomException(ErrorCode.DO_NOT_ALLOW_TOKEN);
         }
@@ -63,8 +61,6 @@ public class BookService {
         Accommodation accommodation = accommodationRepository.findById(
                 bookForm.getAccommodationId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ACCOMMODATION));
-        //Done예약이 가능한지 여부 확인해서 불가능하면 예약을 더 이상 진행할 수 없는 요소**
-        //예약 단계로 접어들며 한 번 더 예약 가능한지의 확인을 진행**
 
         int betweenDay = (int) ChronoUnit.DAYS.between(bookForm.getCheckInDate(),
             bookForm.getCheckOutDate());
@@ -72,13 +68,13 @@ public class BookService {
         Room room = roomRepository.findById(bookForm.getRoomId())
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ROOM));
 
-        Book book = Book.builder().user(user)//외래키 저장하려면 명시적으로 넣어야 하는 부분의 수정 가능성.
+        Book book = Book.builder().user(user)
             .accommodation(accommodation)
             .room(room)
             .checkInDate(bookForm.getCheckInDate())
             .checkOutDate(bookForm.getCheckOutDate())
             .people(bookForm.getPeople())
-            .bookName(bookForm.getBookName()) //이 부분에 관한 처리 로직 고민.
+            .bookName(bookForm.getBookName())
             .payAmount(bookForm.getPayAmount())
             .reviewRegistered(false).build();
         IntStream.range(0, betweenDay)
@@ -86,7 +82,7 @@ public class BookService {
                 bookForm.getCheckInDate().plusDays(i)))
             .forEach(price -> {
                 if (price != null) {
-                    if (price.getRoomCnt() == 0) {//해당 로직은 여러 번 동시 예약 상황 고려해 계속 확인
+                    if (price.getRoomCnt() == 0) {
                         deleteBook(token, user.getId(), book.getId());//해당 예약건을 없애고, 처리를 실패로 넘겨야 함.
                         throw new CustomException(ErrorCode.ALREADY_BOOKED_ROOM);
                     }
@@ -127,7 +123,7 @@ public class BookService {
             throw new CustomException(ErrorCode.NOT_ALLOW_ACCESS);
         }
 
-        // 예약 삭제시, (정합하면, Price roomCnt 업데이트)
+        // 예약 삭제시, (정합하면, PriceDocument roomCnt 업데이트)
         int betweenDay = (int) ChronoUnit.DAYS.between(book.getCheckInDate(),
             book.getCheckOutDate());
         IntStream.range(0, betweenDay)

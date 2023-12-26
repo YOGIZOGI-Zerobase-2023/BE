@@ -1,11 +1,13 @@
 package com.zerobase.yogizogi.accommodation.controller;
 
 
+import com.zerobase.yogizogi.accommodation.domain.document.AccommodationDocument;
 import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
 import com.zerobase.yogizogi.accommodation.domain.model.PositionRequestForm;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationDto;
 import com.zerobase.yogizogi.accommodation.dto.AccommodationSearchDto;
 import com.zerobase.yogizogi.accommodation.service.AccommodationService;
+import com.zerobase.yogizogi.accommodation.service.ElasticSearchService;
 import com.zerobase.yogizogi.global.ApiResponse;
 import com.zerobase.yogizogi.global.ResponseCode;
 import java.time.LocalDate;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccommodationController {
 
     private final AccommodationService accommodationService;
+    private final ElasticSearchService elasticSearchService;
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Object>> search(
@@ -68,6 +71,40 @@ public class AccommodationController {
         return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
     }
 
+    @GetMapping("/elasticsearch")
+    public ResponseEntity<ApiResponse<Object>> elasticsearch(
+        @RequestParam(required = false) String keyword,
+//        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
+//        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate checkoutdate,
+//        @RequestParam(required = false) Integer people,
+//        @RequestParam(required = false) String sort,
+//        @RequestParam(required = false) String direction,
+//        @RequestParam(required = false) Integer minprice,
+//        @RequestParam(required = false) Integer maxprice,
+//        @RequestParam(required = false) Integer category,
+//        @RequestParam(required = false) Double lat,
+//        @RequestParam(required = false) Double lon,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int pagesize) {
+
+//        if (sort == null) {
+//            sort = "rate";
+//        }
+//        if (direction == null) {
+//            direction = "desc";
+//        }
+
+        PageRequest pageRequest = PageRequest.of(page, pagesize,
+            Sort.Direction.fromString("desc"), "rate");
+
+        List<AccommodationDocument> result = elasticSearchService.searchAccommodation(keyword);
+//            .searchAccommodation(
+//                keyword, checkindate, checkoutdate,
+//                people, sort, direction, minprice, maxprice,
+//                category, lat, lon, pageRequest);
+
+        return ApiResponse.builder().code(ResponseCode.RESPONSE_SUCCESS).data(result).toEntity();
+    }
     @GetMapping("/{accommodationId}")
     public ResponseEntity<?> getAccommodationDetail(@PathVariable Long accommodationId,
         @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate checkindate,
