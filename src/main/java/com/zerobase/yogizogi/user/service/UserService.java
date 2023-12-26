@@ -22,9 +22,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtAuthenticationProvider provider;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
     private final PasswordEncoder encoder;
+    private final EmailService emailService;
+
     @Value("${email.redirect.url}")
     private String emailUrl;
 
@@ -100,8 +100,7 @@ public class UserService {
     }
 
     private boolean validateLogIn(String rawPassword, AppUser user) {
-        return passwordEncoder.matches(rawPassword, user.getPassword());
+        return encoder.matches(rawPassword, user.getPassword());
     }
 }
-
 

@@ -1,81 +1,170 @@
-//package com.zerobase.yogizogi.book.service;
-//
-//import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
-//import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
-//import com.zerobase.yogizogi.book.repository.BookRepository;
-//import com.zerobase.yogizogi.user.repository.UserRepository;
-//import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//
-//public class BookServiceTest {
-//
-//    @Mock
-//    private JwtAuthenticationProvider provider;
-//    @Mock
-//    private BookRepository bookRepository;
-//    @Mock
-//    private UserRepository userRepository;
-//    @Mock
-//    private RoomRepository roomRepository;
-//    @Mock
-//    private PriceRepository priceRepository;
-//    private BookService bookService;
-//
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        bookService = new BookService(provider, bookRepository, userRepository,roomRepository,priceRepository);
-//    }
-//
-//    @Test
-//    @DisplayName("사용자의 예약 페이지 조회 테스트")
-//    public void testMyBookList() {
-//        // given
-//
-//    }
+package com.zerobase.yogizogi.book.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-//    @Test
-//    @DisplayName("예약 생성 테스트")
-//    public void testMakeBook() {
-//        //given
-//        String token = "testToken";
-//        Long userId = 1L;
-//        BookForm bookForm = new BookForm();
-//        when(provider.validateToken(token)).thenReturn(true);
-//        when(provider.getUserDto(token)).thenReturn(new UserDto(userId, "test@test.com"));
-//        when(userRepository.findById(userId)).thenReturn(Optional.of(new AppUser()));
-//
-//
-//        //when //null발생 에러 가능성
-//        String result = bookService.makeBook(token, bookForm);
-//
-//        //then
-//        assertEquals("/success", result);
-//        verify(bookRepository, times(1)).save(any(Book.class));
-//    }
-//
-//    @Test
-//    @DisplayName("예약 삭제 테스트")
-//    public void testDeleteBook() {
-//        //given
-//        String token = "testToken";
-//        Long userId = 1L;
-//        Long bookId = 1L;
-//        when(provider.validateToken(token)).thenReturn(true);
-//        when(provider.getUserDto(token)).thenReturn(new UserDto(userId, "test@test.com"));
-//        when(userRepository.findById(userId)).thenReturn(Optional.of(new AppUser()));
-//        when(bookRepository.findById(bookId)).thenReturn(Optional.of(new Book()));
-//
-//        //when //null발생 에러 가능성
-//        String result = bookService.deleteBook(token, bookId);
-//
-//        //then
-//        assertEquals("delete/success", result);
-//        verify(bookRepository, times(1)).delete(any(Book.class));
-//    }
-//}
+import com.zerobase.yogizogi.accommodation.domain.entity.Accommodation;
+import com.zerobase.yogizogi.accommodation.domain.entity.Price;
+import com.zerobase.yogizogi.accommodation.domain.entity.Room;
+import com.zerobase.yogizogi.accommodation.repository.AccommodationRepository;
+import com.zerobase.yogizogi.accommodation.repository.PriceRepository;
+import com.zerobase.yogizogi.accommodation.repository.RoomRepository;
+import com.zerobase.yogizogi.book.domain.entity.Book;
+import com.zerobase.yogizogi.book.domain.model.BookForm;
+import com.zerobase.yogizogi.book.repository.BookRepository;
+import com.zerobase.yogizogi.global.exception.CustomException;
+import com.zerobase.yogizogi.user.domain.entity.AppUser;
+import com.zerobase.yogizogi.user.dto.UserDto;
+import com.zerobase.yogizogi.user.repository.UserRepository;
+import com.zerobase.yogizogi.user.token.JwtAuthenticationProvider;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+public class BookServiceTest {
+
+    @InjectMocks
+    private BookService bookService;
+
+    @Mock
+    private JwtAuthenticationProvider provider;
+
+    @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private RoomRepository roomRepository;
+
+    @Mock
+    private PriceRepository priceRepository;
+
+    @Mock
+    private AccommodationRepository accommodationRepository;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    @DisplayName("내 예약리스트 가져오기")
+    public void testMyBookList() {
+        //given
+        String token = "token";
+        when(provider.validateToken(token)).thenReturn(false);
+        UserDto userDto = new UserDto(1L, "test@gmail.com");
+        when(provider.getUserDto(token)).thenReturn(userDto);
+        AppUser user = new AppUser();
+        user.setId(userDto.getId());
+        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        //when
+        bookService.myBookList(userDto.getId(), token);
+        // then
+        verify(bookRepository).findAllByUser_Id(userDto.getId());
+    }
+
+    @Test//수정필요
+    @DisplayName("내 예약 만들기")
+    public void testMakeBook() {
+        // given
+        LocalDate now = LocalDate.now();
+        String token = "testToken";
+        BookForm bookForm = new BookForm();
+        bookForm.setAccommodationId(1L);
+        bookForm.setRoomId(1L);
+        bookForm.setCheckInDate(now);
+        bookForm.setCheckOutDate(now.plusDays(1));
+
+        when(provider.validateToken(token)).thenReturn(false);
+        UserDto userDto = new UserDto(1L, "test@gmail.com");
+        when(provider.getUserDto(token)).thenReturn(userDto);
+        AppUser user = new AppUser();
+        user.setId(1L);
+        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(bookForm.getAccommodationId());
+        when(accommodationRepository.findById(bookForm.getAccommodationId())).thenReturn(
+            Optional.of(accommodation));
+
+        Room room = new Room();
+        room.setId(bookForm.getRoomId());
+        when(roomRepository.findById(bookForm.getRoomId())).thenReturn(Optional.of(room));
+
+        // when & then
+        assertThrows(CustomException.class, () -> bookService.makeBook(token, bookForm));
+    }
+
+    @Test
+    @DisplayName("내 예약 삭제")
+    public void testDeleteBook() {
+        // given
+        LocalDate now = LocalDate.now();
+        String token = "token";
+        Long userId = 1L;
+        Long bookId = 1L;
+
+        when(provider.validateToken(token)).thenReturn(false);
+        UserDto userDto = new UserDto(userId, "test@gmail.com");
+        when(provider.getUserDto(token)).thenReturn(userDto);
+
+        AppUser user = new AppUser();
+        user.setId(userId);
+        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        Room room = new Room();
+        room.setId(1L);
+        room.setName("Test Room");
+        room.setCheckInTime("12:00");
+        room.setCheekOutTime("11:00");
+        room.setDefaultPeople(2);
+        room.setMaxPeople(4);
+
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(1L);
+        room.setAccommodation(accommodation);
+
+        Set<Price> prices = new HashSet<>();
+        room.setPrices(prices);
+
+        Price price = new Price();
+        price.setRoomCnt(1);
+
+        when(priceRepository.findAllByRoom_IdAndDate(anyLong(), any(LocalDate.class))).thenReturn(
+            price);
+
+        Book book = new Book();
+        book.setId(bookId);
+        book.setUser(user);
+        book.setCheckInDate(now);
+        book.setCheckOutDate(now.plusDays(1));
+        book.setRoom(room);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        // when
+        bookService.deleteBook(token, userId, bookId);
+
+        // then
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(priceRepository, times(1)).findAllByRoom_IdAndDate(anyLong(), any(LocalDate.class));
+        verify(priceRepository, times(1)).save(price);
+        verify(bookRepository, times(1)).delete(book);
+    }
+
+}
